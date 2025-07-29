@@ -1,15 +1,15 @@
 package helpers
 
-// func GetAccountData[T anchor.PgAccountI](
-// 	conn *rpc.Client,
-// 	accountAddress solana.PublicKey,
-// ) {
-// 	anchor.NewPgAccounts[T](
-// 		conn,
-// 		func() T { return T{} },
-// 	).Fetch(
-// 		context.Background(),
-// 		accountAddress,
-// 		&rpc.GetAccountInfoOpts{},
-// 	)
-// }
+import "dbcGoSDK/types"
+
+// CheckRateLimiterApplied checks if rate limiter should be applied based on pool configuration and state.
+func CheckRateLimiterApplied(
+	baseFeeMode types.BaseFeeMode,
+	swapBaseForQuote bool,
+	currentPoint, activationPoint, maxLimiterDuration uint64,
+) bool {
+	return baseFeeMode == types.BaseFeeModeRateLimiter &&
+		!swapBaseForQuote &&
+		currentPoint >= activationPoint &&
+		currentPoint <= activationPoint+maxLimiterDuration
+}

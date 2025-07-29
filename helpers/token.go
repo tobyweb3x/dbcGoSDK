@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"context"
+	"dbcGoSDK/types"
 	"errors"
 	"fmt"
 
@@ -165,4 +166,17 @@ func FindAssociatedTokenAddress(
 
 	addr, _, err := solana.FindProgramAddress(seeds, solana.SPLAssociatedTokenAccountProgramID)
 	return addr, err
+}
+
+func GetTokenType(conn *rpc.Client, tokenMint solana.PublicKey) (types.TokenType, error) {
+	var accInfo token.Account
+	if err := conn.GetAccountDataBorshInto(
+		context.Background(), tokenMint, &accInfo); err != nil {
+		return types.TokenTypeSPL, err
+	}
+	if accInfo.Owner.Equals(solana.TokenProgramID) {
+		return types.TokenTypeSPL, nil
+	}
+
+	return types.TokenTypeToken2022, nil
 }

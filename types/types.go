@@ -2,6 +2,7 @@ package types
 
 import (
 	"dbcGoSDK/generated/dbc"
+	"math/big"
 
 	"github.com/gagliardetto/solana-go"
 )
@@ -113,4 +114,155 @@ type InitializePoolBaseParam struct {
 	QuoteVault   solana.PublicKey
 	QuoteMint    solana.PublicKey
 	MintMetadata solana.PublicKey
+}
+
+type VirtualPoolState struct {
+	BaseMint solana.PublicKey
+	PoolType TokenType
+}
+
+type PoolConfigState struct {
+	QuoteMint      solana.PublicKey
+	QuoteTokenFlag TokenType
+}
+
+type PrepareSwapParams struct {
+	InputMint          solana.PublicKey
+	OutputMint         solana.PublicKey
+	InputTokenProgram  solana.PublicKey
+	OutputTokenProgram solana.PublicKey
+}
+
+type CreatePoolParam struct {
+	PreCreatePoolParam
+	Payer  solana.PublicKey
+	Config solana.PublicKey
+}
+
+type FirstBuyParam struct {
+	Buyer                solana.PublicKey
+	Receiver             solana.PublicKey
+	BuyAmount            uint64
+	MinimumAmountOut     uint64
+	ReferralTokenAccount solana.PublicKey
+}
+
+type PreCreatePoolParam struct {
+	Name        string
+	Symbol      string
+	URI         string
+	PoolCreator solana.PublicKey
+	BaseMint    solana.PublicKey
+}
+
+type CreateConfigAndPoolParam struct {
+	PreCreatePoolParam                                     PreCreatePoolParam
+	ConfigParameters                                       dbc.ConfigParameters
+	Config, FeeClaimer, LeftoverReceiver, QuoteMint, Payer solana.PublicKey
+	TokenType                                              TokenType
+}
+
+type CreateConfigAndPoolWithFirstBuyParam struct {
+	FirstBuyParam
+	CreateConfigAndPoolParam
+	BaseFeeMode
+}
+
+type CreatePoolWithFirstBuyParam struct {
+	CreatePoolParam
+	FirstBuyParam
+}
+
+type CreatePoolWithPartnerAndCreatorFirstBuyParam struct {
+	CreatePoolParam      CreatePoolParam
+	PartnerFirstBuyParam PartnerFirstBuyParam
+	CreatorFirstBuyParam CreatorFirstBuyParam
+}
+
+type PartnerFirstBuyParam struct {
+	Partner              solana.PublicKey
+	Receiver             solana.PublicKey
+	BuyAmount            uint64
+	MinimumAmountOut     uint64
+	ReferralTokenAccount solana.PublicKey
+}
+type CreatorFirstBuyParam struct {
+	Creator              solana.PublicKey
+	Receiver             solana.PublicKey
+	BuyAmount            uint64
+	MinimumAmountOut     uint64
+	ReferralTokenAccount solana.PublicKey
+}
+
+type SwapParam struct {
+	Owner                solana.PublicKey
+	Pool                 solana.PublicKey
+	AmountIn             uint64
+	MinimumAmountOut     uint64
+	SwapBaseForQuote     bool
+	ReferralTokenAccount solana.PublicKey
+	Payer                solana.PublicKey
+}
+
+type QuoteResult struct {
+	AmountOut        *big.Int
+	MinimumAmountOut *big.Int
+	NextSqrtPrice    *big.Int
+	Fee              QuoteFee
+	Price            QuotePrice
+}
+
+type QuoteFee struct {
+	Trading  *big.Int
+	Protocol *big.Int
+	Referral *big.Int // Can be nil if optional
+}
+
+type QuotePrice struct {
+	BeforeSwap *big.Int
+	AfterSwap  *big.Int
+}
+
+type FeeMode struct {
+	FeeOnInput   bool
+	FeesOnTokenA bool
+	HasReferral  bool
+}
+
+type FeeOnAmountResult struct {
+	Amount      *big.Int
+	ProtocolFee *big.Int
+	TradingFee  *big.Int
+	ReferralFee *big.Int
+}
+
+type SwapAmount struct {
+	OutputAmount  *big.Int
+	NextSqrtPrice *big.Int
+}
+
+type SwapQuoteParam struct {
+	VirtualPool      *dbc.VirtualPoolAccount
+	Config           *dbc.PoolConfigAccount
+	SwapBaseForQuote bool
+	AmountIn         *big.Int
+	SlippageBps      uint64 // optional
+	HasReferral      bool
+	CurrentPoint     *big.Int
+}
+
+type SwapQuoteExactInParam struct {
+	VirtualPool  *dbc.VirtualPoolAccount
+	Config       *dbc.PoolConfigAccount
+	CurrentPoint *big.Int
+}
+
+type SwapQuoteExactOutParam struct {
+	VirtualPool      *dbc.VirtualPoolAccount
+	Config           *dbc.PoolConfigAccount
+	SwapBaseForQuote bool
+	OutAmount        *big.Int
+	SlippageBps      uint64 // optional, use pointer to distinguish zero vs unset
+	HasReferral      bool
+	CurrentPoint     *big.Int
 }

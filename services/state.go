@@ -348,3 +348,16 @@ func (s *StateService) GetPoolsFeesByCreator(
 
 	return res, nil
 }
+
+// GetDammV1MigrationMetadata gets DAMM V1 migration metadata.
+func (s *StateService) GetDammV1MigrationMetadata(
+	ctx context.Context,
+	poolAdress solana.PublicKey,
+) (*dbc.MeteoraDammMigrationMetadataAccount, error) {
+	migrationMetadataAddress := helpers.DeriveDammV1MigrationMetadataAddress(poolAdress)
+
+	return anchor.NewPgAccounts(
+		s.conn, func() *dbc.MeteoraDammMigrationMetadataAccount { return &dbc.MeteoraDammMigrationMetadataAccount{} },
+	).Fetch(ctx, migrationMetadataAddress, &rpc.GetAccountInfoOpts{})
+
+}
