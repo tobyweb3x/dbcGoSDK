@@ -28,6 +28,17 @@ func DeriveDbcPoolMetadata(pool solana.PublicKey) solana.PublicKey {
 	return pda
 }
 
+func DeriveDbcPartnerMetadata(feeClaimer solana.PublicKey) solana.PublicKey {
+	pda, _, _ := solana.FindProgramAddress(
+		[][]byte{
+			[]byte(constants.SeedPartnerMetadata),
+			feeClaimer.Bytes(),
+		},
+		constants.DBCProgramId,
+	)
+	return pda
+}
+
 func DeriveDammV1MigrationMetadataAddress(virtualPool solana.PublicKey) solana.PublicKey {
 	pda, _, _ := solana.FindProgramAddress(
 		[][]byte{

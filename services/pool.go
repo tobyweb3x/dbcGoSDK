@@ -196,7 +196,6 @@ func (p *PoolService) createPoolIx(
 // cswapBuyIx
 // reates first buy transaction.
 func (p *PoolService) swapBuyIx(
-
 	ctx context.Context,
 	firstBuyParam types.FirstBuyParam,
 	baseMint, config solana.PublicKey,
@@ -371,47 +370,47 @@ func (p *PoolService) swapBuyIx(
 // CreatePool creates a new pool.
 func (p *PoolService) CreatePool(
 	ctx context.Context,
-	createPoolParam types.CreatePoolParam,
+	param types.CreatePoolParam,
 ) (*dbc.Instruction, error) {
 
-	poolConfigState, err := p.state.GetPoolConfig(ctx, createPoolParam.Config)
+	poolConfigState, err := p.state.GetPoolConfig(ctx, param.Config)
 	if err != nil {
 		return nil, err
 	}
 
-	pool := helpers.DeriveDbcPoolAddress(poolConfigState.QuoteMint, createPoolParam.BaseMint, createPoolParam.Config)
-	baseVault := helpers.DeriveDbcTokenVaultAddress(pool, createPoolParam.BaseMint)
+	pool := helpers.DeriveDbcPoolAddress(poolConfigState.QuoteMint, param.BaseMint, param.Config)
+	baseVault := helpers.DeriveDbcTokenVaultAddress(pool, param.BaseMint)
 	quoteVault := helpers.DeriveDbcTokenVaultAddress(pool, poolConfigState.QuoteMint)
 
 	if poolConfigState.TokenType == uint8(types.TokenTypeSPL) {
 		return p.initializeSplPool(
 			types.InitializePoolBaseParam{
-				Name:         createPoolParam.Name,
-				Symbol:       createPoolParam.Symbol,
-				URI:          createPoolParam.URI,
+				Name:         param.Name,
+				Symbol:       param.Symbol,
+				URI:          param.URI,
 				Pool:         pool,
-				Config:       createPoolParam.Config,
-				Payer:        createPoolParam.Payer,
-				PoolCreator:  createPoolParam.PoolCreator,
-				BaseMint:     createPoolParam.BaseMint,
+				Config:       param.Config,
+				Payer:        param.Payer,
+				PoolCreator:  param.PoolCreator,
+				BaseMint:     param.BaseMint,
 				BaseVault:    baseVault,
 				QuoteVault:   quoteVault,
 				QuoteMint:    poolConfigState.QuoteMint,
-				MintMetadata: helpers.DeriveMintMetadata(createPoolParam.BaseMint),
+				MintMetadata: helpers.DeriveMintMetadata(param.BaseMint),
 			},
 		)
 	}
 
 	return p.initializeToken2022Pool(
 		types.InitializePoolBaseParam{
-			Name:        createPoolParam.Name,
-			Symbol:      createPoolParam.Symbol,
-			URI:         createPoolParam.URI,
+			Name:        param.Name,
+			Symbol:      param.Symbol,
+			URI:         param.URI,
 			Pool:        pool,
-			Config:      createPoolParam.Config,
-			Payer:       createPoolParam.Payer,
-			PoolCreator: createPoolParam.PoolCreator,
-			BaseMint:    createPoolParam.BaseMint,
+			Config:      param.Config,
+			Payer:       param.Payer,
+			PoolCreator: param.PoolCreator,
+			BaseMint:    param.BaseMint,
 			BaseVault:   baseVault,
 			QuoteVault:  quoteVault,
 			QuoteMint:   poolConfigState.QuoteMint,
@@ -426,7 +425,7 @@ func (p *PoolService) CreateConfigAndPool(
 ) ([]solana.Instruction, error) {
 
 	createConfigIx, err := p.createConfigIx(
-		createConfigAndPoolParam.ConfigParameters,
+		createConfigAndPoolParam.CreateConfigParam.ConfigParameters,
 		createConfigAndPoolParam.Config,
 		createConfigAndPoolParam.FeeClaimer,
 		createConfigAndPoolParam.LeftoverReceiver,
@@ -455,19 +454,19 @@ func (p *PoolService) CreateConfigAndPool(
 // CreateConfigAndPoolWithFirstBuy creates a new config and pool and buy tokens.
 func (p *PoolService) CreateConfigAndPoolWithFirstBuy(
 	ctx context.Context,
-	createConfigAndPoolWithFirstBuyParam types.CreateConfigAndPoolWithFirstBuyParam,
+	param types.CreateConfigAndPoolWithFirstBuyParam,
 ) (struct {
 	CreateConfigIx, CreatePoolIx *dbc.Instruction
 	SwapBuyIxns                  []solana.Instruction
 }, error) {
 
 	createConfigIx, err := p.createConfigIx(
-		createConfigAndPoolWithFirstBuyParam.ConfigParameters,
-		createConfigAndPoolWithFirstBuyParam.Config,
-		createConfigAndPoolWithFirstBuyParam.FeeClaimer,
-		createConfigAndPoolWithFirstBuyParam.LeftoverReceiver,
-		createConfigAndPoolWithFirstBuyParam.QuoteMint,
-		createConfigAndPoolWithFirstBuyParam.Payer,
+		param.CreateConfigParam.ConfigParameters,
+		param.Config,
+		param.FeeClaimer,
+		param.LeftoverReceiver,
+		param.QuoteMint,
+		param.Payer,
 	)
 	if err != nil {
 		return struct {
@@ -479,11 +478,11 @@ func (p *PoolService) CreateConfigAndPoolWithFirstBuy(
 
 	createPoolIx, err := p.createPoolIx(
 		types.CreatePoolParam{
-			PreCreatePoolParam: createConfigAndPoolWithFirstBuyParam.PreCreatePoolParam,
-			Config:             createConfigAndPoolWithFirstBuyParam.Config,
+			PreCreatePoolParam: param.PreCreatePoolParam,
+			Config:             param.Config,
 		},
-		createConfigAndPoolWithFirstBuyParam.TokenType,
-		createConfigAndPoolWithFirstBuyParam.QuoteMint,
+		param.TokenType,
+		param.QuoteMint,
 	)
 	if err != nil {
 		return struct {
@@ -493,17 +492,17 @@ func (p *PoolService) CreateConfigAndPoolWithFirstBuy(
 		}{}, err
 	}
 
-	// TODO: check createConfigAndPoolWithFirstBuyParam.FirstBuyParam is not empty
+	// TODO: check param.FirstBuyParam is not empty
 	var swapBuyIxns []solana.Instruction
-	if createConfigAndPoolWithFirstBuyParam.FirstBuyParam.BuyAmount > 0 {
+	if param.FirstBuyParam.BuyAmount > 0 {
 		if swapBuyIxns, err = p.swapBuyIx(
 			ctx,
-			createConfigAndPoolWithFirstBuyParam.FirstBuyParam,
-			createConfigAndPoolWithFirstBuyParam.PreCreatePoolParam.BaseMint,
-			createConfigAndPoolWithFirstBuyParam.Config,
-			createConfigAndPoolWithFirstBuyParam.BaseFeeMode,
-			createConfigAndPoolWithFirstBuyParam.TokenType,
-			createConfigAndPoolWithFirstBuyParam.QuoteMint,
+			param.FirstBuyParam,
+			param.PreCreatePoolParam.BaseMint,
+			param.Config,
+			param.BaseFeeMode,
+			param.TokenType,
+			param.QuoteMint,
 		); err != nil {
 			return struct {
 				CreateConfigIx *dbc.Instruction
@@ -527,12 +526,12 @@ func (p *PoolService) CreateConfigAndPoolWithFirstBuy(
 // CreatePoolWithFirstBuy creates a new pool and buy tokens.
 func (p *PoolService) CreatePoolWithFirstBuy(
 	ctx context.Context,
-	createPoolWithFirstBuyParam types.CreatePoolWithFirstBuyParam,
+	param types.CreatePoolWithFirstBuyParam,
 ) (struct {
 	CreatePoolIx *dbc.Instruction
 	SwapBuyIxns  []solana.Instruction
 }, error) {
-	poolConfigState, err := p.state.GetPoolConfig(ctx, createPoolWithFirstBuyParam.Config)
+	poolConfigState, err := p.state.GetPoolConfig(ctx, param.Config)
 	if err != nil {
 		return struct {
 			CreatePoolIx *dbc.Instruction
@@ -541,8 +540,8 @@ func (p *PoolService) CreatePoolWithFirstBuy(
 	}
 	createPoolIx, err := p.createPoolIx(
 		types.CreatePoolParam{
-			PreCreatePoolParam: createPoolWithFirstBuyParam.PreCreatePoolParam,
-			Config:             createPoolWithFirstBuyParam.Config,
+			PreCreatePoolParam: param.PreCreatePoolParam,
+			Config:             param.Config,
 		},
 		types.TokenType(poolConfigState.TokenType),
 		poolConfigState.QuoteMint,
@@ -555,13 +554,13 @@ func (p *PoolService) CreatePoolWithFirstBuy(
 	}
 
 	var swapBuyIxns []solana.Instruction
-	// TODO: check createConfigAndPoolWithFirstBuyParam.FirstBuyParam is not empty
-	if createPoolWithFirstBuyParam.FirstBuyParam.BuyAmount > 0 {
+	// TODO: check param.FirstBuyParam is not empty
+	if param.FirstBuyParam.BuyAmount > 0 {
 		if swapBuyIxns, err = p.swapBuyIx(
 			ctx,
-			createPoolWithFirstBuyParam.FirstBuyParam,
-			createPoolWithFirstBuyParam.PreCreatePoolParam.BaseMint,
-			createPoolWithFirstBuyParam.Config,
+			param.FirstBuyParam,
+			param.PreCreatePoolParam.BaseMint,
+			param.Config,
 			types.BaseFeeMode(poolConfigState.PoolFees.BaseFee.BaseFeeMode),
 			types.TokenType(poolConfigState.TokenType),
 			poolConfigState.QuoteMint,
@@ -585,13 +584,13 @@ func (p *PoolService) CreatePoolWithFirstBuy(
 // CreatePoolWithPartnerAndCreatorFirstBuy creates a new pool and buy tokens with partner and creator.
 func (p *PoolService) CreatePoolWithPartnerAndCreatorFirstBuy(
 	ctx context.Context,
-	createPoolWithPartnerAndCreatorFirstBuyParam types.CreatePoolWithPartnerAndCreatorFirstBuyParam,
+	param types.CreatePoolWithPartnerAndCreatorFirstBuyParam,
 ) (struct {
 	CreatorPoolIx                      *dbc.Instruction
 	PartnerSwapBuyIx, CreatorSwapBuyIx []solana.Instruction
 }, error) {
 
-	poolConfigState, err := p.state.GetPoolConfig(ctx, createPoolWithPartnerAndCreatorFirstBuyParam.CreatePoolParam.Config)
+	poolConfigState, err := p.state.GetPoolConfig(ctx, param.CreatePoolParam.Config)
 	if err != nil {
 		return struct {
 			CreatorPoolIx    *dbc.Instruction
@@ -602,8 +601,8 @@ func (p *PoolService) CreatePoolWithPartnerAndCreatorFirstBuy(
 
 	createPoolIx, err := p.createPoolIx(
 		types.CreatePoolParam{
-			PreCreatePoolParam: createPoolWithPartnerAndCreatorFirstBuyParam.CreatePoolParam.PreCreatePoolParam,
-			Config:             createPoolWithPartnerAndCreatorFirstBuyParam.CreatePoolParam.Config,
+			PreCreatePoolParam: param.CreatePoolParam.PreCreatePoolParam,
+			Config:             param.CreatePoolParam.Config,
 		},
 		types.TokenType(poolConfigState.TokenType),
 		poolConfigState.QuoteMint,
@@ -618,7 +617,7 @@ func (p *PoolService) CreatePoolWithPartnerAndCreatorFirstBuy(
 
 	var partnerSwapBuyIx []solana.Instruction
 	// TODO: check createConfigAndPoolWithFirstBuyParam.FirstBuyParam is not empty
-	if param := createPoolWithPartnerAndCreatorFirstBuyParam; param.PartnerFirstBuyParam.BuyAmount > 0 {
+	if param := param; param.PartnerFirstBuyParam.BuyAmount > 0 {
 		// create partner first buy transaction
 		if partnerSwapBuyIx, err = p.swapBuyIx(
 			ctx,
@@ -645,7 +644,7 @@ func (p *PoolService) CreatePoolWithPartnerAndCreatorFirstBuy(
 
 	var creatorSwapBuyIx []solana.Instruction
 	// TODO: check createConfigAndPoolWithFirstBuyParam.FirstBuyParam is not empty
-	if param := createPoolWithPartnerAndCreatorFirstBuyParam; param.CreatorFirstBuyParam.BuyAmount > 0 {
+	if param := param; param.CreatorFirstBuyParam.BuyAmount > 0 {
 		// create partner first buy transaction
 		if creatorSwapBuyIx, err = p.swapBuyIx(
 			ctx,
@@ -684,17 +683,17 @@ func (p *PoolService) CreatePoolWithPartnerAndCreatorFirstBuy(
 
 func (p *PoolService) Swap(
 	ctx context.Context,
-	swapParam types.SwapParam,
+	param types.SwapParam,
 ) ([]solana.Instruction, error) {
 
-	poolState, err := p.state.GetPool(ctx, swapParam.Pool)
+	poolState, err := p.state.GetPool(ctx, param.Pool)
 	if err != nil {
-		return nil, fmt.Errorf("pool (%s) not found: error: %w", swapParam.Pool.String(), err)
+		return nil, fmt.Errorf("pool (%s) not found: error: %w", param.Pool.String(), err)
 	}
 
 	poolConfigState, err := p.state.GetPoolConfig(ctx, poolState.Config)
 	if err != nil {
-		return nil, fmt.Errorf("pool config (%s) not found: error: %w", swapParam.Pool.String(), err)
+		return nil, fmt.Errorf("pool config (%s) not found: error: %w", param.Pool.String(), err)
 	}
 
 	// TODO: validation checks
@@ -719,7 +718,7 @@ func (p *PoolService) Swap(
 	// 4. current point is less than activation point + maxLimiterDuration
 	isRateLimiterApplied := helpers.CheckRateLimiterApplied(
 		types.BaseFeeMode(poolConfigState.PoolFees.BaseFee.BaseFeeMode),
-		swapParam.SwapBaseForQuote,
+		param.SwapBaseForQuote,
 		currentPoint,
 		poolState.ActivationPoint,
 		poolConfigState.PoolFees.BaseFee.SecondFactor,
@@ -738,15 +737,15 @@ func (p *PoolService) Swap(
 	)
 
 	// add preInstructions for ATA creation and SOL wrapping
-	payer := swapParam.Owner
-	if !swapParam.Payer.IsZero() {
-		payer = swapParam.Payer
+	payer := param.Owner
+	if !param.Payer.IsZero() {
+		payer = param.Payer
 	}
 
 	prepareTokenAccounts, err := p.state.prepareTokenAccounts(
 		ctx,
 		types.PrepareTokenAccountParams{
-			Owner:         swapParam.Owner,
+			Owner:         param.Owner,
 			Payer:         payer,
 			TokenAMint:    prepareSwapParams.InputMint,
 			TokenBMint:    prepareSwapParams.OutputMint,
@@ -764,9 +763,9 @@ func (p *PoolService) Swap(
 	if prepareSwapParams.InputMint.Equals(solana.WrappedSol) {
 		preInstructions = append(preInstructions,
 			helpers.WrapSOLInstruction(
-				swapParam.Owner,
+				param.Owner,
 				prepareTokenAccounts.TokenAAta,
-				swapParam.AmountIn,
+				param.AmountIn,
 			)...,
 		)
 	}
@@ -775,8 +774,8 @@ func (p *PoolService) Swap(
 	if prepareSwapParams.InputMint.Equals(solana.WrappedSol) ||
 		prepareSwapParams.OutputMint.Equals(solana.WrappedSol) {
 		ix, err := helpers.UnwrapSOLInstruction(
-			swapParam.Owner,
-			swapParam.Owner,
+			param.Owner,
+			param.Owner,
 			false,
 		)
 		if err != nil {
@@ -796,29 +795,29 @@ func (p *PoolService) Swap(
 	tokenBaseProgram, tokenQuoteProgram :=
 		prepareSwapParams.OutputTokenProgram, prepareSwapParams.InputTokenProgram
 
-	if swapParam.SwapBaseForQuote {
+	if param.SwapBaseForQuote {
 		tokenBaseProgram, tokenQuoteProgram =
 			prepareSwapParams.InputTokenProgram, prepareSwapParams.OutputTokenProgram
 	}
 
 	swapPtr := dbc.NewSwapInstruction(
 		dbc.SwapParameters{
-			AmountIn:         swapParam.AmountIn,
-			MinimumAmountOut: swapParam.MinimumAmountOut,
+			AmountIn:         param.AmountIn,
+			MinimumAmountOut: param.MinimumAmountOut,
 		},
 		p.state.GetPoolAuthority(),
 		poolState.Config,
-		swapParam.Pool,
+		param.Pool,
 		prepareTokenAccounts.TokenAAta,
 		prepareTokenAccounts.TokenBAta,
 		poolState.BaseVault,
 		poolState.QuoteVault,
 		poolState.BaseMint,
 		poolConfigState.QuoteMint,
-		swapParam.Payer,
+		param.Payer,
 		tokenBaseProgram,
 		tokenQuoteProgram,
-		swapParam.ReferralTokenAccount,
+		param.ReferralTokenAccount,
 		solana.PublicKey{},
 		constants.DBCProgramId,
 	)
@@ -844,41 +843,41 @@ func (p *PoolService) Swap(
 
 // SwapQuote calculates the amount out for a swap (quote).
 func (p *PoolService) SwapQuote(
-	swapQuoteParam types.SwapQuoteParam,
+	param types.SwapQuoteParam,
 ) (types.QuoteResult, error) {
 	return maths.SwapQuote(
-		swapQuoteParam.VirtualPool,
-		swapQuoteParam.Config,
-		swapQuoteParam.SwapBaseForQuote,
-		swapQuoteParam.AmountIn,
-		swapQuoteParam.SlippageBps,
-		swapQuoteParam.HasReferral,
-		swapQuoteParam.CurrentPoint,
+		param.VirtualPool,
+		param.Config,
+		param.SwapBaseForQuote,
+		param.AmountIn,
+		param.SlippageBps,
+		param.HasReferral,
+		param.CurrentPoint,
 	)
 }
 
 // SwapQuoteExactIn calculates the exact amount in for a swap (quote).
 func (p *PoolService) SwapQuoteExactIn(
-	swapQuoteExactInParam types.SwapQuoteExactInParam,
+	param types.SwapQuoteExactInParam,
 ) (*big.Int, error) {
 	return maths.CalculateQuoteExactInAmount(
-		swapQuoteExactInParam.VirtualPool,
-		swapQuoteExactInParam.Config,
-		swapQuoteExactInParam.CurrentPoint,
+		param.VirtualPool,
+		param.Config,
+		param.CurrentPoint,
 	)
 }
 
 // SwapQuoteExactOut calculate the amount in for a swap with exact output amount (quote).
 func (p *PoolService) SwapQuoteExactOut(
-	swapQuoteExactOutParam types.SwapQuoteExactOutParam,
+	param types.SwapQuoteExactOutParam,
 ) (types.QuoteResult, error) {
 	return maths.SwapQuoteExactOut(
-		swapQuoteExactOutParam.VirtualPool,
-		swapQuoteExactOutParam.Config,
-		swapQuoteExactOutParam.HasReferral,
-		swapQuoteExactOutParam.OutAmount,
-		uint64(swapQuoteExactOutParam.SlippageBps),
-		swapQuoteExactOutParam.HasReferral,
-		swapQuoteExactOutParam.CurrentPoint,
+		param.VirtualPool,
+		param.Config,
+		param.HasReferral,
+		param.OutAmount,
+		uint64(param.SlippageBps),
+		param.HasReferral,
+		param.CurrentPoint,
 	)
 }

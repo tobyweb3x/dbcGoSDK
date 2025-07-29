@@ -156,10 +156,15 @@ type PreCreatePoolParam struct {
 }
 
 type CreateConfigAndPoolParam struct {
-	PreCreatePoolParam                                     PreCreatePoolParam
-	ConfigParameters                                       dbc.ConfigParameters
+	PreCreatePoolParam PreCreatePoolParam
+	CreateConfigParam
+	// ConfigParameters                                       dbc.ConfigParameters
+	// Config, FeeClaimer, LeftoverReceiver, QuoteMint, Payer solana.PublicKey
+	TokenType TokenType
+}
+type CreateConfigParam struct {
+	dbc.ConfigParameters
 	Config, FeeClaimer, LeftoverReceiver, QuoteMint, Payer solana.PublicKey
-	TokenType                                              TokenType
 }
 
 type CreateConfigAndPoolWithFirstBuyParam struct {
@@ -266,3 +271,64 @@ type SwapQuoteExactOutParam struct {
 	HasReferral      bool
 	CurrentPoint     *big.Int
 }
+
+type CreatePartnerMetadataParam struct {
+	Name       string
+	Website    string
+	Logo       string
+	FeeClaimer solana.PublicKey
+	Payer      solana.PublicKey
+}
+
+type ClaimPartnerTradingFeeWithQuoteMintNotSolParam struct {
+	FeeClaimer        solana.PublicKey
+	Payer             solana.PublicKey
+	FeeReceiver       solana.PublicKey
+	Config            solana.PublicKey
+	Pool              solana.PublicKey
+	PoolState         *dbc.VirtualPoolAccount
+	PoolConfigState   *dbc.PoolConfigAccount
+	TokenBaseProgram  solana.PublicKey
+	TokenQuoteProgram solana.PublicKey
+}
+
+type ClaimPartnerTradingFeeWithQuoteMintSolParam struct {
+	ClaimPartnerTradingFeeWithQuoteMintNotSolParam
+	TempWSolAcc solana.PublicKey
+}
+
+type Accounts struct {
+	PoolAuthority     solana.PublicKey
+	Config            solana.PublicKey
+	Pool              solana.PublicKey
+	TokenAAccount     solana.PublicKey
+	TokenBAccount     solana.PublicKey
+	BaseVault         solana.PublicKey
+	QuoteVault        solana.PublicKey
+	BaseMint          solana.PublicKey
+	QuoteMint         solana.PublicKey
+	FeeClaimer        solana.PublicKey
+	TokenBaseProgram  solana.PublicKey
+	TokenQuoteProgram solana.PublicKey
+}
+
+type ClaimTradingFeeParam struct {
+	FeeClaimer     solana.PublicKey
+	Payer          solana.PublicKey
+	Pool           solana.PublicKey
+	MaxBaseAmount  *big.Int
+	MaxQuoteAmount *big.Int
+	Receiver       solana.PublicKey
+	TempWSolAcc    solana.PublicKey
+}
+
+type PartnerWithdrawSurplusParam struct {
+	FeeClaimer  solana.PublicKey
+	VirtualPool solana.PublicKey
+}
+
+// type WithdrawMigrationFeeParam struct {
+// 	VirtualPool solana.PublicKey
+// 	Sender      solana.PublicKey  // Sender is creator or partner
+// 	FeePayer    *solana.PublicKey // Optional
+// }
