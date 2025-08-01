@@ -229,9 +229,9 @@ type QuotePrice struct {
 }
 
 type FeeMode struct {
-	FeeOnInput   bool
-	FeesOnTokenA bool
-	HasReferral  bool
+	FeeOnInput      bool
+	FeesOnBaseToken bool
+	HasReferral     bool
 }
 
 type FeeOnAmountResult struct {
@@ -326,9 +326,44 @@ type PartnerWithdrawSurplusParam struct {
 	FeeClaimer  solana.PublicKey
 	VirtualPool solana.PublicKey
 }
+type CreateLockerParam struct {
+	Payer       solana.PublicKey
+	VirtualPool solana.PublicKey
+}
 
-// type WithdrawMigrationFeeParam struct {
-// 	VirtualPool solana.PublicKey
-// 	Sender      solana.PublicKey  // Sender is creator or partner
-// 	FeePayer    *solana.PublicKey // Optional
-// }
+type WithdrawLeftoverParam struct {
+	Payer       solana.PublicKey
+	VirtualPool solana.PublicKey
+}
+
+type CreateDammV1MigrationMetadataParam struct {
+	Payer       solana.PublicKey
+	VirtualPool solana.PublicKey
+	Config      solana.PublicKey
+}
+
+type MigrateToDammV1Param struct {
+	Payer       solana.PublicKey
+	VirtualPool solana.PublicKey
+	DammConfig  solana.PublicKey
+}
+
+type DammLpTokenParam struct {
+	Payer       solana.PublicKey
+	VirtualPool solana.PublicKey
+	DammConfig  solana.PublicKey
+	IsPartner   bool
+}
+
+type CreateDammV2MigrationMetadataParam struct {
+	CreateDammV1MigrationMetadataParam
+}
+
+type MigrateToDammV2Param struct {
+	MigrateToDammV1Param
+}
+
+type MigrateToDammV2Response struct {
+	FirstPositionNftKeypair, SecondPositionNftKeypair solana.PrivateKey
+	Ixns                                              []solana.Instruction
+}

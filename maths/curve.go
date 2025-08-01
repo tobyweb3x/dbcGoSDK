@@ -17,6 +17,7 @@ func GetDeltaAmountBaseUnsigned(
 	round types.Rounding,
 ) (*big.Int, error) {
 
+	// fmt.Printf("%+v;%+v;%+v", lowerSqrtPrice, upperSqrtPrice, liquidity)
 	if liquidity.Sign() == 0 {
 		return big.NewInt(0), nil
 	}

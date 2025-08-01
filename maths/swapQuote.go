@@ -19,9 +19,9 @@ func GetFeeMode(
 	feesOnBaseToken := quoteToBase && collectFeeMode == types.CollectFeeModeOutputToken
 
 	return types.FeeMode{
-		FeeOnInput:   feesOnInput,
-		FeesOnTokenA: feesOnBaseToken,
-		HasReferral:  hasReferral,
+		FeeOnInput:      feesOnInput,
+		FeesOnBaseToken: feesOnBaseToken,
+		HasReferral:     hasReferral,
 	}
 }
 
@@ -347,12 +347,11 @@ func GetSwapAmountFromQuoteToBase(
 		}, nil
 	}
 
-	// track total output with BN
 	totalOutputAmount, sqrtPrice, amountLeft :=
 		big.NewInt(0), currentSqrtPrice, amountIn
 
-	// iterate through the curve points in reverse order
-	for i := 0; i < len(configState); i++ {
+	// iterate through the curve points
+	for i := range len(configState) {
 		if configState[i].SqrtPrice.BigInt().Sign() == 0 ||
 			configState[i].Liquidity.BigInt().Sign() == 0 {
 			break
@@ -366,10 +365,6 @@ func GetSwapAmountFromQuoteToBase(
 		if configState[i].SqrtPrice.BigInt().Cmp(sqrtPrice) > 0 {
 			// get the current liquidity
 			currentLiquidity := configState[i].Liquidity.BigInt()
-			// if i+1 < len(configState) {
-			// 	currentLiquidity = configState[i+1].Liquidity.BigInt()
-			// }
-
 			maxAmountIn, err := GetDeltaAmountBaseUnsigned(
 				sqrtPrice,
 				configState[i].SqrtPrice.BigInt(),
@@ -391,7 +386,7 @@ func GetSwapAmountFromQuoteToBase(
 					return types.SwapAmount{}, err
 				}
 
-				outputAmount, err := GetDeltaAmountQuoteUnsigned(
+				outputAmount, err := GetDeltaAmountBaseUnsigned(
 					sqrtPrice,
 					nextSqrtPrice,
 					currentLiquidity,
@@ -403,11 +398,11 @@ func GetSwapAmountFromQuoteToBase(
 
 				totalOutputAmount.Add(totalOutputAmount, outputAmount)
 				sqrtPrice, amountLeft = nextSqrtPrice, big.NewInt(0)
-				continue
+				break
 			}
 
 			nextSqrtPrice := configState[i].SqrtPrice.BigInt()
-			outputAmount, err := GetDeltaAmountQuoteUnsigned(
+			outputAmount, err := GetDeltaAmountBaseUnsigned(
 				sqrtPrice,
 				nextSqrtPrice,
 				currentLiquidity,
@@ -423,7 +418,7 @@ func GetSwapAmountFromQuoteToBase(
 	}
 
 	// check if all amount was processed
-	if amountLeft.Sign() == 0 {
+	if amountLeft.Sign() != 0 {
 		return types.SwapAmount{}, errors.New("not enough liquidity to process the entire amount")
 	}
 

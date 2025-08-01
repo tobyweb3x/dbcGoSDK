@@ -10,9 +10,9 @@ const (
 type BaseFeeMode uint8
 
 const (
-	BaseFeeModeLinear BaseFeeMode = iota
-	BaseFeeModeExponential
-	BaseFeeModeRateLimiter
+	BaseFeeModeFeeSchedulerLinear BaseFeeMode = iota
+	BaseFeeModeFeeSchedulerExponential
+	BaseFeeModeFeeSchedulerRateLimiter
 )
 
 type ActivationType uint8

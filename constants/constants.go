@@ -31,7 +31,7 @@ const (
 	MaxFeeNumerator = 990_000_000
 
 	// BasisPointMax
-	BasisPointMax = 10000
+	BasisPointMax = 10_000
 
 	// MaxCurvePoint
 	MaxCurvePoint = 16
@@ -99,8 +99,8 @@ var (
 	MaxSqrtPrice, _ = new(big.Int).SetString("79226673521066979257578248091", 10)
 
 	// OneQ64 = 1 << RESOLUTION
-	//  OneQ64 = new(big.Int).Lsh(big.NewInt(1), uint(RESOLUTION))
-	OneQ64 = new(big.Int).Lsh(big.NewInt(1), uint(RESOLUTION))
+	//  OneQ64 = new(big.Int).Lsh(big.NewInt(1), RESOLUTION)
+	OneQ64 = new(big.Int).Lsh(big.NewInt(1), RESOLUTION)
 
 	// DBC program ID.
 	//  DBCProgramId = solana.MustPublicKeyFromBase58("dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN")
@@ -116,7 +116,7 @@ var (
 
 	// DAMM v2 program ID.
 	//  CpAMMProgramId = solana.MustPublicKeyFromBase58("cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG")
-	CpAMMProgramId = dammv2.ProgramID
+	DammV2ProgramId = dammv2.ProgramID
 
 	// Vault program ID.
 	//  VaultProgramId = solana.MustPublicKeyFromBase58("24Uqj9JCLxUeoC3hGfh5W3s9FM9uCHDS2SG3LYwBpyTi")

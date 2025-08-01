@@ -18,7 +18,7 @@ func GetBaseFeeNumerator(
 	inputAmount *big.Int,
 ) (*big.Int, error) {
 
-	if baseFee.BaseFeeMode == uint8(types.BaseFeeModeRateLimiter) {
+	if baseFee.BaseFeeMode == uint8(types.BaseFeeModeFeeSchedulerRateLimiter) {
 
 		// if current point is less than activation point, return base fee
 		if currentPoint.Cmp(activationPoint) < 0 {
@@ -72,7 +72,7 @@ func GetBaseFeeNumerator(
 
 	// before activation point, use max period (min fee)
 	period := numberOfPeriod
-	if currentPoint.Cmp(activationPoint) > 0 {
+	if currentPoint.Cmp(activationPoint) >= 0 {
 		elapsedPoint := new(big.Int).Sub(currentPoint, activationPoint)
 		periodCount := new(big.Int).Quo(elapsedPoint, periodFrequency)
 
@@ -83,7 +83,7 @@ func GetBaseFeeNumerator(
 		period = new(big.Int).SetUint64(min(periodCount.Uint64(), numberOfPeriod.Uint64()))
 	}
 
-	if baseFee.BaseFeeMode == uint8(types.BaseFeeModeLinear) {
+	if baseFee.BaseFeeMode == uint8(types.BaseFeeModeFeeSchedulerLinear) {
 		// linear fee calculation: cliffFeeNumerator - period * reductionFactor
 		return GetFeeNumeratorOnLinearFeeScheduler(
 			new(big.Int).SetUint64(baseFee.CliffFeeNumerator),
@@ -149,7 +149,7 @@ func GetFeeOnAmount(
 
 	// get total trading fee
 	inputAmount := big.NewInt(0)
-	if poolFees.BaseFee.BaseFeeMode == uint8(types.BaseFeeModeRateLimiter) {
+	if poolFees.BaseFee.BaseFeeMode == uint8(types.BaseFeeModeFeeSchedulerRateLimiter) {
 		inputAmount = amount
 	}
 	baseFeeNumerator, err := GetBaseFeeNumerator(
