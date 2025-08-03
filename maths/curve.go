@@ -77,6 +77,19 @@ func GetDeltaAmountQuoteUnsigned(lowerSqrtPrice, upperSqrtPrice, liquidity *big.
 	return new(big.Int).Rsh(prod, constants.RESOLUTION*2), nil
 }
 
+func GetInitialLiquidityFromDeltaQuote(
+	quoteAmount, sqrtMinPrice, sqrtPrice *big.Int,
+) (*big.Int, error) {
+	priceDelta := new(big.Int).Sub(sqrtPrice, sqrtMinPrice)
+	if priceDelta.Sign() < 0 {
+		return nil, fmt.Errorf("safeMath requires value not negative: value is %s", priceDelta.String())
+	}
+	return new(big.Int).Quo(
+		new(big.Int).Rsh(quoteAmount, constants.RESOLUTION*2),
+		priceDelta,
+	), nil
+}
+
 // GetNextSqrtPriceFromInput gets the next sqrt price given an input amount of token_a or token_b.
 func GetNextSqrtPriceFromInput(
 	sqrtPrice, liquidity, amountIn *big.Int,

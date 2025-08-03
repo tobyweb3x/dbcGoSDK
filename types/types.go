@@ -367,3 +367,99 @@ type MigrateToDammV2Response struct {
 	FirstPositionNftKeypair, SecondPositionNftKeypair solana.PrivateKey
 	Ixns                                              []solana.Instruction
 }
+
+type BuildCurveBaseParam struct {
+	TotalTokenSupply            uint64
+	MigrationOption             MigrationOption
+	TokenBaseDecimal            TokenDecimal
+	TokenQuoteDecimal           TokenDecimal
+	LockedVestingParam          LockedVestingParams
+	BaseFeeParams               BaseFeeParams
+	DynamicFeeEnabled           bool
+	ActivationType              ActivationType
+	CollectFeeMode              CollectFeeMode
+	MigrationFeeOption          MigrationFeeOption
+	TokenType                   TokenType
+	PartnerLpPercentage         uint8
+	CreatorLpPercentage         uint8
+	PartnerLockedLpPercentage   uint8
+	CreatorLockedLpPercentage   uint8
+	CreatorTradingFeePercentage uint8
+	Leftover                    uint64
+	TokenUpdateAuthority        uint8
+	MigrationFee                dbc.MigrationFee
+}
+
+type BuildCurveParam struct {
+	BuildCurveBaseParam
+	PercentageSupplyOnMigration uint64
+	MigrationQuoteThreshold     uint64
+}
+
+type BuildCurveWithMarketCapParam struct {
+	BuildCurveBaseParam
+	InitialMarketCap   uint64
+	MigrationMarketCap uint64
+}
+
+type BuildCurveWithTwoSegmentsParam struct {
+	BuildCurveBaseParam
+	InitialMarketCap            uint64
+	MigrationMarketCap          uint64
+	PercentageSupplyOnMigration uint64
+}
+
+type BuildCurveWithLiquidityWeightsParam struct {
+	BuildCurveBaseParam
+	InitialMarketCap   uint64
+	MigrationMarketCap uint64
+	LiquidityWeights   []uint64
+}
+
+type LockedVestingParams struct {
+	TotalLockedVestingAmount       uint64
+	NumberOfVestingPeriod          uint64
+	CliffUnlockAmount              uint64
+	TotalVestingDuration           uint64
+	CliffDurationFromMigrationTime uint64
+}
+
+type BaseFeeParams struct {
+	BaseFeeMode       BaseFeeMode
+	FeeSchedulerParam *FeeSchedulerParams
+	RateLimiterParam  *RateLimiterParams
+}
+
+type FeeSchedulerParams struct {
+	StartingFeeBps uint64
+	EndingFeeBps   uint64
+	NumberOfPeriod uint16
+	TotalDuration  uint64
+}
+type RateLimiterParams struct {
+	BaseFeeBps         uint64
+	FeeIncrementBps    uint16
+	ReferenceAmount    uint64
+	MaxLimiterDuration uint64
+}
+
+type BaseFee struct {
+	CliffFeeNumerator uint64
+	FirstFactor       uint16 // feeScheduler: numberOfPeriod, rateLimiter: feeIncrementBps
+	SecondFactor      uint64 // feeScheduler: periodFrequency, rateLimiter: maxLimiterDuration
+	ThirdFactor       uint64 // feeScheduler: reductionFactor, rateLimiter: referenceAmount
+	BaseFeeMode       BaseFeeMode
+}
+
+type LockedVestingParamsBigInt struct {
+	AmountPerPeriod                *big.Int
+	CliffDurationFromMigrationTime *big.Int
+	Frequency                      *big.Int
+	NumberOfPeriod                 *big.Int
+	CliffUnlockAmount              *big.Int
+}
+
+type GetFirstCurveResult struct {
+	SqrtStartPrice *big.Int
+	Curve          []dbc.LiquidityDistributionParameters
+}

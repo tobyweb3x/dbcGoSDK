@@ -36,9 +36,36 @@ const (
 	CollectFeeModeOutputToken
 )
 
-type Rounding int
+type Rounding uint
 
 const (
 	RoundingUp Rounding = iota
 	RoundingDown
+)
+
+type MigrationOption uint8
+
+const (
+	MigrationOption_MET_DAMM    MigrationOption = 0
+	MigrationOption_MET_DAMM_V2 MigrationOption = 1
+)
+
+type TokenDecimal uint8
+
+const (
+	TokenDecimal_SIX   TokenDecimal = 6
+	TokenDecimal_SEVEN TokenDecimal = 7
+	TokenDecimal_EIGHT TokenDecimal = 8
+	TokenDecimal_NINE  TokenDecimal = 9
+)
+
+type MigrationFeeOption uint8
+
+const (
+	MigrationFeeOption_FixedBps25  MigrationFeeOption = 0
+	MigrationFeeOption_FixedBps30  MigrationFeeOption = 1
+	MigrationFeeOption_FixedBps100 MigrationFeeOption = 2
+	MigrationFeeOption_FixedBps200 MigrationFeeOption = 3
+	MigrationFeeOption_FixedBps400 MigrationFeeOption = 4
+	MigrationFeeOption_FixedBps600 MigrationFeeOption = 5
 )

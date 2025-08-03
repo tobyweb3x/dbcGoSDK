@@ -311,7 +311,7 @@ func (p *PoolService) swapBuyIx(
 	// is only QuoteToBase direction
 	// this swapBuyIx
 	// does not check poolState, so there is no check for activation point
-	isRateLimiterApplied := helpers.CheckRateLimiterApplied(
+	isRateLimiterApplied := maths.CheckRateLimiterApplied(
 		baseFeeMode,
 		false,
 		0, 0, 0,
@@ -716,7 +716,7 @@ func (p *PoolService) Swap(
 	// 2. swap direction is QuoteToBase
 	// 3. current point is greater than activation point
 	// 4. current point is less than activation point + maxLimiterDuration
-	isRateLimiterApplied := helpers.CheckRateLimiterApplied(
+	isRateLimiterApplied := maths.CheckRateLimiterApplied(
 		types.BaseFeeMode(poolConfigState.PoolFees.BaseFee.BaseFeeMode),
 		param.SwapBaseForQuote,
 		currentPoint,

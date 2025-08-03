@@ -3,7 +3,6 @@ package maths
 import (
 	"dbcGoSDK/constants"
 	"dbcGoSDK/generated/dbc"
-	"dbcGoSDK/helpers"
 	"dbcGoSDK/types"
 	"fmt"
 	"math/big"
@@ -44,7 +43,7 @@ func GetBaseFeeNumerator(
 		isBaseToQuote := tradeDirection == types.TradeDirectionBaseToQuote
 
 		// check if rate limiter is applied
-		isRateLimiterApplied := helpers.CheckRateLimiterApplied(
+		isRateLimiterApplied := CheckRateLimiterApplied(
 			types.BaseFeeMode(baseFee.BaseFeeMode),
 			isBaseToQuote,
 			currentPoint.Uint64(),
@@ -98,6 +97,18 @@ func GetBaseFeeNumerator(
 		reductionFactor,
 		period.Uint64(),
 	)
+}
+
+// CheckRateLimiterApplied checks if rate limiter should be applied based on pool configuration and state.
+func CheckRateLimiterApplied(
+	baseFeeMode types.BaseFeeMode,
+	swapBaseForQuote bool,
+	currentPoint, activationPoint, maxLimiterDuration uint64,
+) bool {
+	return baseFeeMode == types.BaseFeeModeFeeSchedulerRateLimiter &&
+		!swapBaseForQuote &&
+		currentPoint >= activationPoint &&
+		currentPoint <= activationPoint+maxLimiterDuration
 }
 
 // GetVariableFee gets variable fee from dynamic fee.

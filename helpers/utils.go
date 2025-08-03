@@ -1,6 +1,8 @@
 package helpers
 
 import (
+	"dbcGoSDK/constants"
+	"dbcGoSDK/types"
 	"fmt"
 	"math/big"
 
@@ -21,6 +23,19 @@ func CreateProgramAccountFilter(owner solana.PublicKey, offset uint64) rpc.GetPr
 			},
 		},
 	}
+}
+
+func BpsToFeeNumerator(bps uint64) *big.Int {
+	return new(big.Int).Quo(
+		new(big.Int).Mul(new(big.Int).SetUint64(bps), big.NewInt(constants.FeeDenominator)),
+		big.NewInt(constants.BasisPointMax))
+}
+
+func ConvertToLamports(amount uint64, tokenDecimal types.TokenDecimal) *big.Int {
+	return new(big.Int).Mul(
+		new(big.Int).SetUint64(amount),
+		new(big.Int).Exp(big.NewInt(10), new(big.Int).SetUint64(uint64(tokenDecimal)), nil),
+	)
 }
 
 func BigIntToUint128(b *big.Int) (ag_binary.Uint128, error) {
