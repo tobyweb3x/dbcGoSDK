@@ -43,14 +43,25 @@ func GetTotalVestingAmount(
 // GetMigrationQuoteAmountFromMigrationQuoteThreshold gets migrationQuoteAmount from migrationQuoteThreshold and migrationFeePercent.
 func GetMigrationQuoteAmountFromMigrationQuoteThreshold(
 	migrationQuoteThreshold *big.Float,
-	migrationFeePercent uint8,
+	migrationFeePercent float64,
 ) *big.Float {
-	return new(big.Float).Quo(
-		new(big.Float).Sub(
-			new(big.Float).Mul(migrationQuoteThreshold, big.NewFloat(100)),
-			new(big.Float).SetUint64(uint64(migrationFeePercent)),
+	// (migrationQuoteThreshold * (100 - feePercent)) / 100
+	hold := new(big.Float).Mul(
+		migrationQuoteThreshold,
+		new(big.Float).Sub(constants.HundredInBigFloat, big.NewFloat(migrationFeePercent)),
+	)
+	return new(big.Float).Quo(hold, constants.HundredInBigFloat)
+}
+
+// GetMigrationQuoteThresholdFromMigrationQuoteAmount gets migrationQuoteThreshold from migrationQuoteAmount and migrationFeePercent.
+func GetMigrationQuoteThresholdFromMigrationQuoteAmount(
+	migrationQuoteAmount *big.Float, migrationFeePercent float64,
+) *big.Float {
+	return new(big.Float).SetPrec(256).Quo(
+		new(big.Float).SetPrec(256).Mul(migrationQuoteAmount, constants.HundredInBigFloat),
+		new(big.Float).SetPrec(256).Sub(
+			constants.HundredInBigFloat, big.NewFloat(migrationFeePercent),
 		),
-		big.NewFloat(100),
 	)
 }
 
@@ -88,6 +99,58 @@ func GetBaseFeeParams(
 	)
 }
 
+func GetPercentageSupplyOnMigration(
+	initialMarketCap, migrationMarketCap *big.Float,
+	lockedVesting dbc.LockedVestingParams,
+	totalLeftover, totalTokenSupply *big.Int,
+) float64 {
+	// formula: x = sqrt(initialMC / migrationMC) * (100 - lockedVesting - leftover) / (1 + sqrt(initialMC / migrationMC))
+
+	// sqrtRatio = sqrt(initial_MC / migration_MC)
+	marketCapRatio := new(big.Float).Quo(initialMarketCap, migrationMarketCap)
+	sqrtRatio := new(big.Float).Sqrt(marketCapRatio)
+
+	// locked vesting percentage
+	totalVestingAmount := GetTotalVestingAmount(lockedVesting)
+	totalVestingAmount.Mul(totalVestingAmount, constants.HundredInBigInt)
+
+	vestingPercentage := new(big.Float).Quo(
+		new(big.Float).SetInt(totalVestingAmount),
+		new(big.Float).SetInt(totalTokenSupply),
+	)
+
+	// leftover percentage
+	hold := new(big.Int)
+	hold.Set(totalLeftover)
+	hold.Mul(hold, constants.HundredInBigInt)
+	leftoverPercentage := new(big.Float).Quo(
+		new(big.Float).SetInt(hold),
+		new(big.Float).SetInt(totalTokenSupply),
+	)
+
+	// (100 * sqrtRatio - (vestingPercentage + leftoverPercentage) * sqrtRatio) / (1 + sqrtRatio)
+	numerator := new(big.Float).Mul(sqrtRatio, new(big.Float).Sub(
+		constants.HundredInBigFloat,
+		new(big.Float).Add(vestingPercentage, leftoverPercentage),
+	))
+	denominator := new(big.Float).Add(big.NewFloat(1), sqrtRatio)
+	resultBigFloat := new(big.Float).Quo(numerator, denominator)
+
+	result, _ := resultBigFloat.Float64()
+	return result
+}
+
+// GetMigrationQuoteAmount gets the migration quote amount.
+func GetMigrationQuoteAmount(
+	migrationMarketCap, percentageSupplyOnMigration *big.Float,
+) *big.Float {
+	// migrationMC * x / 100
+	return new(big.Float).Quo(
+		new(big.Float).Mul(migrationMarketCap, percentageSupplyOnMigration),
+		constants.HundredInBigFloat,
+	)
+}
+
 // GetRateLimiterParams gets the rate limiter parameters.
 func GetRateLimiterParams(
 	baseFeeBps uint64, feeIncrementBps uint16, referenceAmount, maxLimiterDuration uint64,
@@ -99,11 +162,11 @@ func GetRateLimiterParams(
 	}
 
 	if baseFeeBps > constants.MaxFeeBPS {
-		return types.BaseFee{}, fmt.Errorf("base fee (%s bps) exceeds maximum allowed value of %s bps", baseFeeBps, constants.MaxFeeBPS)
+		return types.BaseFee{}, fmt.Errorf("base fee (%d bps) exceeds maximum allowed value of %d bps", baseFeeBps, constants.MaxFeeBPS)
 	}
 
 	if feeIncrementBps > constants.MaxFeeBPS {
-		return types.BaseFee{}, fmt.Errorf("base fee (%s bps) exceeds maximum allowed value of %s bps", feeIncrementBps, constants.MaxFeeBPS)
+		return types.BaseFee{}, fmt.Errorf("base fee (%d bps) exceeds maximum allowed value of %d bps", feeIncrementBps, constants.MaxFeeBPS)
 	}
 
 	cliffFeeNumerator, feeIncrementNumerator :=
@@ -132,7 +195,7 @@ func GetRateLimiterParams(
 	if maxLimiterDuration > uint64(maxDuration) {
 		return types.BaseFee{}, fmt.Errorf("max duration exceeds maximum allowed value of %d", maxDuration)
 	}
-	referenceAmountInLamports := ConvertToLamports(referenceAmount, tokenQuoteDecimal)
+	referenceAmountInLamports := ConvertToLamports(float64(referenceAmount), tokenQuoteDecimal)
 
 	if !cliffFeeNumerator.IsUint64() || !referenceAmountInLamports.IsInt64() {
 		return types.BaseFee{},
@@ -150,7 +213,66 @@ func GetRateLimiterParams(
 		nil
 }
 
-// GetFeeSchedulerParams gets the fee scheduler parameters.
+func GetDynamicFeeParams(
+	baseFeeBp, maxPriceChangeBps uint64,
+) (dbc.DynamicFeeParameters, error) {
+	if maxPriceChangeBps > constants.MaxPriceChangeBpsDefault {
+		return dbc.DynamicFeeParameters{},
+			fmt.Errorf("maxPriceChangeBps (%d bps) must be less than or equal to %d",
+				maxPriceChangeBps, constants.MaxPriceChangeBpsDefault)
+	}
+
+	if maxPriceChangeBps == 0 {
+		maxPriceChangeBps = constants.MaxPriceChangeBpsDefault
+	}
+	priceRatio := float64(maxPriceChangeBps)/constants.BasisPointMax + 1
+
+	hold := new(big.Float).SetFloat64(priceRatio)
+	hold.Sqrt(hold).Mul(hold, big.NewFloat(math.Pow(2, 64)))
+
+	sqrtPriceRatioQ64 := new(big.Int)
+	hold.Int(sqrtPriceRatioQ64)
+
+	deltaBinId := new(big.Int).Mul(
+		new(big.Int).Quo(
+			new(big.Int).Sub(sqrtPriceRatioQ64, constants.OneQ64),
+			constants.BinStepBpsU128Default,
+		),
+		big.NewInt(2),
+	)
+
+	maxVolatilityAccumulator := deltaBinId.Mul(deltaBinId, big.NewInt(constants.BasisPointMax))
+
+	squareVfaBin := new(big.Int).Mul(maxVolatilityAccumulator, big.NewInt(constants.BinStepBpsDefault))
+	squareVfaBin.Exp(squareVfaBin, big.NewInt(2), nil)
+
+	baseFeeNumerator := BpsToFeeNumerator(baseFeeBp)
+	maxDynamicFeeNumerator := baseFeeNumerator.Mul(baseFeeNumerator, big.NewInt(20))
+	maxDynamicFeeNumerator.Quo(maxDynamicFeeNumerator, constants.HundredInBigInt) // default max dynamic fee = 20% of min base fee
+
+	vFee := maxDynamicFeeNumerator.Mul(maxDynamicFeeNumerator, big.NewInt(100_000_000_000))
+	vFee.Sub(vFee, big.NewInt(99_999_999_999))
+
+	variableFeeControl := vFee.Quo(vFee, squareVfaBin)
+
+	if maxVolatilityAccumulator.Cmp(big.NewInt(math.MaxUint32)) > 0 ||
+		variableFeeControl.Cmp(big.NewInt(math.MaxUint32)) > 0 {
+		return dbc.DynamicFeeParameters{}, fmt.Errorf("either variableFeeControl(%s) or maxVolatilityAccumulator(%s) cannot fit into uint32",
+			variableFeeControl, maxVolatilityAccumulator)
+	}
+
+	return dbc.DynamicFeeParameters{
+		BinStep:                  constants.BinStepBpsDefault,
+		BinStepU128:              MustBigIntToUint128(constants.BinStepBpsU128Default),
+		FilterPeriod:             constants.DynamicFeeFilterPeriodDefault,
+		DecayPeriod:              constants.DynamicFeeDecayPeriodDefault,
+		ReductionFactor:          constants.DynamicFeeReductionFactorDefault,
+		MaxVolatilityAccumulator: uint32(maxVolatilityAccumulator.Uint64()),
+		VariableFeeControl:       uint32(variableFeeControl.Uint64()),
+	}, nil
+}
+
+// // GetFeeSchedulerParams gets the fee scheduler parameters.
 func GetFeeSchedulerParams(
 	startingBaseFeeBps, endingBaseFeeBps uint64,
 	baseFeeMode types.BaseFeeMode,
@@ -177,7 +299,7 @@ func GetFeeSchedulerParams(
 	}
 
 	if startingBaseFeeBps > constants.MaxFeeBPS {
-		return types.BaseFee{}, fmt.Errorf("startingBaseFeeBps (%d bps) exceeds maximum allowed value of %s bps", startingBaseFeeBps, constants.MaxFeeBPS)
+		return types.BaseFee{}, fmt.Errorf("startingBaseFeeBps (%d bps) exceeds maximum allowed value of %d bps", startingBaseFeeBps, constants.MaxFeeBPS)
 	}
 
 	if endingBaseFeeBps > startingBaseFeeBps {
@@ -192,51 +314,49 @@ func GetFeeSchedulerParams(
 		BpsToFeeNumerator(startingBaseFeeBps), BpsToFeeNumerator(endingBaseFeeBps),
 		new(big.Int).SetUint64(totalDuration/uint64(numberOfPeriod))
 
-	thirdFactor := new(big.Int).Quo(
-		new(big.Int).Sub(maxBaseFeeNumerator, minBaseFeeNumerator),
-		new(big.Int).SetUint64(uint64(numberOfPeriod)),
-	)
-
-	if !maxBaseFeeNumerator.IsUint64() || periodFrequency.IsUint64() || thirdFactor.IsUint64() {
-		return types.BaseFee{}, fmt.Errorf("cannot fit either maxBaseFeeNumerator(%s), periodFrequency(%s), thirdFactor(%s) to uint64",
-			maxBaseFeeNumerator, periodFrequency, thirdFactor)
-	}
-
 	if baseFeeMode == types.BaseFeeModeFeeSchedulerLinear {
+		reductionFactor := new(big.Int).Quo(
+			new(big.Int).Sub(maxBaseFeeNumerator, minBaseFeeNumerator),
+			new(big.Int).SetUint64(uint64(numberOfPeriod)),
+		)
+
+		if !reductionFactor.IsUint64() {
+			return types.BaseFee{}, fmt.Errorf("cannot fit reductionFactor(%s) into uint64", reductionFactor)
+		}
+
 		return types.BaseFee{
 			CliffFeeNumerator: maxBaseFeeNumerator.Uint64(),
 			FirstFactor:       numberOfPeriod,
 			SecondFactor:      periodFrequency.Uint64(),
-			ThirdFactor:       thirdFactor.Uint64(),
+			ThirdFactor:       reductionFactor.Uint64(),
 			BaseFeeMode:       baseFeeMode,
 		}, nil
 	}
 
-	decayBase := new(big.Int).Exp(
-		new(big.Int).Quo(minBaseFeeNumerator, maxBaseFeeNumerator), // ratio
-		new(big.Int).Quo(big.NewInt(1), new(big.Int).SetUint64(uint64(numberOfPeriod))),
-		nil,
+	minBaseFeeNumeratorFloat64, _ := minBaseFeeNumerator.Float64()
+	maxBaseFeeNumeratorFloat64, _ := maxBaseFeeNumerator.Float64()
+	ratio := minBaseFeeNumeratorFloat64 / maxBaseFeeNumeratorFloat64
+	decayBase := math.Pow(ratio, 1/float64(numberOfPeriod))
+
+	reductionFactor := new(big.Float).Mul(
+		big.NewFloat(constants.BasisPointMax),
+		new(big.Float).Sub(big.NewFloat(1), big.NewFloat(decayBase)),
 	)
 
-	thirdFactor = new(big.Int).Mul(
-		big.NewInt(constants.BasisPointMax),
-		new(big.Int).Sub(big.NewInt(1), decayBase),
-	)
-
-	if thirdFactor.IsUint64() {
-		return types.BaseFee{}, fmt.Errorf("cannot fit thirdFactor(%s) to uint64", thirdFactor)
-	}
+	reductionFactorU64, _ := reductionFactor.Uint64()
 
 	return types.BaseFee{
 		CliffFeeNumerator: maxBaseFeeNumerator.Uint64(),
 		FirstFactor:       numberOfPeriod,
 		SecondFactor:      periodFrequency.Uint64(),
-		ThirdFactor:       thirdFactor.Uint64(),
+		ThirdFactor:       reductionFactorU64,
 		BaseFeeMode:       baseFeeMode,
 	}, nil
 }
 
 // GetSqrtPriceFromPrice gets the sqrt price from the price.
+//
+//	sqrtPriceQ64 = sqrt(price / 10^(tokenADecimal - tokenBDecimal)) * 2^64
 func GetSqrtPriceFromPrice(
 	price *big.Float,
 	tokenADecimal, tokenBDecimal types.TokenDecimal,
@@ -245,14 +365,40 @@ func GetSqrtPriceFromPrice(
 		price,
 		new(big.Float).SetFloat64(math.Pow10(int(tokenADecimal)-int(tokenBDecimal))),
 	)
+
 	sqrtQ64 := new(big.Float).Mul(
-		new(big.Float).Sqrt(adjustedPrice),
+		adjustedPrice.Sqrt(adjustedPrice),
 		new(big.Float).SetInt(new(big.Int).Lsh(big.NewInt(1), 64)),
 	)
 
 	result := new(big.Int)
 	sqrtQ64.Int(result)
 	return result
+}
+
+// GetMigratedPoolFeeParams gets migrated pool fee parameters based on migration options.
+func GetMigratedPoolFeeParams(
+	migrationOption types.MigrationOption,
+	migrationFeeOption types.MigrationFeeOption,
+	migratedPoolFee dbc.MigratedPoolFee,
+) dbc.MigratedPoolFee {
+
+	// For DAMM_V1: always use default parameters
+	if migrationOption == types.MigrationOptionMET_DAMM {
+		return dbc.MigratedPoolFee{}
+	}
+
+	// For DAMM_V2: use custom parameters only if Customizable option is selected
+	if migrationOption == types.MigrationOptionMET_DAMM_V2 {
+		if migrationFeeOption == types.MigrationFeeOptionCustomizable {
+			return migratedPoolFee
+		}
+
+		// For fixed fee options (0-5), always use defaults
+		return dbc.MigratedPoolFee{}
+	}
+
+	return dbc.MigratedPoolFee{}
 }
 
 // GetLockedVestingParams calculates the locked vesting parameters.
@@ -266,7 +412,7 @@ func GetLockedVestingParams(
 	}
 
 	holdAmountPerPeriod, holdCliffUnlockAmount := ConvertToLamports(1, tokenBaseDecimal),
-		ConvertToLamports(totalLockedVestingAmount-1, tokenBaseDecimal)
+		ConvertToLamports(float64(totalLockedVestingAmount-1), tokenBaseDecimal)
 
 	if !holdAmountPerPeriod.IsInt64() || !holdCliffUnlockAmount.IsUint64() {
 		return dbc.LockedVestingParams{},
@@ -306,8 +452,8 @@ func GetLockedVestingParams(
 	// add the remainder to cliffUnlockAmount to maintain total amount
 	adjustedCliffUnlockAmount := cliffUnlockAmount + remainder
 
-	holdAmountPerPeriod, holdCliffUnlockAmount = ConvertToLamports(amountPerPeriod, tokenBaseDecimal),
-		ConvertToLamports(adjustedCliffUnlockAmount, tokenBaseDecimal)
+	holdAmountPerPeriod, holdCliffUnlockAmount = ConvertToLamports(float64(amountPerPeriod), tokenBaseDecimal),
+		ConvertToLamports(float64(adjustedCliffUnlockAmount), tokenBaseDecimal)
 
 	if !holdAmountPerPeriod.IsInt64() || !holdCliffUnlockAmount.IsUint64() {
 		return dbc.LockedVestingParams{},
@@ -320,7 +466,7 @@ func GetLockedVestingParams(
 		CliffDurationFromMigrationTime: cliffDurationFromMigrationTime,
 		NumberOfPeriod:                 numberOfVestingPeriod,
 		Frequency:                      totalVestingDuration / numberOfVestingPeriod,
-		CliffUnlockAmount:              holdAmountPerPeriod.Uint64(),
+		CliffUnlockAmount:              holdCliffUnlockAmount.Uint64(),
 	}, nil
 }
 
@@ -328,18 +474,18 @@ func GetMigrationBaseToken(
 	migrationQuoteAmount, sqrtMigrationPrice *big.Int,
 	migrationOption types.MigrationOption,
 ) (*big.Int, error) {
-	if migrationOption == types.MigrationOption_MET_DAMM {
+	if migrationOption == types.MigrationOptionMET_DAMM {
 		price, quote, mod := new(big.Int).Mul(sqrtMigrationPrice, sqrtMigrationPrice),
 			new(big.Int).Lsh(migrationQuoteAmount, 128), new(big.Int)
 
-		q, _ := new(big.Int).QuoRem(quote, price, mod)
+		q, _ := quote.QuoRem(quote, price, mod)
 		if mod.Sign() != 0 {
 			q.Add(q, big.NewInt(1))
 		}
 		return q, nil
 	}
 
-	if migrationOption == types.MigrationOption_MET_DAMM_V2 {
+	if migrationOption == types.MigrationOptionMET_DAMM_V2 {
 		liquidity, err := GetInitialLiquidityFromDeltaQuote(
 			migrationQuoteAmount,
 			constants.MinSqrtPrice,
@@ -371,8 +517,9 @@ func GetInitialLiquidityFromDeltaQuote(
 	if priceDelta.Sign() < 0 {
 		return nil, fmt.Errorf("safeMath requires value not negative: value is %s", priceDelta.String())
 	}
-	return new(big.Int).Quo(
-		new(big.Int).Rsh(quoteAmount, constants.RESOLUTION*2),
+
+	return priceDelta.Quo(
+		new(big.Int).Lsh(quoteAmount, constants.RESOLUTION*2),
 		priceDelta,
 	), nil
 }
@@ -461,7 +608,7 @@ func GetTotalSupplyFromCurve(
 	lockedVesting dbc.LockedVestingParams,
 	migrationOption types.MigrationOption,
 	leftover *big.Int,
-	migrationFeePercent uint8,
+	migrationFeePercent float64,
 ) (*big.Int, error) {
 
 	sqrtMigrationPrice, err := GetMigrationThresholdPrice(
@@ -489,10 +636,6 @@ func GetTotalSupplyFromCurve(
 		new(big.Float).SetInt(migrationQuoteThreshold),
 		migrationFeePercent,
 	)
-
-	if !migrationQuoteAmount.IsInt() {
-		return nil, fmt.Errorf("cannot fit %s to int", migrationQuoteAmount)
-	}
 
 	migrationQuoteAmountInt, _ := migrationQuoteAmount.Int(nil)
 
@@ -547,7 +690,7 @@ func GetMigrationThresholdPrice(
 		return nil, errors.New("curve is empty")
 	}
 
-	nextSqrtPrice := sqrtStartPrice
+	nextSqrtPrice := new(big.Int).Set(sqrtStartPrice)
 	totalAmount, err := maths.GetDeltaAmountQuoteUnsigned(
 		nextSqrtPrice,
 		curve[0].SqrtPrice.BigInt(),
@@ -557,7 +700,6 @@ func GetMigrationThresholdPrice(
 	if err != nil {
 		return nil, err
 	}
-
 	if totalAmount.Cmp(migrationThreshold) > 0 {
 		return maths.GetNextSqrtPriceFromInput(
 			nextSqrtPrice,
@@ -572,7 +714,7 @@ func GetMigrationThresholdPrice(
 	for i := 1; i < len(curve); i++ {
 		maxAmount, err := maths.GetDeltaAmountQuoteUnsigned(
 			nextSqrtPrice,
-			curve[i].Liquidity.BigInt(),
+			curve[i].SqrtPrice.BigInt(),
 			curve[i].Liquidity.BigInt(),
 			types.RoundingUp,
 		)
@@ -593,8 +735,8 @@ func GetMigrationThresholdPrice(
 			break
 		}
 
-		// amountLeft = new(big.Int).Sub(amountLeft, maxAmount)
-		amountLeft.Sub(amountLeft, maxAmount)
+		amountLeft = new(big.Int).Sub(amountLeft, maxAmount)
+		// amountLeft.Sub(amountLeft, maxAmount)
 		nextSqrtPrice = curve[i].SqrtPrice.BigInt()
 	}
 
@@ -611,17 +753,17 @@ func GetMigrationThresholdPrice(
 // GetFirstCurve gets the first curve.
 func GetFirstCurve(
 	migrationSqrtPrice, migrationBaseAmount, swapAmount, migrationQuoteThreshold *big.Int,
-	migrationFeePercent uint8,
+	migrationFeePercent float64,
 ) (types.GetFirstCurveResult, error) {
 
 	denominator := new(big.Float).Quo(
-		new(big.Float).Sub(
-			new(big.Float).Mul(new(big.Float).SetInt(swapAmount), big.NewFloat(100)),
-			new(big.Float).SetUint64(uint64(migrationFeePercent)),
+		new(big.Float).Mul(
+			new(big.Float).SetInt(swapAmount),
+			new(big.Float).Sub(constants.HundredInBigFloat, big.NewFloat(migrationFeePercent)),
 		),
-
-		big.NewFloat(100),
+		constants.HundredInBigFloat,
 	)
+
 	sqrtStartPriceFloat := new(big.Float).Quo(
 		new(big.Float).Mul(new(big.Float).SetInt(migrationSqrtPrice), new(big.Float).SetInt(migrationBaseAmount)),
 		denominator,
@@ -649,6 +791,93 @@ func GetFirstCurve(
 			},
 		},
 	}, nil
+}
+
+func GetTwoCurve(
+	migrationSqrtPrice, midSqrtPrice, initialSqrtPrice,
+	swapAmount, migrationQuoteThreshold *big.Int,
+) struct {
+	IsoK     bool
+	TwoCurve types.GetFirstCurveResult
+} {
+	p0, p1, p2 := new(big.Float).SetInt(initialSqrtPrice),
+		new(big.Float).SetInt(midSqrtPrice), new(big.Float).SetInt(migrationSqrtPrice)
+
+	a1 := new(big.Float).Sub(
+		new(big.Float).Quo(big.NewFloat(1), p0),
+		new(big.Float).Quo(big.NewFloat(1), p1),
+	)
+
+	b1 := new(big.Float).Sub(
+		new(big.Float).Quo(big.NewFloat(1), p1),
+		new(big.Float).Quo(big.NewFloat(1), p2),
+	)
+
+	c1 := new(big.Float).SetInt(swapAmount)
+
+	a2 := new(big.Float).Sub(p1, p0)
+	b2 := new(big.Float).Sub(p2, p1)
+	c2 := new(big.Float).SetInt(migrationQuoteThreshold)
+	c2.Mul(c2, new(big.Float).SetInt(new(big.Int).Lsh(big.NewInt(1), 128)))
+	// c2.Mul(c2, big.NewFloat(math.Pow(2, 128)))
+
+	// solve equation to find l0 and l1
+	l0 := new(big.Float).Quo(
+		new(big.Float).Sub(
+			new(big.Float).Mul(c1, b2),
+			new(big.Float).Mul(c2, b1),
+		),
+		new(big.Float).Sub(
+			new(big.Float).Mul(a1, b2),
+			new(big.Float).Mul(a2, b1),
+		),
+	)
+	l1 := new(big.Float).Quo(
+		new(big.Float).Sub(
+			new(big.Float).Mul(c1, a2),
+			new(big.Float).Mul(c2, a1),
+		),
+		new(big.Float).Sub(
+			new(big.Float).Mul(b1, a2),
+			new(big.Float).Mul(b2, a1),
+		),
+	)
+
+	if l0.Sign() < 0 || l1.Sign() < 0 {
+		return struct {
+			IsoK     bool
+			TwoCurve types.GetFirstCurveResult
+		}{
+			TwoCurve: types.GetFirstCurveResult{
+				SqrtStartPrice: big.NewInt(0),
+				Curve:          []dbc.LiquidityDistributionParameters{},
+			},
+		}
+	}
+
+	l0BigInt, l1BigInt := new(big.Int), new(big.Int)
+	l0.Int(l0BigInt)
+	l1.Int(l1BigInt)
+
+	return struct {
+		IsoK     bool
+		TwoCurve types.GetFirstCurveResult
+	}{
+		IsoK: true,
+		TwoCurve: types.GetFirstCurveResult{
+			SqrtStartPrice: initialSqrtPrice,
+			Curve: []dbc.LiquidityDistributionParameters{
+				{
+					SqrtPrice: MustBigIntToUint128(midSqrtPrice),
+					Liquidity: MustBigIntToUint128(l0BigInt),
+				},
+				{
+					SqrtPrice: MustBigIntToUint128(migrationSqrtPrice),
+					Liquidity: MustBigIntToUint128(l1BigInt),
+				},
+			},
+		},
+	}
 }
 
 func Liquidity(

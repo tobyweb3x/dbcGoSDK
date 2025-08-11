@@ -17,7 +17,6 @@ func GetDeltaAmountBaseUnsigned(
 	round types.Rounding,
 ) (*big.Int, error) {
 
-	// fmt.Printf("%+v;%+v;%+v", lowerSqrtPrice, upperSqrtPrice, liquidity)
 	if liquidity.Sign() == 0 {
 		return big.NewInt(0), nil
 	}
@@ -62,7 +61,7 @@ func GetDeltaAmountQuoteUnsigned(lowerSqrtPrice, upperSqrtPrice, liquidity *big.
 	}
 
 	// L * (√P_upper - √P_lower)
-	prod := new(big.Int).Sub(liquidity, deltaSqrtPrice)
+	prod := new(big.Int).Mul(liquidity, deltaSqrtPrice)
 
 	if round == types.RoundingUp {
 		denominator := new(big.Int).Lsh(big.NewInt(1), constants.RESOLUTION*2)

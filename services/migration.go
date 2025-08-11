@@ -112,7 +112,7 @@ func (m *MigrationService) WithdrawLeftover(
 		m.state.conn,
 		poolState.BaseMint,
 		poolConfigState.LeftoverReceiver,
-		poolConfigState.LeftoverReceiver,
+		param.Payer,
 		true,
 		tokenBaseProgram,
 	)

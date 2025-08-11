@@ -625,6 +625,97 @@ func (obj *EvtCreateConfigEventData) Self() any {
 	return obj
 }
 
+type EvtCreateConfigV2EventData struct {
+	Config           ag_solanago.PublicKey
+	QuoteMint        ag_solanago.PublicKey
+	FeeClaimer       ag_solanago.PublicKey
+	LeftoverReceiver ag_solanago.PublicKey
+	ConfigParameters ConfigParameters
+}
+
+var EvtCreateConfigV2EventDataDiscriminator = [8]byte{163, 74, 66, 187, 119, 195, 26, 144}
+
+func (obj EvtCreateConfigV2EventData) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
+	// Write account discriminator:
+	err = encoder.WriteBytes(EvtCreateConfigV2EventDataDiscriminator[:], false)
+	if err != nil {
+		return err
+	}
+	// Serialize `Config` param:
+	err = encoder.Encode(obj.Config)
+	if err != nil {
+		return err
+	}
+	// Serialize `QuoteMint` param:
+	err = encoder.Encode(obj.QuoteMint)
+	if err != nil {
+		return err
+	}
+	// Serialize `FeeClaimer` param:
+	err = encoder.Encode(obj.FeeClaimer)
+	if err != nil {
+		return err
+	}
+	// Serialize `LeftoverReceiver` param:
+	err = encoder.Encode(obj.LeftoverReceiver)
+	if err != nil {
+		return err
+	}
+	// Serialize `ConfigParameters` param:
+	err = encoder.Encode(obj.ConfigParameters)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (obj *EvtCreateConfigV2EventData) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
+	// Read and check account discriminator:
+	{
+		discriminator, err := decoder.ReadTypeID()
+		if err != nil {
+			return err
+		}
+		if !discriminator.Equal(EvtCreateConfigV2EventDataDiscriminator[:]) {
+			return fmt.Errorf(
+				"wrong discriminator: wanted %s, got %s",
+				"[163 74 66 187 119 195 26 144]",
+				fmt.Sprint(discriminator[:]))
+		}
+	}
+	// Deserialize `Config`:
+	err = decoder.Decode(&obj.Config)
+	if err != nil {
+		return err
+	}
+	// Deserialize `QuoteMint`:
+	err = decoder.Decode(&obj.QuoteMint)
+	if err != nil {
+		return err
+	}
+	// Deserialize `FeeClaimer`:
+	err = decoder.Decode(&obj.FeeClaimer)
+	if err != nil {
+		return err
+	}
+	// Deserialize `LeftoverReceiver`:
+	err = decoder.Decode(&obj.LeftoverReceiver)
+	if err != nil {
+		return err
+	}
+	// Deserialize `ConfigParameters`:
+	err = decoder.Decode(&obj.ConfigParameters)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (*EvtCreateConfigV2EventData) isEventData() {}
+func (obj *EvtCreateConfigV2EventData) Self() any {
+	return obj
+}
+
 type EvtCreateDammV2MigrationMetadataEventData struct {
 	VirtualPool ag_solanago.PublicKey
 }
@@ -1587,6 +1678,7 @@ var eventTypes = map[[8]byte]reflect.Type{
 	EvtCloseClaimFeeOperatorEventDataDiscriminator:          reflect.TypeOf(EvtCloseClaimFeeOperatorEventData{}),
 	EvtCreateClaimFeeOperatorEventDataDiscriminator:         reflect.TypeOf(EvtCreateClaimFeeOperatorEventData{}),
 	EvtCreateConfigEventDataDiscriminator:                   reflect.TypeOf(EvtCreateConfigEventData{}),
+	EvtCreateConfigV2EventDataDiscriminator:                 reflect.TypeOf(EvtCreateConfigV2EventData{}),
 	EvtCreateDammV2MigrationMetadataEventDataDiscriminator:  reflect.TypeOf(EvtCreateDammV2MigrationMetadataEventData{}),
 	EvtCreateMeteoraMigrationMetadataEventDataDiscriminator: reflect.TypeOf(EvtCreateMeteoraMigrationMetadataEventData{}),
 	EvtCreatorWithdrawSurplusEventDataDiscriminator:         reflect.TypeOf(EvtCreatorWithdrawSurplusEventData{}),
@@ -1609,6 +1701,7 @@ var eventNames = map[[8]byte]string{
 	EvtCloseClaimFeeOperatorEventDataDiscriminator:          "EvtCloseClaimFeeOperator",
 	EvtCreateClaimFeeOperatorEventDataDiscriminator:         "EvtCreateClaimFeeOperator",
 	EvtCreateConfigEventDataDiscriminator:                   "EvtCreateConfig",
+	EvtCreateConfigV2EventDataDiscriminator:                 "EvtCreateConfigV2",
 	EvtCreateDammV2MigrationMetadataEventDataDiscriminator:  "EvtCreateDammV2MigrationMetadata",
 	EvtCreateMeteoraMigrationMetadataEventDataDiscriminator: "EvtCreateMeteoraMigrationMetadata",
 	EvtCreatorWithdrawSurplusEventDataDiscriminator:         "EvtCreatorWithdrawSurplus",

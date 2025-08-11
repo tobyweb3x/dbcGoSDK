@@ -236,6 +236,11 @@ var (
 		msg:  "Fail to validate single swap instruction in rate limiter",
 		name: "FailToValidateSingleSwapInstruction",
 	}
+	ErrInvalidMigratedPoolFee = &customErrorDef{
+		code: 6044,
+		msg:  "Invalid migrated pool fee params",
+		name: "InvalidMigratedPoolFee",
+	}
 	Errors = map[int]CustomError{
 		6000: ErrMathOverflow,
 		6001: ErrInvalidFee,
@@ -281,6 +286,7 @@ var (
 		6041: ErrInvalidBaseFeeMode,
 		6042: ErrInvalidFeeRateLimiter,
 		6043: ErrFailToValidateSingleSwapInstruction,
+		6044: ErrInvalidMigratedPoolFee,
 	}
 )
 

@@ -46,26 +46,48 @@ const (
 type MigrationOption uint8
 
 const (
-	MigrationOption_MET_DAMM    MigrationOption = 0
-	MigrationOption_MET_DAMM_V2 MigrationOption = 1
+	MigrationOptionMET_DAMM MigrationOption = iota
+	MigrationOptionMET_DAMM_V2
 )
 
 type TokenDecimal uint8
 
 const (
-	TokenDecimal_SIX   TokenDecimal = 6
-	TokenDecimal_SEVEN TokenDecimal = 7
-	TokenDecimal_EIGHT TokenDecimal = 8
-	TokenDecimal_NINE  TokenDecimal = 9
+	TokenDecimalSIX   TokenDecimal = 6
+	TokenDecimalSEVEN TokenDecimal = 7
+	TokenDecimalEIGHT TokenDecimal = 8
+	TokenDecimalNINE  TokenDecimal = 9
 )
 
 type MigrationFeeOption uint8
 
 const (
-	MigrationFeeOption_FixedBps25  MigrationFeeOption = 0
-	MigrationFeeOption_FixedBps30  MigrationFeeOption = 1
-	MigrationFeeOption_FixedBps100 MigrationFeeOption = 2
-	MigrationFeeOption_FixedBps200 MigrationFeeOption = 3
-	MigrationFeeOption_FixedBps400 MigrationFeeOption = 4
-	MigrationFeeOption_FixedBps600 MigrationFeeOption = 5
+	MigrationFeeOptionFixedBps25 MigrationFeeOption = iota
+	MigrationFeeOptionFixedBps30
+	MigrationFeeOptionFixedBps100
+	MigrationFeeOptionFixedBps200
+	MigrationFeeOptionFixedBps400
+	MigrationFeeOptionFixedBps600
+	MigrationFeeOptionCustomizable // only for DAMM v2
+
+)
+
+// TokenUpdateAuthorityOption represents the update authority permission options for a token.
+type TokenUpdateAuthorityOption uint8
+
+const (
+	// TokenUpdateAuthorityOptionCreatorUpdateAuthority means the creator can update the update_authority.
+	TokenUpdateAuthorityOptionCreatorUpdateAuthority TokenUpdateAuthorityOption = iota
+
+	// TokenUpdateAuthorityOptionImmutable means no one can update the update_authority.
+	TokenUpdateAuthorityOptionImmutable
+
+	// TokenUpdateAuthorityOptionPartnerUpdateAuthority means the partner can update the update_authority.
+	TokenUpdateAuthorityOptionPartnerUpdateAuthority
+
+	// TokenUpdateAuthorityOptionCreatorUpdateAndMintAuthority means the creator can update both update_authority and mint_authority.
+	TokenUpdateAuthorityOptionCreatorUpdateAndMintAuthority
+
+	// TokenUpdateAuthorityOptionPartnerUpdateAndMintAuthority means the partner can update both update_authority and mint_authority.
+	TokenUpdateAuthorityOptionPartnerUpdateAndMintAuthority
 )

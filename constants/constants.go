@@ -44,10 +44,6 @@ const (
 	//  25%
 	SwapBufferPercentage = 25
 
-	// MaxSwallowPercentage
-	//  20%
-	MaxSwallowPercentage = 20
-
 	// MaxMigrationFeePercentage
 	//  50%
 	MaxMigrationFeePercentage = 50
@@ -76,6 +72,11 @@ const (
 	DynamicFeeFilterPeriodDefault = 10
 	DynamicFeeDecayPeriodDefault  = 120
 
+	MaxDynamicPercentage = 20 // 20% of base fee
+
+	MinMigratedPoolFeeBps = 10   // 0.1%
+	MaxMigratedPoolFeeBps = 1000 // 10%
+
 	// DynamicFeeReductionFactorDefault
 	//  50%
 	DynamicFeeReductionFactorDefault = 5000
@@ -88,6 +89,16 @@ const (
 )
 
 var (
+	// Usefuls
+
+	// HundredInBigFloat
+	//  HundredInBigFloat = big.NewFloat(100)
+	HundredInBigFloat = big.NewFloat(100)
+
+	// HundredInBigInt
+	//  HundredInBigInt = big.NewInt(100)
+	HundredInBigInt = big.NewInt(100)
+
 	// Offset resolution
 
 	// MinSqrtPrice
@@ -137,12 +148,12 @@ var (
 	// DAMM V1 Migration Fee Addresses
 	//
 	// DammV1MigrationFeeAddresses = []solana.PublicKey{
-	// 	solana.MustPublicKeyFromBase58("8f848CEy8eY6PhJ3VcemtBDzPPSD4Vq7aJczLZ3o8MmX"),
-	// 	solana.MustPublicKeyFromBase58("HBxB8Lf14Yj8pqeJ8C4qDb5ryHL7xwpuykz31BLNYr7S"),
-	// 	solana.MustPublicKeyFromBase58("7v5vBdUQHTNeqk1HnduiXcgbvCyVEZ612HLmYkQoAkik"),
-	// 	solana.MustPublicKeyFromBase58("EkvP7d5yKxovj884d2DwmBQbrHUWRLGK6bympzrkXGja"),
-	// 	solana.MustPublicKeyFromBase58("9EZYAJrcqNWNQzP2trzZesP7XKMHA1jEomHzbRsdX8R2"),
-	// 	solana.MustPublicKeyFromBase58("8cdKo87jZU2R12KY1BUjjRPwyjgdNjLGqSGQyrDshhud"),
+	// 	solana.MustPublicKeyFromBase58("8f848CEy8eY6PhJ3VcemtBDzPPSD4Vq7aJczLZ3o8MmX"), FixedBps25
+	// 	solana.MustPublicKeyFromBase58("HBxB8Lf14Yj8pqeJ8C4qDb5ryHL7xwpuykz31BLNYr7S"), FixedBps30
+	// 	solana.MustPublicKeyFromBase58("7v5vBdUQHTNeqk1HnduiXcgbvCyVEZ612HLmYkQoAkik"), FixedBps100
+	// 	solana.MustPublicKeyFromBase58("EkvP7d5yKxovj884d2DwmBQbrHUWRLGK6bympzrkXGja"), FixedBps200
+	// 	solana.MustPublicKeyFromBase58("9EZYAJrcqNWNQzP2trzZesP7XKMHA1jEomHzbRsdX8R2"), FixedBps400
+	// 	solana.MustPublicKeyFromBase58("8cdKo87jZU2R12KY1BUjjRPwyjgdNjLGqSGQyrDshhud"), FixedBps600
 	// }
 	DammV1MigrationFeeAddresses = []solana.PublicKey{
 		solana.MustPublicKeyFromBase58("8f848CEy8eY6PhJ3VcemtBDzPPSD4Vq7aJczLZ3o8MmX"),
@@ -155,12 +166,13 @@ var (
 
 	// DAMM V2 Migration Fee Addresses
 	// DammV2MigrationFeeAddresses = []solana.PublicKey{
-	// 	solana.MustPublicKeyFromBase58("7F6dnUcRuyM2TwR8myT1dYypFXpPSxqwKNSFNkxyNESd"),
-	// 	solana.MustPublicKeyFromBase58("2nHK1kju6XjphBLbNxpM5XRGFj7p9U8vvNzyZiha1z6k"),
-	// 	solana.MustPublicKeyFromBase58("Hv8Lmzmnju6m7kcokVKvwqz7QPmdX9XfKjJsXz8RXcjp"),
-	// 	solana.MustPublicKeyFromBase58("2c4cYd4reUYVRAB9kUUkrq55VPyy2FNQ3FDL4o12JXmq"),
-	// 	solana.MustPublicKeyFromBase58("AkmQWebAwFvWk55wBoCr5D62C6VVDTzi84NJuD9H7cFD"),
-	// 	solana.MustPublicKeyFromBase58("DbCRBj8McvPYHJG1ukj8RE15h2dCNUdTAESG49XpQ44u"),
+	// 	solana.MustPublicKeyFromBase58("7F6dnUcRuyM2TwR8myT1dYypFXpPSxqwKNSFNkxyNESd"), FixedBps25
+	// 	solana.MustPublicKeyFromBase58("2nHK1kju6XjphBLbNxpM5XRGFj7p9U8vvNzyZiha1z6k"), FixedBps30
+	// 	solana.MustPublicKeyFromBase58("Hv8Lmzmnju6m7kcokVKvwqz7QPmdX9XfKjJsXz8RXcjp"), FixedBps100
+	// 	solana.MustPublicKeyFromBase58("2c4cYd4reUYVRAB9kUUkrq55VPyy2FNQ3FDL4o12JXmq"), FixedBps200
+	// 	solana.MustPublicKeyFromBase58("AkmQWebAwFvWk55wBoCr5D62C6VVDTzi84NJuD9H7cFD"), FixedBps400
+	// 	solana.MustPublicKeyFromBase58("DbCRBj8McvPYHJG1ukj8RE15h2dCNUdTAESG49XpQ44u"), FixedBps600
+	// solana.MustPublicKeyFromBase58("A8gMrEPJkacWkcb3DGwtJwTe16HktSEfvwtuDh2MCtck"), Customizable
 	// }
 	DammV2MigrationFeeAddresses = []solana.PublicKey{
 		solana.MustPublicKeyFromBase58("7F6dnUcRuyM2TwR8myT1dYypFXpPSxqwKNSFNkxyNESd"),
@@ -169,6 +181,7 @@ var (
 		solana.MustPublicKeyFromBase58("2c4cYd4reUYVRAB9kUUkrq55VPyy2FNQ3FDL4o12JXmq"),
 		solana.MustPublicKeyFromBase58("AkmQWebAwFvWk55wBoCr5D62C6VVDTzi84NJuD9H7cFD"),
 		solana.MustPublicKeyFromBase58("DbCRBj8McvPYHJG1ukj8RE15h2dCNUdTAESG49XpQ44u"),
+		solana.MustPublicKeyFromBase58("A8gMrEPJkacWkcb3DGwtJwTe16HktSEfvwtuDh2MCtck"),
 	}
 )
 

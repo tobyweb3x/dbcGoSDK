@@ -3,6 +3,7 @@ module dbcGoSDK
 go 1.24.3
 
 require (
+	github.com/ALTree/bigfloat v0.2.0
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/davecgh/go-spew v1.1.1
 	github.com/gagliardetto/binary v0.8.0

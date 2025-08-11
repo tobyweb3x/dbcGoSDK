@@ -26,7 +26,7 @@ type ProtocolWithdrawSurplusInstruction struct {
 	// ··········· The vault token account for quote token
 	//
 	// [5] = [] quote_mint
-	// ··········· The mint of of token
+	// ··········· The mint of token
 	//
 	// [6] = [] token_quote_program
 	// ··········· Token b program
@@ -154,14 +154,14 @@ func (inst *ProtocolWithdrawSurplusInstruction) GetQuoteVaultAccount() *ag_solan
 }
 
 // SetQuoteMintAccount sets the "quote_mint" account.
-// The mint of of token
+// The mint of token
 func (inst *ProtocolWithdrawSurplusInstruction) SetQuoteMintAccount(quoteMint ag_solanago.PublicKey) *ProtocolWithdrawSurplusInstruction {
 	inst.AccountMetaSlice[5] = ag_solanago.Meta(quoteMint)
 	return inst
 }
 
 // GetQuoteMintAccount gets the "quote_mint" account.
-// The mint of of token
+// The mint of token
 func (inst *ProtocolWithdrawSurplusInstruction) GetQuoteMintAccount() *ag_solanago.AccountMeta {
 	return inst.AccountMetaSlice.Get(5)
 }

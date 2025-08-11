@@ -387,33 +387,39 @@ type BuildCurveBaseParam struct {
 	CreatorTradingFeePercentage uint8
 	Leftover                    uint64
 	TokenUpdateAuthority        uint8
-	MigrationFee                dbc.MigrationFee
+	MigrationFee                MigrationFee
+	MigratedPoolFee             dbc.MigratedPoolFee
+}
+
+type MigrationFee struct {
+	FeePercentage        float64
+	CreatorFeePercentage float64
 }
 
 type BuildCurveParam struct {
 	BuildCurveBaseParam
-	PercentageSupplyOnMigration uint64
-	MigrationQuoteThreshold     uint64
+	PercentageSupplyOnMigration float64
+	MigrationQuoteThreshold     float64
 }
 
 type BuildCurveWithMarketCapParam struct {
 	BuildCurveBaseParam
-	InitialMarketCap   uint64
-	MigrationMarketCap uint64
+	InitialMarketCap   float64
+	MigrationMarketCap float64
 }
 
 type BuildCurveWithTwoSegmentsParam struct {
 	BuildCurveBaseParam
 	InitialMarketCap            uint64
 	MigrationMarketCap          uint64
-	PercentageSupplyOnMigration uint64
+	PercentageSupplyOnMigration uint8
 }
 
 type BuildCurveWithLiquidityWeightsParam struct {
 	BuildCurveBaseParam
 	InitialMarketCap   uint64
 	MigrationMarketCap uint64
-	LiquidityWeights   []uint64
+	LiquidityWeights   []float64
 }
 
 type LockedVestingParams struct {
