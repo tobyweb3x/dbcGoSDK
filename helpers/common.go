@@ -153,7 +153,7 @@ func GetMigrationQuoteAmount(
 
 // GetRateLimiterParams gets the rate limiter parameters.
 func GetRateLimiterParams(
-	baseFeeBps uint64, feeIncrementBps uint16, referenceAmount, maxLimiterDuration uint64,
+	baseFeeBps uint64, feeIncrementBps uint16, referenceAmount float64, maxLimiterDuration uint64,
 	tokenQuoteDecimal types.TokenDecimal, activationType types.ActivationType,
 ) (types.BaseFee, error) {
 
@@ -195,7 +195,7 @@ func GetRateLimiterParams(
 	if maxLimiterDuration > uint64(maxDuration) {
 		return types.BaseFee{}, fmt.Errorf("max duration exceeds maximum allowed value of %d", maxDuration)
 	}
-	referenceAmountInLamports := ConvertToLamports(float64(referenceAmount), tokenQuoteDecimal)
+	referenceAmountInLamports := ConvertToLamports(referenceAmount, tokenQuoteDecimal)
 
 	if !cliffFeeNumerator.IsUint64() || !referenceAmountInLamports.IsInt64() {
 		return types.BaseFee{},
@@ -468,6 +468,21 @@ func GetLockedVestingParams(
 		Frequency:                      totalVestingDuration / numberOfVestingPeriod,
 		CliffUnlockAmount:              holdCliffUnlockAmount.Uint64(),
 	}, nil
+}
+
+func CalculateFeeSchedulerEndingBaseFeeBps(
+	cliffFeeNumerator, numberOfPeriod, reductionFactor float64,
+	baseFeeMode types.BaseFeeMode,
+) float64 {
+	// linear mode
+	baseFeeNumerator := cliffFeeNumerator - numberOfPeriod*reductionFactor
+	if baseFeeMode != types.BaseFeeModeFeeSchedulerLinear {
+		// exponential mode
+		decayRate := 1 - reductionFactor/float64(constants.BasisPointMax)
+		baseFeeNumerator = cliffFeeNumerator * math.Pow(decayRate, numberOfPeriod)
+	}
+
+	return math.Max(0, baseFeeNumerator/float64(constants.FeeDenominator)*float64(constants.BasisPointMax))
 }
 
 func GetMigrationBaseToken(
@@ -906,4 +921,97 @@ func Liquidity(
 	}
 
 	return liquidityFromQuote, nil
+}
+
+func CalculateRateLimiterFee(
+	params types.BaseFee, inputAmount *big.Int,
+) *big.Int {
+	// for input_amount <= reference_amount
+	// --> fee = input_amount * cliff_fee_numerator
+
+	// for input_amount > reference_amount
+
+	// let x0 = reference_amount
+	// let c = cliff_fee_numerator
+	// let i = fee_increment
+	// let a = (input_amount - x0) / x0 (integer division)
+	// let b = (input_amount - x0) % x0 (remainder)
+
+	// max_index =
+	//     (MAX_FEE_NUMERATOR - cliff_fee_numerator) / fee_increment_numerator
+	// where: fee_increment_numerator =
+	//     (fee_increment_bps * FEE_DENOMINATOR) / 10_000
+
+	// if a < max_index:
+	// --> fee = x0 * (c + c*a + i*a*(a+1)/2) + b * (c + i*(a+1))
+
+	// if a ≥ max_index:
+	// --> fee = x0 * (c + c*max_index + i*max_index*(max_index+1)/2) + (d*x0 + b) * MAX_FEE
+	// where:
+	// d = a - max_index
+	// MAX_FEE is the maximum allowed fee (9900 bps)
+
+	// for input_amount <= reference_amount
+	if inputAmount.Cmp(new(big.Int).SetUint64(params.ThirdFactor)) <= 0 {
+		return new(big.Int).Quo(
+			new(big.Int).Mul(inputAmount, new(big.Int).SetUint64(params.CliffFeeNumerator)),
+			big.NewInt(constants.FeeDenominator),
+		)
+	}
+
+	// for input_amount > reference_amount
+	x0, c, feeIncrementNumerator := new(big.Int).SetUint64(params.ThirdFactor),
+		new(big.Int).SetUint64(params.CliffFeeNumerator), BpsToFeeNumerator(uint64(params.FirstFactor))
+
+	// calculate a and b
+	diff := new(big.Int).Sub(inputAmount, x0)
+	a, b := new(big.Int).Quo(diff, x0), new(big.Int).Mod(diff, x0)
+
+	// calculate max_index
+	maxFeeNumerator := big.NewInt(constants.MaxFeeNumerator)
+	deltaNumerator := new(big.Int).Sub(maxFeeNumerator, c)
+	maxIndex := new(big.Int).Quo(deltaNumerator, feeIncrementNumerator)
+
+	if a.Cmp(maxIndex) < 0 {
+		// if a < max_index
+		numerator1 := new(big.Int).Add(
+			new(big.Int).Add(c, new(big.Int).Mul(c, a)),
+			new(big.Int).Quo(
+				new(big.Int).Mul(
+					new(big.Int).Mul(feeIncrementNumerator, a),
+					new(big.Int).Add(a, big.NewInt(1)),
+				),
+				big.NewInt(2),
+			),
+		)
+		numerator2 := new(big.Int).Add(
+			c,
+			new(big.Int).Mul(
+				feeIncrementNumerator,
+				new(big.Int).Add(a, big.NewInt(1)),
+			),
+		)
+		firstFee := new(big.Int).Mul(x0, numerator1)
+		secondFee := new(big.Int).Mul(b, numerator2)
+		fee := new(big.Int).Add(firstFee, secondFee)
+		return new(big.Int).Quo(fee, big.NewInt(constants.FeeDenominator))
+	}
+
+	// if a >= max_index
+	numerator1, numerator2 := new(big.Int).Add(
+		new(big.Int).Add(c, new(big.Int).Mul(c, maxIndex)),
+		new(big.Int).Quo(
+			new(big.Int).Mul(
+				new(big.Int).Mul(feeIncrementNumerator, maxIndex),
+				new(big.Int).Add(maxIndex, big.NewInt(1)),
+			),
+			big.NewInt(2),
+		),
+	), new(big.Int).Set(maxFeeNumerator)
+
+	firstFee, d := new(big.Int).Mul(x0, numerator1), new(big.Int).Sub(a, maxIndex)
+	leftAmount := new(big.Int).Add(new(big.Int).Mul(d, x0), b)
+	secondFee := new(big.Int).Mul(leftAmount, numerator2)
+	fee := new(big.Int).Add(firstFee, secondFee)
+	return new(big.Int).Quo(fee, big.NewInt(constants.FeeDenominator))
 }

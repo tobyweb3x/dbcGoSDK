@@ -445,7 +445,7 @@ type FeeSchedulerParams struct {
 type RateLimiterParams struct {
 	BaseFeeBps         uint64
 	FeeIncrementBps    uint16
-	ReferenceAmount    uint64
+	ReferenceAmount    float64
 	MaxLimiterDuration uint64
 }
 

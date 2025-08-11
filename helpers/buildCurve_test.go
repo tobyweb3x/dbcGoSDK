@@ -772,7 +772,6 @@ func TestBBuildCurveWithLiquidityWeights(t *testing.T) {
 				ApproxBigInt(config.Curve[i].Liquidity.BigInt(), liquidity, threshold))
 		}
 	})
-
 }
 
 func ApproxBigFloat(a, b *big.Float, threshold float64) bool {
