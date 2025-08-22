@@ -1826,6 +1826,116 @@ func (obj *EvtSwap) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error)
 	return nil
 }
 
+type EvtSwap2 struct {
+	Pool               ag_solanago.PublicKey
+	Config             ag_solanago.PublicKey
+	TradeDirection     uint8
+	HasReferral        bool
+	SwapParameters     SwapParameters2
+	SwapResult         SwapResult2
+	QuoteReserveAmount uint64
+	MigrationThreshold uint64
+	CurrentTimestamp   uint64
+}
+
+func (obj EvtSwap2) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
+	// Serialize `Pool` param:
+	err = encoder.Encode(obj.Pool)
+	if err != nil {
+		return err
+	}
+	// Serialize `Config` param:
+	err = encoder.Encode(obj.Config)
+	if err != nil {
+		return err
+	}
+	// Serialize `TradeDirection` param:
+	err = encoder.Encode(obj.TradeDirection)
+	if err != nil {
+		return err
+	}
+	// Serialize `HasReferral` param:
+	err = encoder.Encode(obj.HasReferral)
+	if err != nil {
+		return err
+	}
+	// Serialize `SwapParameters` param:
+	err = encoder.Encode(obj.SwapParameters)
+	if err != nil {
+		return err
+	}
+	// Serialize `SwapResult` param:
+	err = encoder.Encode(obj.SwapResult)
+	if err != nil {
+		return err
+	}
+	// Serialize `QuoteReserveAmount` param:
+	err = encoder.Encode(obj.QuoteReserveAmount)
+	if err != nil {
+		return err
+	}
+	// Serialize `MigrationThreshold` param:
+	err = encoder.Encode(obj.MigrationThreshold)
+	if err != nil {
+		return err
+	}
+	// Serialize `CurrentTimestamp` param:
+	err = encoder.Encode(obj.CurrentTimestamp)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (obj *EvtSwap2) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
+	// Deserialize `Pool`:
+	err = decoder.Decode(&obj.Pool)
+	if err != nil {
+		return err
+	}
+	// Deserialize `Config`:
+	err = decoder.Decode(&obj.Config)
+	if err != nil {
+		return err
+	}
+	// Deserialize `TradeDirection`:
+	err = decoder.Decode(&obj.TradeDirection)
+	if err != nil {
+		return err
+	}
+	// Deserialize `HasReferral`:
+	err = decoder.Decode(&obj.HasReferral)
+	if err != nil {
+		return err
+	}
+	// Deserialize `SwapParameters`:
+	err = decoder.Decode(&obj.SwapParameters)
+	if err != nil {
+		return err
+	}
+	// Deserialize `SwapResult`:
+	err = decoder.Decode(&obj.SwapResult)
+	if err != nil {
+		return err
+	}
+	// Deserialize `QuoteReserveAmount`:
+	err = decoder.Decode(&obj.QuoteReserveAmount)
+	if err != nil {
+		return err
+	}
+	// Deserialize `MigrationThreshold`:
+	err = decoder.Decode(&obj.MigrationThreshold)
+	if err != nil {
+		return err
+	}
+	// Deserialize `CurrentTimestamp`:
+	err = decoder.Decode(&obj.CurrentTimestamp)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 type EvtUpdatePoolCreator struct {
 	Pool       ag_solanago.PublicKey
 	Creator    ag_solanago.PublicKey
@@ -3515,6 +3625,55 @@ func (obj *SwapParameters) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err
 	return nil
 }
 
+type SwapParameters2 struct {
+	// When it's exact in, partial fill, this will be amount_in. When it's exact out, this will be amount_out
+	Amount0 uint64
+
+	// When it's exact in, partial fill, this will be minimum_amount_out. When it's exact out, this will be maximum_amount_in
+	Amount1 uint64
+
+	// Swap mode, refer [SwapMode]
+	SwapMode uint8
+}
+
+func (obj SwapParameters2) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
+	// Serialize `Amount0` param:
+	err = encoder.Encode(obj.Amount0)
+	if err != nil {
+		return err
+	}
+	// Serialize `Amount1` param:
+	err = encoder.Encode(obj.Amount1)
+	if err != nil {
+		return err
+	}
+	// Serialize `SwapMode` param:
+	err = encoder.Encode(obj.SwapMode)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (obj *SwapParameters2) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
+	// Deserialize `Amount0`:
+	err = decoder.Decode(&obj.Amount0)
+	if err != nil {
+		return err
+	}
+	// Deserialize `Amount1`:
+	err = decoder.Decode(&obj.Amount1)
+	if err != nil {
+		return err
+	}
+	// Deserialize `SwapMode`:
+	err = decoder.Decode(&obj.SwapMode)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 type SwapResult struct {
 	ActualInputAmount uint64
 	OutputAmount      uint64
@@ -3561,6 +3720,105 @@ func (obj SwapResult) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error)
 func (obj *SwapResult) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
 	// Deserialize `ActualInputAmount`:
 	err = decoder.Decode(&obj.ActualInputAmount)
+	if err != nil {
+		return err
+	}
+	// Deserialize `OutputAmount`:
+	err = decoder.Decode(&obj.OutputAmount)
+	if err != nil {
+		return err
+	}
+	// Deserialize `NextSqrtPrice`:
+	err = decoder.Decode(&obj.NextSqrtPrice)
+	if err != nil {
+		return err
+	}
+	// Deserialize `TradingFee`:
+	err = decoder.Decode(&obj.TradingFee)
+	if err != nil {
+		return err
+	}
+	// Deserialize `ProtocolFee`:
+	err = decoder.Decode(&obj.ProtocolFee)
+	if err != nil {
+		return err
+	}
+	// Deserialize `ReferralFee`:
+	err = decoder.Decode(&obj.ReferralFee)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type SwapResult2 struct {
+	IncludedFeeInputAmount uint64
+	ExcludedFeeInputAmount uint64
+	AmountLeft             uint64
+	OutputAmount           uint64
+	NextSqrtPrice          ag_binary.Uint128
+	TradingFee             uint64
+	ProtocolFee            uint64
+	ReferralFee            uint64
+}
+
+func (obj SwapResult2) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
+	// Serialize `IncludedFeeInputAmount` param:
+	err = encoder.Encode(obj.IncludedFeeInputAmount)
+	if err != nil {
+		return err
+	}
+	// Serialize `ExcludedFeeInputAmount` param:
+	err = encoder.Encode(obj.ExcludedFeeInputAmount)
+	if err != nil {
+		return err
+	}
+	// Serialize `AmountLeft` param:
+	err = encoder.Encode(obj.AmountLeft)
+	if err != nil {
+		return err
+	}
+	// Serialize `OutputAmount` param:
+	err = encoder.Encode(obj.OutputAmount)
+	if err != nil {
+		return err
+	}
+	// Serialize `NextSqrtPrice` param:
+	err = encoder.Encode(obj.NextSqrtPrice)
+	if err != nil {
+		return err
+	}
+	// Serialize `TradingFee` param:
+	err = encoder.Encode(obj.TradingFee)
+	if err != nil {
+		return err
+	}
+	// Serialize `ProtocolFee` param:
+	err = encoder.Encode(obj.ProtocolFee)
+	if err != nil {
+		return err
+	}
+	// Serialize `ReferralFee` param:
+	err = encoder.Encode(obj.ReferralFee)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (obj *SwapResult2) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
+	// Deserialize `IncludedFeeInputAmount`:
+	err = decoder.Decode(&obj.IncludedFeeInputAmount)
+	if err != nil {
+		return err
+	}
+	// Deserialize `ExcludedFeeInputAmount`:
+	err = decoder.Decode(&obj.ExcludedFeeInputAmount)
+	if err != nil {
+		return err
+	}
+	// Deserialize `AmountLeft`:
+	err = decoder.Decode(&obj.AmountLeft)
 	if err != nil {
 		return err
 	}

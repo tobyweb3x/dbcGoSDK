@@ -2,23 +2,14 @@
   "address": "dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN",
   "metadata": {
     "name": "dynamic_bonding_curve",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "spec": "0.1.0",
     "description": "Created with Anchor"
   },
   "instructions": [
     {
       "name": "claim_creator_trading_fee",
-      "discriminator": [
-        82,
-        220,
-        250,
-        189,
-        3,
-        85,
-        107,
-        45
-      ],
+      "discriminator": [82, 220, 250, 189, 3, 85, 107, 45],
       "accounts": [
         {
           "name": "pool_authority",
@@ -30,71 +21,47 @@
         },
         {
           "name": "token_a_account",
-          "docs": [
-            "The treasury token a account"
-          ],
+          "docs": ["The treasury token a account"],
           "writable": true
         },
         {
           "name": "token_b_account",
-          "docs": [
-            "The treasury token b account"
-          ],
+          "docs": ["The treasury token b account"],
           "writable": true
         },
         {
           "name": "base_vault",
-          "docs": [
-            "The vault token account for input token"
-          ],
+          "docs": ["The vault token account for input token"],
           "writable": true,
-          "relations": [
-            "pool"
-          ]
+          "relations": ["pool"]
         },
         {
           "name": "quote_vault",
-          "docs": [
-            "The vault token account for output token"
-          ],
+          "docs": ["The vault token account for output token"],
           "writable": true,
-          "relations": [
-            "pool"
-          ]
+          "relations": ["pool"]
         },
         {
           "name": "base_mint",
-          "docs": [
-            "The mint of token a"
-          ],
-          "relations": [
-            "pool"
-          ]
+          "docs": ["The mint of token a"],
+          "relations": ["pool"]
         },
         {
           "name": "quote_mint",
-          "docs": [
-            "The mint of token b"
-          ]
+          "docs": ["The mint of token b"]
         },
         {
           "name": "creator",
           "signer": true,
-          "relations": [
-            "pool"
-          ]
+          "relations": ["pool"]
         },
         {
           "name": "token_base_program",
-          "docs": [
-            "Token a program"
-          ]
+          "docs": ["Token a program"]
         },
         {
           "name": "token_quote_program",
-          "docs": [
-            "Token b program"
-          ]
+          "docs": ["Token b program"]
         },
         {
           "name": "event_authority",
@@ -103,23 +70,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -142,16 +94,7 @@
     },
     {
       "name": "claim_protocol_fee",
-      "discriminator": [
-        165,
-        228,
-        133,
-        48,
-        99,
-        249,
-        255,
-        33
-      ],
+      "discriminator": [165, 228, 133, 48, 99, 249, 255, 33],
       "accounts": [
         {
           "name": "pool_authority",
@@ -159,9 +102,7 @@
         },
         {
           "name": "config",
-          "relations": [
-            "pool"
-          ]
+          "relations": ["pool"]
         },
         {
           "name": "pool",
@@ -169,85 +110,38 @@
         },
         {
           "name": "base_vault",
-          "docs": [
-            "The vault token account for input token"
-          ],
+          "docs": ["The vault token account for input token"],
           "writable": true,
-          "relations": [
-            "pool"
-          ]
+          "relations": ["pool"]
         },
         {
           "name": "quote_vault",
-          "docs": [
-            "The vault token account for output token"
-          ],
+          "docs": ["The vault token account for output token"],
           "writable": true,
-          "relations": [
-            "pool"
-          ]
+          "relations": ["pool"]
         },
         {
           "name": "base_mint",
-          "docs": [
-            "The mint of token a"
-          ],
-          "relations": [
-            "pool"
-          ]
+          "docs": ["The mint of token a"],
+          "relations": ["pool"]
         },
         {
           "name": "quote_mint",
-          "docs": [
-            "The mint of token b"
-          ],
-          "relations": [
-            "config"
-          ]
+          "docs": ["The mint of token b"],
+          "relations": ["config"]
         },
         {
           "name": "token_base_account",
-          "docs": [
-            "The treasury token a account"
-          ],
+          "docs": ["The treasury token a account"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  48,
-                  9,
-                  89,
-                  123,
-                  106,
-                  114,
-                  131,
-                  251,
-                  50,
-                  173,
-                  254,
-                  250,
-                  10,
-                  80,
-                  160,
-                  84,
-                  143,
-                  100,
-                  81,
-                  249,
-                  134,
-                  112,
-                  30,
-                  213,
-                  50,
-                  166,
-                  239,
-                  78,
-                  53,
-                  175,
-                  188,
-                  85
+                  48, 9, 89, 123, 106, 114, 131, 251, 50, 173, 254, 250, 10, 80,
+                  160, 84, 143, 100, 81, 249, 134, 112, 30, 213, 50, 166, 239,
+                  78, 53, 175, 188, 85
                 ]
               },
               {
@@ -262,85 +156,25 @@
             "program": {
               "kind": "const",
               "value": [
-                140,
-                151,
-                37,
-                143,
-                78,
-                36,
-                137,
-                241,
-                187,
-                61,
-                16,
-                41,
-                20,
-                142,
-                13,
-                131,
-                11,
-                90,
-                19,
-                153,
-                218,
-                255,
-                16,
-                132,
-                4,
-                142,
-                123,
-                216,
-                219,
-                233,
-                248,
-                89
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
               ]
             }
           }
         },
         {
           "name": "token_quote_account",
-          "docs": [
-            "The treasury token b account"
-          ],
+          "docs": ["The treasury token b account"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  48,
-                  9,
-                  89,
-                  123,
-                  106,
-                  114,
-                  131,
-                  251,
-                  50,
-                  173,
-                  254,
-                  250,
-                  10,
-                  80,
-                  160,
-                  84,
-                  143,
-                  100,
-                  81,
-                  249,
-                  134,
-                  112,
-                  30,
-                  213,
-                  50,
-                  166,
-                  239,
-                  78,
-                  53,
-                  175,
-                  188,
-                  85
+                  48, 9, 89, 123, 106, 114, 131, 251, 50, 173, 254, 250, 10, 80,
+                  160, 84, 143, 100, 81, 249, 134, 112, 30, 213, 50, 166, 239,
+                  78, 53, 175, 188, 85
                 ]
               },
               {
@@ -355,69 +189,30 @@
             "program": {
               "kind": "const",
               "value": [
-                140,
-                151,
-                37,
-                143,
-                78,
-                36,
-                137,
-                241,
-                187,
-                61,
-                16,
-                41,
-                20,
-                142,
-                13,
-                131,
-                11,
-                90,
-                19,
-                153,
-                218,
-                255,
-                16,
-                132,
-                4,
-                142,
-                123,
-                216,
-                219,
-                233,
-                248,
-                89
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
               ]
             }
           }
         },
         {
           "name": "claim_fee_operator",
-          "docs": [
-            "Claim fee operator"
-          ]
+          "docs": ["Claim fee operator"]
         },
         {
           "name": "operator",
-          "docs": [
-            "Operator"
-          ],
+          "docs": ["Operator"],
           "signer": true,
-          "relations": [
-            "claim_fee_operator"
-          ]
+          "relations": ["claim_fee_operator"]
         },
         {
           "name": "token_base_program",
-          "docs": [
-            "Token a program"
-          ]
+          "docs": ["Token a program"]
         },
         {
           "name": "token_quote_program",
-          "docs": [
-            "Token b program"
-          ]
+          "docs": ["Token b program"]
         },
         {
           "name": "event_authority",
@@ -426,23 +221,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -456,16 +236,7 @@
     },
     {
       "name": "claim_trading_fee",
-      "discriminator": [
-        8,
-        236,
-        89,
-        49,
-        152,
-        125,
-        177,
-        81
-      ],
+      "discriminator": [8, 236, 89, 49, 152, 125, 177, 81],
       "accounts": [
         {
           "name": "pool_authority",
@@ -473,9 +244,7 @@
         },
         {
           "name": "config",
-          "relations": [
-            "pool"
-          ]
+          "relations": ["pool"]
         },
         {
           "name": "pool",
@@ -483,74 +252,48 @@
         },
         {
           "name": "token_a_account",
-          "docs": [
-            "The treasury token a account"
-          ],
+          "docs": ["The treasury token a account"],
           "writable": true
         },
         {
           "name": "token_b_account",
-          "docs": [
-            "The treasury token b account"
-          ],
+          "docs": ["The treasury token b account"],
           "writable": true
         },
         {
           "name": "base_vault",
-          "docs": [
-            "The vault token account for input token"
-          ],
+          "docs": ["The vault token account for input token"],
           "writable": true,
-          "relations": [
-            "pool"
-          ]
+          "relations": ["pool"]
         },
         {
           "name": "quote_vault",
-          "docs": [
-            "The vault token account for output token"
-          ],
+          "docs": ["The vault token account for output token"],
           "writable": true,
-          "relations": [
-            "pool"
-          ]
+          "relations": ["pool"]
         },
         {
           "name": "base_mint",
-          "docs": [
-            "The mint of token a"
-          ],
-          "relations": [
-            "pool"
-          ]
+          "docs": ["The mint of token a"],
+          "relations": ["pool"]
         },
         {
           "name": "quote_mint",
-          "docs": [
-            "The mint of token b"
-          ],
-          "relations": [
-            "config"
-          ]
+          "docs": ["The mint of token b"],
+          "relations": ["config"]
         },
         {
           "name": "fee_claimer",
           "signer": true,
-          "relations": [
-            "config"
-          ]
+          "relations": ["config"]
         },
         {
           "name": "token_base_program",
-          "docs": [
-            "Token a program"
-          ]
+          "docs": ["Token a program"]
         },
         {
           "name": "token_quote_program",
-          "docs": [
-            "Token b program"
-          ]
+          "docs": ["Token b program"]
         },
         {
           "name": "event_authority",
@@ -559,23 +302,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -598,16 +326,7 @@
     },
     {
       "name": "close_claim_fee_operator",
-      "discriminator": [
-        38,
-        134,
-        82,
-        216,
-        95,
-        124,
-        17,
-        99
-      ],
+      "discriminator": [38, 134, 82, 216, 95, 124, 17, 99],
       "accounts": [
         {
           "name": "claim_fee_operator",
@@ -628,23 +347,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -658,19 +362,8 @@
     },
     {
       "name": "create_claim_fee_operator",
-      "docs": [
-        "ADMIN FUNCTIONS ///"
-      ],
-      "discriminator": [
-        169,
-        62,
-        207,
-        107,
-        58,
-        187,
-        162,
-        109
-      ],
+      "docs": ["ADMIN FUNCTIONS_ ///"],
+      "discriminator": [169, 62, 207, 107, 58, 187, 162, 109],
       "accounts": [
         {
           "name": "claim_fee_operator",
@@ -679,19 +372,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  99,
-                  102,
-                  95,
-                  111,
-                  112,
-                  101,
-                  114,
-                  97,
-                  116,
-                  111,
-                  114
-                ]
+                "value": [99, 102, 95, 111, 112, 101, 114, 97, 116, 111, 114]
               },
               {
                 "kind": "account",
@@ -719,23 +400,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -749,16 +415,7 @@
     },
     {
       "name": "create_config",
-      "discriminator": [
-        201,
-        207,
-        243,
-        114,
-        75,
-        111,
-        47,
-        189
-      ],
+      "discriminator": [201, 207, 243, 114, 75, 111, 47, 189],
       "accounts": [
         {
           "name": "config",
@@ -773,9 +430,7 @@
         },
         {
           "name": "quote_mint",
-          "docs": [
-            "quote mint"
-          ]
+          "docs": ["quote mint"]
         },
         {
           "name": "payer",
@@ -793,23 +448,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -832,36 +472,18 @@
     },
     {
       "name": "create_locker",
-      "docs": [
-        "PERMISSIONLESS FUNCTIONS ///",
-        "create locker"
-      ],
-      "discriminator": [
-        167,
-        90,
-        137,
-        154,
-        75,
-        47,
-        17,
-        84
-      ],
+      "docs": ["PERMISSIONLESS FUNCTIONS ///", "create locker"],
+      "discriminator": [167, 90, 137, 154, 75, 47, 17, 84],
       "accounts": [
         {
           "name": "virtual_pool",
-          "docs": [
-            "Virtual pool"
-          ],
+          "docs": ["Virtual pool"],
           "writable": true
         },
         {
           "name": "config",
-          "docs": [
-            "Config"
-          ],
-          "relations": [
-            "virtual_pool"
-          ]
+          "docs": ["Config"],
+          "relations": ["virtual_pool"]
         },
         {
           "name": "pool_authority",
@@ -871,16 +493,12 @@
         {
           "name": "base_vault",
           "writable": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "base_mint",
           "writable": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "base",
@@ -889,19 +507,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  98,
-                  97,
-                  115,
-                  101,
-                  95,
-                  108,
-                  111,
-                  99,
-                  107,
-                  101,
-                  114
-                ]
+                "value": [98, 97, 115, 101, 95, 108, 111, 99, 107, 101, 114]
               },
               {
                 "kind": "account",
@@ -912,9 +518,7 @@
         },
         {
           "name": "creator",
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "escrow",
@@ -941,9 +545,7 @@
         },
         {
           "name": "system_program",
-          "docs": [
-            "System program."
-          ],
+          "docs": ["System program."],
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -951,47 +553,20 @@
     },
     {
       "name": "create_partner_metadata",
-      "docs": [
-        "PARTNER FUNCTIONS ////"
-      ],
-      "discriminator": [
-        192,
-        168,
-        234,
-        191,
-        188,
-        226,
-        227,
-        255
-      ],
+      "docs": ["PARTNER FUNCTIONS ////"],
+      "discriminator": [192, 168, 234, 191, 188, 226, 227, 255],
       "accounts": [
         {
           "name": "partner_metadata",
-          "docs": [
-            "Partner metadata"
-          ],
+          "docs": ["Partner metadata"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  112,
-                  97,
-                  114,
-                  116,
-                  110,
-                  101,
-                  114,
-                  95,
-                  109,
-                  101,
-                  116,
-                  97,
-                  100,
-                  97,
-                  116,
-                  97
+                  112, 97, 114, 116, 110, 101, 114, 95, 109, 101, 116, 97, 100,
+                  97, 116, 97
                 ]
               },
               {
@@ -1003,24 +578,18 @@
         },
         {
           "name": "payer",
-          "docs": [
-            "Payer of the partner metadata."
-          ],
+          "docs": ["Payer of the partner metadata."],
           "writable": true,
           "signer": true
         },
         {
           "name": "fee_claimer",
-          "docs": [
-            "Fee claimer for partner"
-          ],
+          "docs": ["Fee claimer for partner"],
           "signer": true
         },
         {
           "name": "system_program",
-          "docs": [
-            "System program."
-          ],
+          "docs": ["System program."],
           "address": "11111111111111111111111111111111"
         },
         {
@@ -1030,23 +599,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -1069,16 +623,7 @@
     },
     {
       "name": "create_virtual_pool_metadata",
-      "discriminator": [
-        45,
-        97,
-        187,
-        103,
-        254,
-        109,
-        124,
-        134
-      ],
+      "discriminator": [45, 97, 187, 103, 254, 109, 124, 134],
       "accounts": [
         {
           "name": "virtual_pool",
@@ -1086,36 +631,15 @@
         },
         {
           "name": "virtual_pool_metadata",
-          "docs": [
-            "Virtual pool metadata"
-          ],
+          "docs": ["Virtual pool metadata"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  118,
-                  105,
-                  114,
-                  116,
-                  117,
-                  97,
-                  108,
-                  95,
-                  112,
-                  111,
-                  111,
-                  108,
-                  95,
-                  109,
-                  101,
-                  116,
-                  97,
-                  100,
-                  97,
-                  116,
-                  97
+                  118, 105, 114, 116, 117, 97, 108, 95, 112, 111, 111, 108, 95,
+                  109, 101, 116, 97, 100, 97, 116, 97
                 ]
               },
               {
@@ -1128,23 +652,17 @@
         {
           "name": "creator",
           "signer": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "payer",
-          "docs": [
-            "Payer of the virtual pool metadata."
-          ],
+          "docs": ["Payer of the virtual pool metadata."],
           "writable": true,
           "signer": true
         },
         {
           "name": "system_program",
-          "docs": [
-            "System program."
-          ],
+          "docs": ["System program."],
           "address": "11111111111111111111111111111111"
         },
         {
@@ -1154,23 +672,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -1193,16 +696,7 @@
     },
     {
       "name": "creator_withdraw_surplus",
-      "discriminator": [
-        165,
-        3,
-        137,
-        7,
-        28,
-        134,
-        76,
-        80
-      ],
+      "discriminator": [165, 3, 137, 7, 28, 134, 76, 80],
       "accounts": [
         {
           "name": "pool_authority",
@@ -1210,9 +704,7 @@
         },
         {
           "name": "config",
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "virtual_pool",
@@ -1220,42 +712,28 @@
         },
         {
           "name": "token_quote_account",
-          "docs": [
-            "The receiver token account"
-          ],
+          "docs": ["The receiver token account"],
           "writable": true
         },
         {
           "name": "quote_vault",
-          "docs": [
-            "The vault token account for output token"
-          ],
+          "docs": ["The vault token account for output token"],
           "writable": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "quote_mint",
-          "docs": [
-            "The mint of quote token"
-          ],
-          "relations": [
-            "config"
-          ]
+          "docs": ["The mint of quote token"],
+          "relations": ["config"]
         },
         {
           "name": "creator",
           "signer": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "token_quote_program",
-          "docs": [
-            "Token b program"
-          ]
+          "docs": ["Token b program"]
         },
         {
           "name": "event_authority",
@@ -1264,23 +742,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -1294,25 +757,12 @@
     },
     {
       "name": "initialize_virtual_pool_with_spl_token",
-      "docs": [
-        "POOL CREATOR FUNCTIONS ////"
-      ],
-      "discriminator": [
-        140,
-        85,
-        215,
-        176,
-        102,
-        54,
-        104,
-        79
-      ],
+      "docs": ["POOL CREATOR FUNCTIONS ////"],
+      "discriminator": [140, 85, 215, 176, 102, 54, 104, 79],
       "accounts": [
         {
           "name": "config",
-          "docs": [
-            "Which config the pool belongs to."
-          ]
+          "docs": ["Which config the pool belongs to."]
         },
         {
           "name": "pool_authority",
@@ -1329,40 +779,22 @@
         },
         {
           "name": "quote_mint",
-          "relations": [
-            "config"
-          ]
+          "relations": ["config"]
         },
         {
           "name": "pool",
-          "docs": [
-            "Initialize an account to store the pool state"
-          ],
+          "docs": ["Initialize an account to store the pool state"],
           "writable": true
         },
         {
           "name": "base_vault",
-          "docs": [
-            "Token a vault for the pool"
-          ],
+          "docs": ["Token a vault for the pool"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  116,
-                  111,
-                  107,
-                  101,
-                  110,
-                  95,
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [116, 111, 107, 101, 110, 95, 118, 97, 117, 108, 116]
               },
               {
                 "kind": "account",
@@ -1377,27 +809,13 @@
         },
         {
           "name": "quote_vault",
-          "docs": [
-            "Token b vault for the pool"
-          ],
+          "docs": ["Token b vault for the pool"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  116,
-                  111,
-                  107,
-                  101,
-                  110,
-                  95,
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [116, 111, 107, 101, 110, 95, 118, 97, 117, 108, 116]
               },
               {
                 "kind": "account",
@@ -1420,17 +838,13 @@
         },
         {
           "name": "payer",
-          "docs": [
-            "Address paying to create the pool. Can be anyone"
-          ],
+          "docs": ["Address paying to create the pool. Can be anyone"],
           "writable": true,
           "signer": true
         },
         {
           "name": "token_quote_program",
-          "docs": [
-            "Program to create mint account and mint tokens"
-          ]
+          "docs": ["Program to create mint account and mint tokens"]
         },
         {
           "name": "token_program",
@@ -1447,23 +861,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -1486,22 +885,11 @@
     },
     {
       "name": "initialize_virtual_pool_with_token2022",
-      "discriminator": [
-        169,
-        118,
-        51,
-        78,
-        145,
-        110,
-        220,
-        155
-      ],
+      "discriminator": [169, 118, 51, 78, 145, 110, 220, 155],
       "accounts": [
         {
           "name": "config",
-          "docs": [
-            "Which config the pool belongs to."
-          ]
+          "docs": ["Which config the pool belongs to."]
         },
         {
           "name": "pool_authority",
@@ -1513,23 +901,17 @@
         },
         {
           "name": "base_mint",
-          "docs": [
-            "Unique token mint address, initialize in contract"
-          ],
+          "docs": ["Unique token mint address, initialize in contract"],
           "writable": true,
           "signer": true
         },
         {
           "name": "quote_mint",
-          "relations": [
-            "config"
-          ]
+          "relations": ["config"]
         },
         {
           "name": "pool",
-          "docs": [
-            "Initialize an account to store the pool state"
-          ],
+          "docs": ["Initialize an account to store the pool state"],
           "writable": true
         },
         {
@@ -1539,19 +921,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  116,
-                  111,
-                  107,
-                  101,
-                  110,
-                  95,
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [116, 111, 107, 101, 110, 95, 118, 97, 117, 108, 116]
               },
               {
                 "kind": "account",
@@ -1566,27 +936,13 @@
         },
         {
           "name": "quote_vault",
-          "docs": [
-            "Token quote vault for the pool"
-          ],
+          "docs": ["Token quote vault for the pool"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  116,
-                  111,
-                  107,
-                  101,
-                  110,
-                  95,
-                  118,
-                  97,
-                  117,
-                  108,
-                  116
-                ]
+                "value": [116, 111, 107, 101, 110, 95, 118, 97, 117, 108, 116]
               },
               {
                 "kind": "account",
@@ -1601,23 +957,17 @@
         },
         {
           "name": "payer",
-          "docs": [
-            "Address paying to create the pool. Can be anyone"
-          ],
+          "docs": ["Address paying to create the pool. Can be anyone"],
           "writable": true,
           "signer": true
         },
         {
           "name": "token_quote_program",
-          "docs": [
-            "Program to create mint account and mint tokens"
-          ]
+          "docs": ["Program to create mint account and mint tokens"]
         },
         {
           "name": "token_program",
-          "docs": [
-            "token program for base mint"
-          ],
+          "docs": ["token program for base mint"],
           "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
         },
         {
@@ -1631,23 +981,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -1670,26 +1005,13 @@
     },
     {
       "name": "migrate_meteora_damm",
-      "discriminator": [
-        27,
-        1,
-        48,
-        22,
-        180,
-        63,
-        118,
-        217
-      ],
+      "discriminator": [27, 1, 48, 22, 180, 63, 118, 217],
       "accounts": [
         {
           "name": "virtual_pool",
-          "docs": [
-            "virtual pool"
-          ],
+          "docs": ["virtual pool"],
           "writable": true,
-          "relations": [
-            "migration_metadata"
-          ]
+          "relations": ["migration_metadata"]
         },
         {
           "name": "migration_metadata",
@@ -1697,9 +1019,7 @@
         },
         {
           "name": "config",
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "pool_authority",
@@ -1712,9 +1032,7 @@
         },
         {
           "name": "damm_config",
-          "docs": [
-            "pool config"
-          ]
+          "docs": ["pool config"]
         },
         {
           "name": "lp_mint",
@@ -1762,16 +1080,12 @@
         {
           "name": "base_vault",
           "writable": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "quote_vault",
           "writable": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "virtual_pool_lp",
@@ -1809,9 +1123,7 @@
         },
         {
           "name": "token_program",
-          "docs": [
-            "token_program"
-          ],
+          "docs": ["token_program"],
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
@@ -1819,9 +1131,7 @@
         },
         {
           "name": "system_program",
-          "docs": [
-            "System program."
-          ],
+          "docs": ["System program."],
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -1829,28 +1139,15 @@
     },
     {
       "name": "migrate_meteora_damm_claim_lp_token",
-      "discriminator": [
-        139,
-        133,
-        2,
-        30,
-        91,
-        145,
-        127,
-        154
-      ],
+      "discriminator": [139, 133, 2, 30, 91, 145, 127, 154],
       "accounts": [
         {
           "name": "virtual_pool",
-          "relations": [
-            "migration_metadata"
-          ]
+          "relations": ["migration_metadata"]
         },
         {
           "name": "migration_metadata",
-          "docs": [
-            "migration metadata"
-          ],
+          "docs": ["migration metadata"],
           "writable": true
         },
         {
@@ -1860,9 +1157,7 @@
         },
         {
           "name": "lp_mint",
-          "relations": [
-            "migration_metadata"
-          ]
+          "relations": ["migration_metadata"]
         },
         {
           "name": "source_token",
@@ -1876,38 +1171,9 @@
               {
                 "kind": "const",
                 "value": [
-                  6,
-                  221,
-                  246,
-                  225,
-                  215,
-                  101,
-                  161,
-                  147,
-                  217,
-                  203,
-                  225,
-                  70,
-                  206,
-                  235,
-                  121,
-                  172,
-                  28,
-                  180,
-                  133,
-                  237,
-                  95,
-                  91,
-                  55,
-                  145,
-                  58,
-                  140,
-                  245,
-                  133,
-                  126,
-                  255,
-                  0,
-                  169
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206,
+                  235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169
                 ]
               },
               {
@@ -1918,38 +1184,9 @@
             "program": {
               "kind": "const",
               "value": [
-                140,
-                151,
-                37,
-                143,
-                78,
-                36,
-                137,
-                241,
-                187,
-                61,
-                16,
-                41,
-                20,
-                142,
-                13,
-                131,
-                11,
-                90,
-                19,
-                153,
-                218,
-                255,
-                16,
-                132,
-                4,
-                142,
-                123,
-                216,
-                219,
-                233,
-                248,
-                89
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
               ]
             }
           }
@@ -1966,38 +1203,9 @@
               {
                 "kind": "const",
                 "value": [
-                  6,
-                  221,
-                  246,
-                  225,
-                  215,
-                  101,
-                  161,
-                  147,
-                  217,
-                  203,
-                  225,
-                  70,
-                  206,
-                  235,
-                  121,
-                  172,
-                  28,
-                  180,
-                  133,
-                  237,
-                  95,
-                  91,
-                  55,
-                  145,
-                  58,
-                  140,
-                  245,
-                  133,
-                  126,
-                  255,
-                  0,
-                  169
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206,
+                  235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169
                 ]
               },
               {
@@ -2008,38 +1216,9 @@
             "program": {
               "kind": "const",
               "value": [
-                140,
-                151,
-                37,
-                143,
-                78,
-                36,
-                137,
-                241,
-                187,
-                61,
-                16,
-                41,
-                20,
-                142,
-                13,
-                131,
-                11,
-                90,
-                19,
-                153,
-                218,
-                255,
-                16,
-                132,
-                4,
-                142,
-                123,
-                216,
-                219,
-                233,
-                248,
-                89
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
               ]
             }
           }
@@ -2053,9 +1232,7 @@
         },
         {
           "name": "token_program",
-          "docs": [
-            "token_program"
-          ],
+          "docs": ["token_program"],
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         }
       ],
@@ -2063,28 +1240,15 @@
     },
     {
       "name": "migrate_meteora_damm_lock_lp_token",
-      "discriminator": [
-        177,
-        55,
-        238,
-        157,
-        251,
-        88,
-        165,
-        42
-      ],
+      "discriminator": [177, 55, 238, 157, 251, 88, 165, 42],
       "accounts": [
         {
           "name": "virtual_pool",
-          "relations": [
-            "migration_metadata"
-          ]
+          "relations": ["migration_metadata"]
         },
         {
           "name": "migration_metadata",
-          "docs": [
-            "migration_metadata"
-          ],
+          "docs": ["migration_metadata"],
           "writable": true
         },
         {
@@ -2095,15 +1259,11 @@
         {
           "name": "pool",
           "writable": true,
-          "relations": [
-            "lock_escrow"
-          ]
+          "relations": ["lock_escrow"]
         },
         {
           "name": "lp_mint",
-          "relations": [
-            "migration_metadata"
-          ]
+          "relations": ["migration_metadata"]
         },
         {
           "name": "lock_escrow",
@@ -2111,9 +1271,7 @@
         },
         {
           "name": "owner",
-          "relations": [
-            "lock_escrow"
-          ]
+          "relations": ["lock_escrow"]
         },
         {
           "name": "source_tokens",
@@ -2127,38 +1285,9 @@
               {
                 "kind": "const",
                 "value": [
-                  6,
-                  221,
-                  246,
-                  225,
-                  215,
-                  101,
-                  161,
-                  147,
-                  217,
-                  203,
-                  225,
-                  70,
-                  206,
-                  235,
-                  121,
-                  172,
-                  28,
-                  180,
-                  133,
-                  237,
-                  95,
-                  91,
-                  55,
-                  145,
-                  58,
-                  140,
-                  245,
-                  133,
-                  126,
-                  255,
-                  0,
-                  169
+                  6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206,
+                  235, 121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140,
+                  245, 133, 126, 255, 0, 169
                 ]
               },
               {
@@ -2169,38 +1298,9 @@
             "program": {
               "kind": "const",
               "value": [
-                140,
-                151,
-                37,
-                143,
-                78,
-                36,
-                137,
-                241,
-                187,
-                61,
-                16,
-                41,
-                20,
-                142,
-                13,
-                131,
-                11,
-                90,
-                19,
-                153,
-                218,
-                255,
-                16,
-                132,
-                4,
-                142,
-                123,
-                216,
-                219,
-                233,
-                248,
-                89
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
               ]
             }
           }
@@ -2233,9 +1333,7 @@
         },
         {
           "name": "token_program",
-          "docs": [
-            "token_program"
-          ],
+          "docs": ["token_program"],
           "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         }
       ],
@@ -2243,41 +1341,22 @@
     },
     {
       "name": "migration_damm_v2",
-      "discriminator": [
-        156,
-        169,
-        230,
-        103,
-        53,
-        228,
-        80,
-        64
-      ],
+      "discriminator": [156, 169, 230, 103, 53, 228, 80, 64],
       "accounts": [
         {
           "name": "virtual_pool",
-          "docs": [
-            "virtual pool"
-          ],
+          "docs": ["virtual pool"],
           "writable": true,
-          "relations": [
-            "migration_metadata"
-          ]
+          "relations": ["migration_metadata"]
         },
         {
           "name": "migration_metadata",
-          "docs": [
-            "migration metadata"
-          ]
+          "docs": ["migration metadata"]
         },
         {
           "name": "config",
-          "docs": [
-            "virtual pool config key"
-          ],
-          "relations": [
-            "virtual_pool"
-          ]
+          "docs": ["virtual pool config key"],
+          "relations": ["virtual_pool"]
         },
         {
           "name": "pool_authority",
@@ -2341,16 +1420,12 @@
         {
           "name": "base_vault",
           "writable": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "quote_vault",
           "writable": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "payer",
@@ -2371,9 +1446,7 @@
         },
         {
           "name": "system_program",
-          "docs": [
-            "System program."
-          ],
+          "docs": ["System program."],
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -2381,25 +1454,14 @@
     },
     {
       "name": "migration_damm_v2_create_metadata",
-      "discriminator": [
-        109,
-        189,
-        19,
-        36,
-        195,
-        183,
-        222,
-        82
-      ],
+      "discriminator": [109, 189, 19, 36, 195, 183, 222, 82],
       "accounts": [
         {
           "name": "virtual_pool"
         },
         {
           "name": "config",
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "migration_metadata",
@@ -2408,15 +1470,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  100,
-                  97,
-                  109,
-                  109,
-                  95,
-                  118,
-                  50
-                ]
+                "value": [100, 97, 109, 109, 95, 118, 50]
               },
               {
                 "kind": "account",
@@ -2441,23 +1495,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -2471,28 +1510,15 @@
     },
     {
       "name": "migration_meteora_damm_create_metadata",
-      "docs": [
-        "migrate damm v1"
-      ],
-      "discriminator": [
-        47,
-        94,
-        126,
-        115,
-        221,
-        226,
-        194,
-        133
-      ],
+      "docs": ["migrate damm v1"],
+      "discriminator": [47, 94, 126, 115, 221, 226, 194, 133],
       "accounts": [
         {
           "name": "virtual_pool"
         },
         {
           "name": "config",
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "migration_metadata",
@@ -2501,15 +1527,7 @@
             "seeds": [
               {
                 "kind": "const",
-                "value": [
-                  109,
-                  101,
-                  116,
-                  101,
-                  111,
-                  114,
-                  97
-                ]
+                "value": [109, 101, 116, 101, 111, 114, 97]
               },
               {
                 "kind": "account",
@@ -2534,23 +1552,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -2564,16 +1567,7 @@
     },
     {
       "name": "partner_withdraw_surplus",
-      "discriminator": [
-        168,
-        173,
-        72,
-        100,
-        201,
-        98,
-        38,
-        92
-      ],
+      "discriminator": [168, 173, 72, 100, 201, 98, 38, 92],
       "accounts": [
         {
           "name": "pool_authority",
@@ -2581,9 +1575,7 @@
         },
         {
           "name": "config",
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "virtual_pool",
@@ -2591,42 +1583,28 @@
         },
         {
           "name": "token_quote_account",
-          "docs": [
-            "The receiver token account"
-          ],
+          "docs": ["The receiver token account"],
           "writable": true
         },
         {
           "name": "quote_vault",
-          "docs": [
-            "The vault token account for output token"
-          ],
+          "docs": ["The vault token account for output token"],
           "writable": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "quote_mint",
-          "docs": [
-            "The mint of quote token"
-          ],
-          "relations": [
-            "config"
-          ]
+          "docs": ["The mint of quote token"],
+          "relations": ["config"]
         },
         {
           "name": "fee_claimer",
           "signer": true,
-          "relations": [
-            "config"
-          ]
+          "relations": ["config"]
         },
         {
           "name": "token_quote_program",
-          "docs": [
-            "Token b program"
-          ]
+          "docs": ["Token b program"]
         },
         {
           "name": "event_authority",
@@ -2635,23 +1613,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -2665,16 +1628,7 @@
     },
     {
       "name": "protocol_withdraw_surplus",
-      "discriminator": [
-        54,
-        136,
-        225,
-        138,
-        172,
-        182,
-        214,
-        167
-      ],
+      "discriminator": [54, 136, 225, 138, 172, 182, 214, 167],
       "accounts": [
         {
           "name": "pool_authority",
@@ -2682,9 +1636,7 @@
         },
         {
           "name": "config",
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "virtual_pool",
@@ -2692,47 +1644,16 @@
         },
         {
           "name": "token_quote_account",
-          "docs": [
-            "The treasury quote token account"
-          ],
+          "docs": ["The treasury quote token account"],
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  48,
-                  9,
-                  89,
-                  123,
-                  106,
-                  114,
-                  131,
-                  251,
-                  50,
-                  173,
-                  254,
-                  250,
-                  10,
-                  80,
-                  160,
-                  84,
-                  143,
-                  100,
-                  81,
-                  249,
-                  134,
-                  112,
-                  30,
-                  213,
-                  50,
-                  166,
-                  239,
-                  78,
-                  53,
-                  175,
-                  188,
-                  85
+                  48, 9, 89, 123, 106, 114, 131, 251, 50, 173, 254, 250, 10, 80,
+                  160, 84, 143, 100, 81, 249, 134, 112, 30, 213, 50, 166, 239,
+                  78, 53, 175, 188, 85
                 ]
               },
               {
@@ -2747,66 +1668,27 @@
             "program": {
               "kind": "const",
               "value": [
-                140,
-                151,
-                37,
-                143,
-                78,
-                36,
-                137,
-                241,
-                187,
-                61,
-                16,
-                41,
-                20,
-                142,
-                13,
-                131,
-                11,
-                90,
-                19,
-                153,
-                218,
-                255,
-                16,
-                132,
-                4,
-                142,
-                123,
-                216,
-                219,
-                233,
-                248,
-                89
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
               ]
             }
           }
         },
         {
           "name": "quote_vault",
-          "docs": [
-            "The vault token account for quote token"
-          ],
+          "docs": ["The vault token account for quote token"],
           "writable": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "quote_mint",
-          "docs": [
-            "The mint of token"
-          ],
-          "relations": [
-            "config"
-          ]
+          "docs": ["The mint of token"],
+          "relations": ["config"]
         },
         {
           "name": "token_quote_program",
-          "docs": [
-            "Token b program"
-          ]
+          "docs": ["Token b program"]
         },
         {
           "name": "event_authority",
@@ -2815,23 +1697,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -2845,19 +1712,8 @@
     },
     {
       "name": "swap",
-      "docs": [
-        "TRADING BOTS FUNCTIONS ////"
-      ],
-      "discriminator": [
-        248,
-        198,
-        158,
-        145,
-        225,
-        117,
-        135,
-        200
-      ],
+      "docs": ["TRADING BOTS FUNCTIONS ////"],
+      "discriminator": [248, 198, 158, 145, 225, 117, 135, 200],
       "accounts": [
         {
           "name": "pool_authority",
@@ -2865,90 +1721,60 @@
         },
         {
           "name": "config",
-          "docs": [
-            "config key"
-          ],
-          "relations": [
-            "pool"
-          ]
+          "docs": ["config key"],
+          "relations": ["pool"]
         },
         {
           "name": "pool",
-          "docs": [
-            "Pool account"
-          ],
+          "docs": ["Pool account"],
           "writable": true
         },
         {
           "name": "input_token_account",
-          "docs": [
-            "The user token account for input token"
-          ],
+          "docs": ["The user token account for input token"],
           "writable": true
         },
         {
           "name": "output_token_account",
-          "docs": [
-            "The user token account for output token"
-          ],
+          "docs": ["The user token account for output token"],
           "writable": true
         },
         {
           "name": "base_vault",
-          "docs": [
-            "The vault token account for base token"
-          ],
+          "docs": ["The vault token account for base token"],
           "writable": true,
-          "relations": [
-            "pool"
-          ]
+          "relations": ["pool"]
         },
         {
           "name": "quote_vault",
-          "docs": [
-            "The vault token account for quote token"
-          ],
+          "docs": ["The vault token account for quote token"],
           "writable": true,
-          "relations": [
-            "pool"
-          ]
+          "relations": ["pool"]
         },
         {
           "name": "base_mint",
-          "docs": [
-            "The mint of base token"
-          ]
+          "docs": ["The mint of base token"]
         },
         {
           "name": "quote_mint",
-          "docs": [
-            "The mint of quote token"
-          ]
+          "docs": ["The mint of quote token"]
         },
         {
           "name": "payer",
-          "docs": [
-            "The user performing the swap"
-          ],
+          "docs": ["The user performing the swap"],
           "signer": true
         },
         {
           "name": "token_base_program",
-          "docs": [
-            "Token base program"
-          ]
+          "docs": ["Token base program"]
         },
         {
           "name": "token_quote_program",
-          "docs": [
-            "Token quote program"
-          ]
+          "docs": ["Token quote program"]
         },
         {
           "name": "referral_token_account",
-          "docs": [
-            "referral token account"
-          ],
+          "docs": ["referral token account"],
           "writable": true,
           "optional": true
         },
@@ -2959,23 +1785,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -2997,17 +1808,104 @@
       ]
     },
     {
-      "name": "transfer_pool_creator",
-      "discriminator": [
-        20,
-        7,
-        169,
-        33,
-        58,
-        147,
-        166,
-        33
+      "name": "swap2",
+      "discriminator": [65, 75, 63, 76, 235, 91, 91, 136],
+      "accounts": [
+        {
+          "name": "pool_authority",
+          "address": "FhVo3mqL8PW5pH5U2CN4XE33DokiyZnUwuGpH2hmHLuM"
+        },
+        {
+          "name": "config",
+          "docs": ["config key"],
+          "relations": ["pool"]
+        },
+        {
+          "name": "pool",
+          "docs": ["Pool account"],
+          "writable": true
+        },
+        {
+          "name": "input_token_account",
+          "docs": ["The user token account for input token"],
+          "writable": true
+        },
+        {
+          "name": "output_token_account",
+          "docs": ["The user token account for output token"],
+          "writable": true
+        },
+        {
+          "name": "base_vault",
+          "docs": ["The vault token account for base token"],
+          "writable": true,
+          "relations": ["pool"]
+        },
+        {
+          "name": "quote_vault",
+          "docs": ["The vault token account for quote token"],
+          "writable": true,
+          "relations": ["pool"]
+        },
+        {
+          "name": "base_mint",
+          "docs": ["The mint of base token"]
+        },
+        {
+          "name": "quote_mint",
+          "docs": ["The mint of quote token"]
+        },
+        {
+          "name": "payer",
+          "docs": ["The user performing the swap"],
+          "signer": true
+        },
+        {
+          "name": "token_base_program",
+          "docs": ["Token base program"]
+        },
+        {
+          "name": "token_quote_program",
+          "docs": ["Token quote program"]
+        },
+        {
+          "name": "referral_token_account",
+          "docs": ["referral token account"],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "event_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program"
+        }
       ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "SwapParameters2"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "transfer_pool_creator",
+      "discriminator": [20, 7, 169, 33, 58, 147, 166, 33],
       "accounts": [
         {
           "name": "virtual_pool",
@@ -3015,16 +1913,12 @@
         },
         {
           "name": "config",
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "creator",
           "signer": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "new_creator"
@@ -3036,23 +1930,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -3066,16 +1945,7 @@
     },
     {
       "name": "withdraw_leftover",
-      "discriminator": [
-        20,
-        198,
-        202,
-        237,
-        235,
-        243,
-        183,
-        66
-      ],
+      "discriminator": [20, 198, 202, 237, 235, 243, 183, 66],
       "accounts": [
         {
           "name": "pool_authority",
@@ -3083,9 +1953,7 @@
         },
         {
           "name": "config",
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "virtual_pool",
@@ -3093,9 +1961,7 @@
         },
         {
           "name": "token_base_account",
-          "docs": [
-            "The receiver token account, withdraw to ATA"
-          ],
+          "docs": ["The receiver token account, withdraw to ATA"],
           "writable": true,
           "pda": {
             "seeds": [
@@ -3115,72 +1981,31 @@
             "program": {
               "kind": "const",
               "value": [
-                140,
-                151,
-                37,
-                143,
-                78,
-                36,
-                137,
-                241,
-                187,
-                61,
-                16,
-                41,
-                20,
-                142,
-                13,
-                131,
-                11,
-                90,
-                19,
-                153,
-                218,
-                255,
-                16,
-                132,
-                4,
-                142,
-                123,
-                216,
-                219,
-                233,
-                248,
-                89
+                140, 151, 37, 143, 78, 36, 137, 241, 187, 61, 16, 41, 20, 142,
+                13, 131, 11, 90, 19, 153, 218, 255, 16, 132, 4, 142, 123, 216,
+                219, 233, 248, 89
               ]
             }
           }
         },
         {
           "name": "base_vault",
-          "docs": [
-            "The vault token account for output token"
-          ],
+          "docs": ["The vault token account for output token"],
           "writable": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "base_mint",
-          "docs": [
-            "The mint of quote token"
-          ],
-          "relations": [
-            "virtual_pool"
-          ]
+          "docs": ["The mint of quote token"],
+          "relations": ["virtual_pool"]
         },
         {
           "name": "leftover_receiver",
-          "relations": [
-            "config"
-          ]
+          "relations": ["config"]
         },
         {
           "name": "token_base_program",
-          "docs": [
-            "Token base program"
-          ]
+          "docs": ["Token base program"]
         },
         {
           "name": "event_authority",
@@ -3189,23 +2014,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -3219,19 +2029,8 @@
     },
     {
       "name": "withdraw_migration_fee",
-      "docs": [
-        "BOTH partner and creator FUNCTIONS ///"
-      ],
-      "discriminator": [
-        237,
-        142,
-        45,
-        23,
-        129,
-        6,
-        222,
-        162
-      ],
+      "docs": ["BOTH partner and creator FUNCTIONS ///"],
+      "discriminator": [237, 142, 45, 23, 129, 6, 222, 162],
       "accounts": [
         {
           "name": "pool_authority",
@@ -3239,9 +2038,7 @@
         },
         {
           "name": "config",
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "virtual_pool",
@@ -3249,29 +2046,19 @@
         },
         {
           "name": "token_quote_account",
-          "docs": [
-            "The receiver token account"
-          ],
+          "docs": ["The receiver token account"],
           "writable": true
         },
         {
           "name": "quote_vault",
-          "docs": [
-            "The vault token account for output token"
-          ],
+          "docs": ["The vault token account for output token"],
           "writable": true,
-          "relations": [
-            "virtual_pool"
-          ]
+          "relations": ["virtual_pool"]
         },
         {
           "name": "quote_mint",
-          "docs": [
-            "The mint of quote token"
-          ],
-          "relations": [
-            "config"
-          ]
+          "docs": ["The mint of quote token"],
+          "relations": ["config"]
         },
         {
           "name": "sender",
@@ -3279,9 +2066,7 @@
         },
         {
           "name": "token_quote_program",
-          "docs": [
-            "Token b program"
-          ]
+          "docs": ["Token b program"]
         },
         {
           "name": "event_authority",
@@ -3290,23 +2075,8 @@
               {
                 "kind": "const",
                 "value": [
-                  95,
-                  95,
-                  101,
-                  118,
-                  101,
-                  110,
-                  116,
-                  95,
-                  97,
-                  117,
-                  116,
-                  104,
-                  111,
-                  114,
-                  105,
-                  116,
-                  121
+                  95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+                  114, 105, 116, 121
                 ]
               }
             ]
@@ -3327,395 +2097,129 @@
   "accounts": [
     {
       "name": "ClaimFeeOperator",
-      "discriminator": [
-        166,
-        48,
-        134,
-        86,
-        34,
-        200,
-        188,
-        150
-      ]
+      "discriminator": [166, 48, 134, 86, 34, 200, 188, 150]
     },
     {
       "name": "Config",
-      "discriminator": [
-        155,
-        12,
-        170,
-        224,
-        30,
-        250,
-        204,
-        130
-      ]
+      "discriminator": [155, 12, 170, 224, 30, 250, 204, 130]
     },
     {
       "name": "LockEscrow",
-      "discriminator": [
-        190,
-        106,
-        121,
-        6,
-        200,
-        182,
-        21,
-        75
-      ]
+      "discriminator": [190, 106, 121, 6, 200, 182, 21, 75]
     },
     {
       "name": "MeteoraDammMigrationMetadata",
-      "discriminator": [
-        17,
-        155,
-        141,
-        215,
-        207,
-        4,
-        133,
-        156
-      ]
+      "discriminator": [17, 155, 141, 215, 207, 4, 133, 156]
     },
     {
       "name": "MeteoraDammV2Metadata",
-      "discriminator": [
-        104,
-        221,
-        219,
-        203,
-        10,
-        142,
-        250,
-        163
-      ]
+      "discriminator": [104, 221, 219, 203, 10, 142, 250, 163]
     },
     {
       "name": "PartnerMetadata",
-      "discriminator": [
-        68,
-        68,
-        130,
-        19,
-        16,
-        209,
-        98,
-        156
-      ]
+      "discriminator": [68, 68, 130, 19, 16, 209, 98, 156]
     },
     {
       "name": "PoolConfig",
-      "discriminator": [
-        26,
-        108,
-        14,
-        123,
-        116,
-        230,
-        129,
-        43
-      ]
+      "discriminator": [26, 108, 14, 123, 116, 230, 129, 43]
     },
     {
       "name": "VirtualPool",
-      "discriminator": [
-        213,
-        224,
-        5,
-        209,
-        98,
-        69,
-        119,
-        92
-      ]
+      "discriminator": [213, 224, 5, 209, 98, 69, 119, 92]
     },
     {
       "name": "VirtualPoolMetadata",
-      "discriminator": [
-        217,
-        37,
-        82,
-        250,
-        43,
-        47,
-        228,
-        254
-      ]
+      "discriminator": [217, 37, 82, 250, 43, 47, 228, 254]
     }
   ],
   "events": [
     {
       "name": "EvtClaimCreatorTradingFee",
-      "discriminator": [
-        154,
-        228,
-        215,
-        202,
-        133,
-        155,
-        214,
-        138
-      ]
+      "discriminator": [154, 228, 215, 202, 133, 155, 214, 138]
     },
     {
       "name": "EvtClaimProtocolFee",
-      "discriminator": [
-        186,
-        244,
-        75,
-        251,
-        188,
-        13,
-        25,
-        33
-      ]
+      "discriminator": [186, 244, 75, 251, 188, 13, 25, 33]
     },
     {
       "name": "EvtClaimTradingFee",
-      "discriminator": [
-        26,
-        83,
-        117,
-        240,
-        92,
-        202,
-        112,
-        254
-      ]
+      "discriminator": [26, 83, 117, 240, 92, 202, 112, 254]
     },
     {
       "name": "EvtCloseClaimFeeOperator",
-      "discriminator": [
-        111,
-        39,
-        37,
-        55,
-        110,
-        216,
-        194,
-        23
-      ]
+      "discriminator": [111, 39, 37, 55, 110, 216, 194, 23]
     },
     {
       "name": "EvtCreateClaimFeeOperator",
-      "discriminator": [
-        21,
-        6,
-        153,
-        120,
-        68,
-        116,
-        28,
-        177
-      ]
+      "discriminator": [21, 6, 153, 120, 68, 116, 28, 177]
     },
     {
       "name": "EvtCreateConfig",
-      "discriminator": [
-        131,
-        207,
-        180,
-        174,
-        180,
-        73,
-        165,
-        54
-      ]
+      "discriminator": [131, 207, 180, 174, 180, 73, 165, 54]
     },
     {
       "name": "EvtCreateConfigV2",
-      "discriminator": [
-        163,
-        74,
-        66,
-        187,
-        119,
-        195,
-        26,
-        144
-      ]
+      "discriminator": [163, 74, 66, 187, 119, 195, 26, 144]
     },
     {
       "name": "EvtCreateDammV2MigrationMetadata",
-      "discriminator": [
-        103,
-        111,
-        132,
-        168,
-        140,
-        253,
-        150,
-        114
-      ]
+      "discriminator": [103, 111, 132, 168, 140, 253, 150, 114]
     },
     {
       "name": "EvtCreateMeteoraMigrationMetadata",
-      "discriminator": [
-        99,
-        167,
-        133,
-        63,
-        214,
-        143,
-        175,
-        139
-      ]
+      "discriminator": [99, 167, 133, 63, 214, 143, 175, 139]
     },
     {
       "name": "EvtCreatorWithdrawSurplus",
-      "discriminator": [
-        152,
-        73,
-        21,
-        15,
-        66,
-        87,
-        53,
-        157
-      ]
+      "discriminator": [152, 73, 21, 15, 66, 87, 53, 157]
     },
     {
       "name": "EvtCurveComplete",
-      "discriminator": [
-        229,
-        231,
-        86,
-        84,
-        156,
-        134,
-        75,
-        24
-      ]
+      "discriminator": [229, 231, 86, 84, 156, 134, 75, 24]
     },
     {
       "name": "EvtInitializePool",
-      "discriminator": [
-        228,
-        50,
-        246,
-        85,
-        203,
-        66,
-        134,
-        37
-      ]
+      "discriminator": [228, 50, 246, 85, 203, 66, 134, 37]
     },
     {
       "name": "EvtPartnerMetadata",
-      "discriminator": [
-        200,
-        127,
-        6,
-        55,
-        13,
-        32,
-        8,
-        150
-      ]
+      "discriminator": [200, 127, 6, 55, 13, 32, 8, 150]
     },
     {
       "name": "EvtPartnerWithdrawMigrationFee",
-      "discriminator": [
-        181,
-        105,
-        127,
-        67,
-        8,
-        187,
-        120,
-        57
-      ]
+      "discriminator": [181, 105, 127, 67, 8, 187, 120, 57]
     },
     {
       "name": "EvtPartnerWithdrawSurplus",
-      "discriminator": [
-        195,
-        56,
-        152,
-        9,
-        232,
-        72,
-        35,
-        22
-      ]
+      "discriminator": [195, 56, 152, 9, 232, 72, 35, 22]
     },
     {
       "name": "EvtProtocolWithdrawSurplus",
-      "discriminator": [
-        109,
-        111,
-        28,
-        221,
-        134,
-        195,
-        230,
-        203
-      ]
+      "discriminator": [109, 111, 28, 221, 134, 195, 230, 203]
     },
     {
       "name": "EvtSwap",
-      "discriminator": [
-        27,
-        60,
-        21,
-        213,
-        138,
-        170,
-        187,
-        147
-      ]
+      "discriminator": [27, 60, 21, 213, 138, 170, 187, 147]
+    },
+    {
+      "name": "EvtSwap2",
+      "discriminator": [189, 66, 51, 168, 38, 80, 117, 153]
     },
     {
       "name": "EvtUpdatePoolCreator",
-      "discriminator": [
-        107,
-        225,
-        165,
-        237,
-        91,
-        158,
-        213,
-        220
-      ]
+      "discriminator": [107, 225, 165, 237, 91, 158, 213, 220]
     },
     {
       "name": "EvtVirtualPoolMetadata",
-      "discriminator": [
-        188,
-        18,
-        72,
-        76,
-        195,
-        91,
-        38,
-        74
-      ]
+      "discriminator": [188, 18, 72, 76, 195, 91, 38, 74]
     },
     {
       "name": "EvtWithdrawLeftover",
-      "discriminator": [
-        191,
-        189,
-        104,
-        143,
-        111,
-        156,
-        94,
-        229
-      ]
+      "discriminator": [191, 189, 104, 143, 111, 156, 94, 229]
     },
     {
       "name": "EvtWithdrawMigrationFee",
-      "discriminator": [
-        26,
-        203,
-        84,
-        85,
-        161,
-        23,
-        100,
-        214
-      ]
+      "discriminator": [26, 203, 84, 85, 161, 23, 100, 214]
     }
   ],
   "errors": [
@@ -3943,6 +2447,26 @@
       "code": 6044,
       "name": "InvalidMigratedPoolFee",
       "msg": "Invalid migrated pool fee params"
+    },
+    {
+      "code": 6045,
+      "name": "UndeterminedError",
+      "msg": "Undertermined error"
+    },
+    {
+      "code": 6046,
+      "name": "RateLimiterNotSupported",
+      "msg": "Rate limiter not supported"
+    },
+    {
+      "code": 6047,
+      "name": "AmountLeftIsNotZero",
+      "msg": "Amount left is not zero"
+    },
+    {
+      "code": 6048,
+      "name": "NextSqrtPriceIsSmallerThanStartSqrtPrice",
+      "msg": "Next sqrt price is smaller than start sqrt price"
     }
   ],
   "types": [
@@ -3978,10 +2502,7 @@
           {
             "name": "padding_0",
             "type": {
-              "array": [
-                "u8",
-                5
-              ]
+              "array": ["u8", 5]
             }
           }
         ]
@@ -4017,9 +2538,7 @@
     },
     {
       "name": "ClaimFeeOperator",
-      "docs": [
-        "Parameter that set by the protocol"
-      ],
+      "docs": ["Parameter that set by the protocol"],
       "serialization": "bytemuck",
       "repr": {
         "kind": "c"
@@ -4029,21 +2548,14 @@
         "fields": [
           {
             "name": "operator",
-            "docs": [
-              "operator"
-            ],
+            "docs": ["operator"],
             "type": "pubkey"
           },
           {
             "name": "_padding",
-            "docs": [
-              "Reserve"
-            ],
+            "docs": ["Reserve"],
             "type": {
-              "array": [
-                "u8",
-                128
-              ]
+              "array": ["u8", 128]
             }
           }
         ]
@@ -4085,10 +2597,7 @@
           {
             "name": "padding",
             "type": {
-              "array": [
-                "u8",
-                219
-              ]
+              "array": ["u8", 219]
             }
           }
         ]
@@ -4199,14 +2708,9 @@
           },
           {
             "name": "padding",
-            "docs": [
-              "padding for future use"
-            ],
+            "docs": ["padding for future use"],
             "type": {
-              "array": [
-                "u64",
-                7
-              ]
+              "array": ["u64", 7]
             }
           },
           {
@@ -4230,10 +2734,7 @@
           {
             "name": "padding",
             "type": {
-              "array": [
-                "u8",
-                96
-              ]
+              "array": ["u8", 96]
             }
           },
           {
@@ -4259,10 +2760,7 @@
           {
             "name": "padding",
             "type": {
-              "array": [
-                "u8",
-                96
-              ]
+              "array": ["u8", 96]
             }
           },
           {
@@ -4296,10 +2794,7 @@
           {
             "name": "padding",
             "type": {
-              "array": [
-                "u8",
-                7
-              ]
+              "array": ["u8", 7]
             }
           },
           {
@@ -4329,10 +2824,7 @@
           {
             "name": "padding2",
             "type": {
-              "array": [
-                "u8",
-                8
-              ]
+              "array": ["u8", 8]
             }
           },
           {
@@ -4440,9 +2932,7 @@
     },
     {
       "name": "EvtCloseClaimFeeOperator",
-      "docs": [
-        "Close claim fee operator"
-      ],
+      "docs": ["Close claim fee operator"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -4459,9 +2949,7 @@
     },
     {
       "name": "EvtCreateClaimFeeOperator",
-      "docs": [
-        "Create claim fee operator"
-      ],
+      "docs": ["Create claim fee operator"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -4474,9 +2962,7 @@
     },
     {
       "name": "EvtCreateConfig",
-      "docs": [
-        "Create config"
-      ],
+      "docs": ["Create config"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -4723,9 +3209,7 @@
     },
     {
       "name": "EvtPartnerMetadata",
-      "docs": [
-        "Create partner metadata"
-      ],
+      "docs": ["Create partner metadata"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -4837,6 +3321,58 @@
       }
     },
     {
+      "name": "EvtSwap2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "config",
+            "type": "pubkey"
+          },
+          {
+            "name": "trade_direction",
+            "type": "u8"
+          },
+          {
+            "name": "has_referral",
+            "type": "bool"
+          },
+          {
+            "name": "swap_parameters",
+            "type": {
+              "defined": {
+                "name": "SwapParameters2"
+              }
+            }
+          },
+          {
+            "name": "swap_result",
+            "type": {
+              "defined": {
+                "name": "SwapResult2"
+              }
+            }
+          },
+          {
+            "name": "quote_reserve_amount",
+            "type": "u64"
+          },
+          {
+            "name": "migration_threshold",
+            "type": "u64"
+          },
+          {
+            "name": "current_timestamp",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
       "name": "EvtUpdatePoolCreator",
       "type": {
         "kind": "struct",
@@ -4858,9 +3394,7 @@
     },
     {
       "name": "EvtVirtualPoolMetadata",
-      "docs": [
-        "Create virtual pool metadata"
-      ],
+      "docs": ["Create virtual pool metadata"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -4973,9 +3507,7 @@
     },
     {
       "name": "LockEscrow",
-      "docs": [
-        "State of lock escrow account"
-      ],
+      "docs": ["State of lock escrow account"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -5093,9 +3625,7 @@
         "fields": [
           {
             "name": "virtual_pool",
-            "docs": [
-              "pool"
-            ],
+            "docs": ["pool"],
             "type": "pubkey"
           },
           {
@@ -5104,99 +3634,69 @@
               "!!! BE CAREFUL to use tomestone field, previous is pool creator"
             ],
             "type": {
-              "array": [
-                "u8",
-                32
-              ]
+              "array": ["u8", 32]
             }
           },
           {
             "name": "partner",
-            "docs": [
-              "partner"
-            ],
+            "docs": ["partner"],
             "type": "pubkey"
           },
           {
             "name": "lp_mint",
-            "docs": [
-              "lp mint"
-            ],
+            "docs": ["lp mint"],
             "type": "pubkey"
           },
           {
             "name": "partner_locked_lp",
-            "docs": [
-              "partner locked lp"
-            ],
+            "docs": ["partner locked lp"],
             "type": "u64"
           },
           {
             "name": "partner_lp",
-            "docs": [
-              "partner lp"
-            ],
+            "docs": ["partner lp"],
             "type": "u64"
           },
           {
             "name": "creator_locked_lp",
-            "docs": [
-              "creator locked lp"
-            ],
+            "docs": ["creator locked lp"],
             "type": "u64"
           },
           {
             "name": "creator_lp",
-            "docs": [
-              "creator lp"
-            ],
+            "docs": ["creator lp"],
             "type": "u64"
           },
           {
             "name": "_padding_0",
-            "docs": [
-              "padding"
-            ],
+            "docs": ["padding"],
             "type": "u8"
           },
           {
             "name": "creator_locked_status",
-            "docs": [
-              "flag to check whether lp is locked for creator"
-            ],
+            "docs": ["flag to check whether lp is locked for creator"],
             "type": "u8"
           },
           {
             "name": "partner_locked_status",
-            "docs": [
-              "flag to check whether lp is locked for partner"
-            ],
+            "docs": ["flag to check whether lp is locked for partner"],
             "type": "u8"
           },
           {
             "name": "creator_claim_status",
-            "docs": [
-              "flag to check whether creator has claimed lp token"
-            ],
+            "docs": ["flag to check whether creator has claimed lp token"],
             "type": "u8"
           },
           {
             "name": "partner_claim_status",
-            "docs": [
-              "flag to check whether partner has claimed lp token"
-            ],
+            "docs": ["flag to check whether partner has claimed lp token"],
             "type": "u8"
           },
           {
             "name": "_padding",
-            "docs": [
-              "Reserve"
-            ],
+            "docs": ["Reserve"],
             "type": {
-              "array": [
-                "u8",
-                107
-              ]
+              "array": ["u8", 107]
             }
           }
         ]
@@ -5213,9 +3713,7 @@
         "fields": [
           {
             "name": "virtual_pool",
-            "docs": [
-              "pool"
-            ],
+            "docs": ["pool"],
             "type": "pubkey"
           },
           {
@@ -5224,29 +3722,19 @@
               "!!! BE CAREFUL to use tomestone field, previous is pool creator"
             ],
             "type": {
-              "array": [
-                "u8",
-                32
-              ]
+              "array": ["u8", 32]
             }
           },
           {
             "name": "partner",
-            "docs": [
-              "partner"
-            ],
+            "docs": ["partner"],
             "type": "pubkey"
           },
           {
             "name": "_padding",
-            "docs": [
-              "Reserve"
-            ],
+            "docs": ["Reserve"],
             "type": {
-              "array": [
-                "u8",
-                126
-              ]
+              "array": ["u8", 126]
             }
           }
         ]
@@ -5290,50 +3778,35 @@
     },
     {
       "name": "PartnerMetadata",
-      "docs": [
-        "Metadata for a partner."
-      ],
+      "docs": ["Metadata for a partner."],
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "fee_claimer",
-            "docs": [
-              "fee claimer"
-            ],
+            "docs": ["fee claimer"],
             "type": "pubkey"
           },
           {
             "name": "padding",
-            "docs": [
-              "padding for future use"
-            ],
+            "docs": ["padding for future use"],
             "type": {
-              "array": [
-                "u128",
-                6
-              ]
+              "array": ["u128", 6]
             }
           },
           {
             "name": "name",
-            "docs": [
-              "Name of partner."
-            ],
+            "docs": ["Name of partner."],
             "type": "string"
           },
           {
             "name": "website",
-            "docs": [
-              "Website of partner."
-            ],
+            "docs": ["Website of partner."],
             "type": "string"
           },
           {
             "name": "logo",
-            "docs": [
-              "Logo of partner"
-            ],
+            "docs": ["Logo of partner"],
             "type": "string"
           }
         ]
@@ -5350,16 +3823,12 @@
         "fields": [
           {
             "name": "quote_mint",
-            "docs": [
-              "quote mint"
-            ],
+            "docs": ["quote mint"],
             "type": "pubkey"
           },
           {
             "name": "fee_claimer",
-            "docs": [
-              "Address to get the fee"
-            ],
+            "docs": ["Address to get the fee"],
             "type": "pubkey"
           },
           {
@@ -5371,9 +3840,7 @@
           },
           {
             "name": "pool_fees",
-            "docs": [
-              "Pool fee"
-            ],
+            "docs": ["Pool fee"],
             "type": {
               "defined": {
                 "name": "PoolFeesConfig"
@@ -5382,86 +3849,62 @@
           },
           {
             "name": "collect_fee_mode",
-            "docs": [
-              "Collect fee mode"
-            ],
+            "docs": ["Collect fee mode"],
             "type": "u8"
           },
           {
             "name": "migration_option",
-            "docs": [
-              "migration option"
-            ],
+            "docs": ["migration option"],
             "type": "u8"
           },
           {
             "name": "activation_type",
-            "docs": [
-              "whether mode slot or timestamp"
-            ],
+            "docs": ["whether mode slot or timestamp"],
             "type": "u8"
           },
           {
             "name": "token_decimal",
-            "docs": [
-              "token decimals"
-            ],
+            "docs": ["token decimals"],
             "type": "u8"
           },
           {
             "name": "version",
-            "docs": [
-              "version"
-            ],
+            "docs": ["version"],
             "type": "u8"
           },
           {
             "name": "token_type",
-            "docs": [
-              "token type of base token"
-            ],
+            "docs": ["token type of base token"],
             "type": "u8"
           },
           {
             "name": "quote_token_flag",
-            "docs": [
-              "quote token flag"
-            ],
+            "docs": ["quote token flag"],
             "type": "u8"
           },
           {
             "name": "partner_locked_lp_percentage",
-            "docs": [
-              "partner locked lp percentage"
-            ],
+            "docs": ["partner locked lp percentage"],
             "type": "u8"
           },
           {
             "name": "partner_lp_percentage",
-            "docs": [
-              "partner lp percentage"
-            ],
+            "docs": ["partner lp percentage"],
             "type": "u8"
           },
           {
             "name": "creator_locked_lp_percentage",
-            "docs": [
-              "creator post migration fee percentage"
-            ],
+            "docs": ["creator post migration fee percentage"],
             "type": "u8"
           },
           {
             "name": "creator_lp_percentage",
-            "docs": [
-              "creator lp percentage"
-            ],
+            "docs": ["creator lp percentage"],
             "type": "u8"
           },
           {
             "name": "migration_fee_option",
-            "docs": [
-              "migration fee option"
-            ],
+            "docs": ["migration fee option"],
             "type": "u8"
           },
           {
@@ -5473,77 +3916,54 @@
           },
           {
             "name": "creator_trading_fee_percentage",
-            "docs": [
-              "creator trading fee percentage"
-            ],
+            "docs": ["creator trading fee percentage"],
             "type": "u8"
           },
           {
             "name": "token_update_authority",
-            "docs": [
-              "token update authority"
-            ],
+            "docs": ["token update authority"],
             "type": "u8"
           },
           {
             "name": "migration_fee_percentage",
-            "docs": [
-              "migration fee percentage"
-            ],
+            "docs": ["migration fee percentage"],
             "type": "u8"
           },
           {
             "name": "creator_migration_fee_percentage",
-            "docs": [
-              "creator migration fee percentage"
-            ],
+            "docs": ["creator migration fee percentage"],
             "type": "u8"
           },
           {
             "name": "_padding_0",
-            "docs": [
-              "padding 0"
-            ],
+            "docs": ["padding 0"],
             "type": {
-              "array": [
-                "u8",
-                7
-              ]
+              "array": ["u8", 7]
             }
           },
           {
             "name": "swap_base_amount",
-            "docs": [
-              "swap base amount"
-            ],
+            "docs": ["swap base amount"],
             "type": "u64"
           },
           {
             "name": "migration_quote_threshold",
-            "docs": [
-              "migration quote threshold (in quote token)"
-            ],
+            "docs": ["migration quote threshold (in quote token)"],
             "type": "u64"
           },
           {
             "name": "migration_base_threshold",
-            "docs": [
-              "migration base threshold (in base token)"
-            ],
+            "docs": ["migration base threshold (in base token)"],
             "type": "u64"
           },
           {
             "name": "migration_sqrt_price",
-            "docs": [
-              "migration sqrt price"
-            ],
+            "docs": ["migration sqrt price"],
             "type": "u128"
           },
           {
             "name": "locked_vesting_config",
-            "docs": [
-              "locked vesting config"
-            ],
+            "docs": ["locked vesting config"],
             "type": {
               "defined": {
                 "name": "LockedVestingConfig"
@@ -5552,63 +3972,44 @@
           },
           {
             "name": "pre_migration_token_supply",
-            "docs": [
-              "pre migration token supply"
-            ],
+            "docs": ["pre migration token supply"],
             "type": "u64"
           },
           {
             "name": "post_migration_token_supply",
-            "docs": [
-              "post migration token supply"
-            ],
+            "docs": ["post migration token supply"],
             "type": "u64"
           },
           {
             "name": "migrated_collect_fee_mode",
-            "docs": [
-              "migrated pool collect fee mode"
-            ],
+            "docs": ["migrated pool collect fee mode"],
             "type": "u8"
           },
           {
             "name": "migrated_dynamic_fee",
-            "docs": [
-              "migrated dynamic fee option."
-            ],
+            "docs": ["migrated dynamic fee option."],
             "type": "u8"
           },
           {
             "name": "migrated_pool_fee_bps",
-            "docs": [
-              "migrated pool fee in bps"
-            ],
+            "docs": ["migrated pool fee in bps"],
             "type": "u16"
           },
           {
             "name": "_padding_1",
-            "docs": [
-              "padding 1"
-            ],
+            "docs": ["padding 1"],
             "type": {
-              "array": [
-                "u8",
-                12
-              ]
+              "array": ["u8", 12]
             }
           },
           {
             "name": "_padding_2",
-            "docs": [
-              "padding 2"
-            ],
+            "docs": ["padding 2"],
             "type": "u128"
           },
           {
             "name": "sqrt_start_price",
-            "docs": [
-              "minimum price"
-            ],
+            "docs": ["minimum price"],
             "type": "u128"
           },
           {
@@ -5632,17 +4033,13 @@
     },
     {
       "name": "PoolFeeParameters",
-      "docs": [
-        "Information regarding fee charges"
-      ],
+      "docs": ["Information regarding fee charges"],
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "base_fee",
-            "docs": [
-              "Base fee"
-            ],
+            "docs": ["Base fee"],
             "type": {
               "defined": {
                 "name": "BaseFeeParameters"
@@ -5651,9 +4048,7 @@
           },
           {
             "name": "dynamic_fee",
-            "docs": [
-              "dynamic fee"
-            ],
+            "docs": ["dynamic fee"],
             "type": {
               "option": {
                 "defined": {
@@ -5667,9 +4062,7 @@
     },
     {
       "name": "PoolFees",
-      "docs": [
-        "Information regarding fee charges"
-      ],
+      "docs": ["Information regarding fee charges"],
       "type": {
         "kind": "struct",
         "fields": [
@@ -5720,19 +4113,13 @@
           {
             "name": "padding_0",
             "type": {
-              "array": [
-                "u64",
-                5
-              ]
+              "array": ["u64", 5]
             }
           },
           {
             "name": "padding_1",
             "type": {
-              "array": [
-                "u8",
-                6
-              ]
+              "array": ["u8", 6]
             }
           },
           {
@@ -5791,15 +4178,80 @@
       }
     },
     {
+      "name": "SwapParameters2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount_0",
+            "docs": [
+              "When it's exact in, partial fill, this will be amount_in. When it's exact out, this will be amount_out"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "amount_1",
+            "docs": [
+              "When it's exact in, partial fill, this will be minimum_amount_out. When it's exact out, this will be maximum_amount_in"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "swap_mode",
+            "docs": ["Swap mode, refer [SwapMode]"],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
       "name": "SwapResult",
-      "docs": [
-        "Encodes all results of swapping"
-      ],
+      "docs": ["Encodes all results of swapping"],
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "actual_input_amount",
+            "type": "u64"
+          },
+          {
+            "name": "output_amount",
+            "type": "u64"
+          },
+          {
+            "name": "next_sqrt_price",
+            "type": "u128"
+          },
+          {
+            "name": "trading_fee",
+            "type": "u64"
+          },
+          {
+            "name": "protocol_fee",
+            "type": "u64"
+          },
+          {
+            "name": "referral_fee",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapResult2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "included_fee_input_amount",
+            "type": "u64"
+          },
+          {
+            "name": "excluded_fee_input_amount",
+            "type": "u64"
+          },
+          {
+            "name": "amount_left",
             "type": "u64"
           },
           {
@@ -5832,9 +4284,7 @@
         "fields": [
           {
             "name": "pre_migration_token_supply",
-            "docs": [
-              "pre migration token supply"
-            ],
+            "docs": ["pre migration token supply"],
             "type": "u64"
           },
           {
@@ -5860,9 +4310,7 @@
         "fields": [
           {
             "name": "volatility_tracker",
-            "docs": [
-              "volatility tracker"
-            ],
+            "docs": ["volatility tracker"],
             "type": {
               "defined": {
                 "name": "VolatilityTracker"
@@ -5871,142 +4319,102 @@
           },
           {
             "name": "config",
-            "docs": [
-              "config key"
-            ],
+            "docs": ["config key"],
             "type": "pubkey"
           },
           {
             "name": "creator",
-            "docs": [
-              "creator"
-            ],
+            "docs": ["creator"],
             "type": "pubkey"
           },
           {
             "name": "base_mint",
-            "docs": [
-              "base mint"
-            ],
+            "docs": ["base mint"],
             "type": "pubkey"
           },
           {
             "name": "base_vault",
-            "docs": [
-              "base vault"
-            ],
+            "docs": ["base vault"],
             "type": "pubkey"
           },
           {
             "name": "quote_vault",
-            "docs": [
-              "quote vault"
-            ],
+            "docs": ["quote vault"],
             "type": "pubkey"
           },
           {
             "name": "base_reserve",
-            "docs": [
-              "base reserve"
-            ],
+            "docs": ["base reserve"],
             "type": "u64"
           },
           {
             "name": "quote_reserve",
-            "docs": [
-              "quote reserve"
-            ],
+            "docs": ["quote reserve"],
             "type": "u64"
           },
           {
             "name": "protocol_base_fee",
-            "docs": [
-              "protocol base fee"
-            ],
+            "docs": ["protocol base fee"],
             "type": "u64"
           },
           {
             "name": "protocol_quote_fee",
-            "docs": [
-              "protocol quote fee"
-            ],
+            "docs": ["protocol quote fee"],
             "type": "u64"
           },
           {
             "name": "partner_base_fee",
-            "docs": [
-              "partner base fee"
-            ],
+            "docs": ["partner base fee"],
             "type": "u64"
           },
           {
             "name": "partner_quote_fee",
-            "docs": [
-              "trading quote fee"
-            ],
+            "docs": ["trading quote fee"],
             "type": "u64"
           },
           {
             "name": "sqrt_price",
-            "docs": [
-              "current price"
-            ],
+            "docs": ["current price"],
             "type": "u128"
           },
           {
             "name": "activation_point",
-            "docs": [
-              "Activation point"
-            ],
+            "docs": ["Activation point"],
             "type": "u64"
           },
           {
             "name": "pool_type",
-            "docs": [
-              "pool type, spl token or token2022"
-            ],
+            "docs": ["pool type, spl token or token2022"],
             "type": "u8"
           },
           {
             "name": "is_migrated",
-            "docs": [
-              "is migrated"
-            ],
+            "docs": ["is migrated"],
             "type": "u8"
           },
           {
             "name": "is_partner_withdraw_surplus",
-            "docs": [
-              "is partner withdraw surplus"
-            ],
+            "docs": ["is partner withdraw surplus"],
             "type": "u8"
           },
           {
             "name": "is_protocol_withdraw_surplus",
-            "docs": [
-              "is protocol withdraw surplus"
-            ],
+            "docs": ["is protocol withdraw surplus"],
             "type": "u8"
           },
           {
             "name": "migration_progress",
-            "docs": [
-              "migration progress"
-            ],
+            "docs": ["migration progress"],
             "type": "u8"
           },
           {
             "name": "is_withdraw_leftover",
-            "docs": [
-              "is withdraw leftover"
-            ],
+            "docs": ["is withdraw leftover"],
             "type": "u8"
           },
           {
             "name": "is_creator_withdraw_surplus",
-            "docs": [
-              "is creator withdraw surplus"
-            ],
+            "docs": ["is creator withdraw surplus"],
             "type": "u8"
           },
           {
@@ -6018,9 +4426,7 @@
           },
           {
             "name": "metrics",
-            "docs": [
-              "pool metrics"
-            ],
+            "docs": ["pool metrics"],
             "type": {
               "defined": {
                 "name": "PoolMetrics"
@@ -6029,35 +4435,24 @@
           },
           {
             "name": "finish_curve_timestamp",
-            "docs": [
-              "The time curve is finished"
-            ],
+            "docs": ["The time curve is finished"],
             "type": "u64"
           },
           {
             "name": "creator_base_fee",
-            "docs": [
-              "creator base fee"
-            ],
+            "docs": ["creator base fee"],
             "type": "u64"
           },
           {
             "name": "creator_quote_fee",
-            "docs": [
-              "creator quote fee"
-            ],
+            "docs": ["creator quote fee"],
             "type": "u64"
           },
           {
             "name": "_padding_1",
-            "docs": [
-              "Padding for further use"
-            ],
+            "docs": ["Padding for further use"],
             "type": {
-              "array": [
-                "u64",
-                7
-              ]
+              "array": ["u64", 7]
             }
           }
         ]
@@ -6065,50 +4460,35 @@
     },
     {
       "name": "VirtualPoolMetadata",
-      "docs": [
-        "Metadata for a virtual pool."
-      ],
+      "docs": ["Metadata for a virtual pool."],
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "virtual_pool",
-            "docs": [
-              "virtual pool"
-            ],
+            "docs": ["virtual pool"],
             "type": "pubkey"
           },
           {
             "name": "padding",
-            "docs": [
-              "padding for future use"
-            ],
+            "docs": ["padding for future use"],
             "type": {
-              "array": [
-                "u128",
-                6
-              ]
+              "array": ["u128", 6]
             }
           },
           {
             "name": "name",
-            "docs": [
-              "Name of project."
-            ],
+            "docs": ["Name of project."],
             "type": "string"
           },
           {
             "name": "website",
-            "docs": [
-              "Website of project."
-            ],
+            "docs": ["Website of project."],
             "type": "string"
           },
           {
             "name": "logo",
-            "docs": [
-              "Logo of project"
-            ],
+            "docs": ["Logo of project"],
             "type": "string"
           }
         ]
@@ -6130,10 +4510,7 @@
           {
             "name": "padding",
             "type": {
-              "array": [
-                "u8",
-                8
-              ]
+              "array": ["u8", 8]
             }
           },
           {

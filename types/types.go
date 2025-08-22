@@ -209,12 +209,9 @@ type SwapParam struct {
 	Payer                solana.PublicKey
 }
 
-type QuoteResult struct {
-	AmountOut        *big.Int
-	MinimumAmountOut *big.Int
-	NextSqrtPrice    *big.Int
-	Fee              QuoteFee
-	Price            QuotePrice
+type SwapQuoteResult struct {
+	dbc.SwapResult
+	MinimumAmountOut uint64
 }
 
 type QuoteFee struct {
@@ -229,7 +226,7 @@ type QuotePrice struct {
 }
 
 type FeeMode struct {
-	FeeOnInput      bool
+	FeesOnInput     bool
 	FeesOnBaseToken bool
 	HasReferral     bool
 }
@@ -244,6 +241,7 @@ type FeeOnAmountResult struct {
 type SwapAmount struct {
 	OutputAmount  *big.Int
 	NextSqrtPrice *big.Int
+	AmountLeft    *big.Int
 }
 
 type SwapQuoteParam struct {
@@ -468,4 +466,10 @@ type LockedVestingParamsBigInt struct {
 type GetFirstCurveResult struct {
 	SqrtStartPrice *big.Int
 	Curve          []dbc.LiquidityDistributionParameters
+}
+
+type SwapQuote2Result struct {
+	dbc.SwapResult2
+	MinimumAmountOut uint64
+	MaximumAmountIn  uint64
 }

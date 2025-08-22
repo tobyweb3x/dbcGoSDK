@@ -328,7 +328,7 @@ type MeteoraDammMigrationMetadataAccount struct {
 	CreatorLp uint64
 
 	// padding
-	Padding0_ uint8
+	Padding_ uint8
 
 	// flag to check whether lp is locked for creator
 	CreatorLockedStatus uint8

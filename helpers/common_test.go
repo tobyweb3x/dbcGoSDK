@@ -407,7 +407,7 @@ func TestRateLimiter(t *testing.T) {
 		fee1 := helpers.CalculateRateLimiterFee(params, big.NewInt(5*1e8))
 		expect := new(big.Int).Quo(
 			new(big.Int).Mul(big.NewInt(5*1e8), new(big.Int).SetUint64(params.CliffFeeNumerator)),
-			big.NewInt(constants.FeeDenominator),
+			constants.FeeDenominatorBigInt,
 		)
 		assert.True(t, expect.Cmp(fee1) == 0)
 
@@ -448,7 +448,7 @@ func TestRateLimiter(t *testing.T) {
 		fee := helpers.CalculateRateLimiterFee(params, big.NewInt(1_000_000))
 		expect := new(big.Int).Quo(
 			new(big.Int).Mul(big.NewInt(1_000_000), big.NewInt(constants.MaxFeeNumerator)),
-			big.NewInt(constants.FeeDenominator),
+			constants.FeeDenominatorBigInt,
 		)
 		assert.True(t, fee.Cmp(expect) <= 0)
 	})

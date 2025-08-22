@@ -241,6 +241,26 @@ var (
 		msg:  "Invalid migrated pool fee params",
 		name: "InvalidMigratedPoolFee",
 	}
+	ErrUndeterminedError = &customErrorDef{
+		code: 6045,
+		msg:  "Undertermined error",
+		name: "UndeterminedError",
+	}
+	ErrRateLimiterNotSupported = &customErrorDef{
+		code: 6046,
+		msg:  "Rate limiter not supported",
+		name: "RateLimiterNotSupported",
+	}
+	ErrAmountLeftIsNotZero = &customErrorDef{
+		code: 6047,
+		msg:  "Amount left is not zero",
+		name: "AmountLeftIsNotZero",
+	}
+	ErrNextSqrtPriceIsSmallerThanStartSqrtPrice = &customErrorDef{
+		code: 6048,
+		msg:  "Next sqrt price is smaller than start sqrt price",
+		name: "NextSqrtPriceIsSmallerThanStartSqrtPrice",
+	}
 	Errors = map[int]CustomError{
 		6000: ErrMathOverflow,
 		6001: ErrInvalidFee,
@@ -287,6 +307,10 @@ var (
 		6042: ErrInvalidFeeRateLimiter,
 		6043: ErrFailToValidateSingleSwapInstruction,
 		6044: ErrInvalidMigratedPoolFee,
+		6045: ErrUndeterminedError,
+		6046: ErrRateLimiterNotSupported,
+		6047: ErrAmountLeftIsNotZero,
+		6048: ErrNextSqrtPriceIsSmallerThanStartSqrtPrice,
 	}
 )
 

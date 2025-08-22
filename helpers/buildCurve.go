@@ -642,8 +642,15 @@ func BuildCurveWithLiquidityWeights(
 	}
 
 	// reverse to calculate swap amount and migration amount
-	swapBaseAmount := GetBaseTokenForSwap(pMin, pMax, curve)
-	swapBaseAmountBuffer := GetSwapAmountWithBuffer(swapBaseAmount, pMin, curve)
+	swapBaseAmount, err := GetBaseTokenForSwap(pMin, pMax, curve)
+	if err != nil {
+		return dbc.ConfigParameters{}, err
+	}
+
+	swapBaseAmountBuffer, err := GetSwapAmountWithBuffer(swapBaseAmount, pMin, curve)
+	if err != nil {
+		return dbc.ConfigParameters{}, err
+	}
 
 	migrationAmount := new(big.Int).Sub(totalSwapAndMigrationAmount, swapBaseAmountBuffer)
 

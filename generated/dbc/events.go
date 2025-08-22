@@ -1406,6 +1406,141 @@ func (obj *EvtSwapEventData) Self() any {
 	return obj
 }
 
+type EvtSwap2EventData struct {
+	Pool               ag_solanago.PublicKey
+	Config             ag_solanago.PublicKey
+	TradeDirection     uint8
+	HasReferral        bool
+	SwapParameters     SwapParameters2
+	SwapResult         SwapResult2
+	QuoteReserveAmount uint64
+	MigrationThreshold uint64
+	CurrentTimestamp   uint64
+}
+
+var EvtSwap2EventDataDiscriminator = [8]byte{189, 66, 51, 168, 38, 80, 117, 153}
+
+func (obj EvtSwap2EventData) MarshalWithEncoder(encoder *ag_binary.Encoder) (err error) {
+	// Write account discriminator:
+	err = encoder.WriteBytes(EvtSwap2EventDataDiscriminator[:], false)
+	if err != nil {
+		return err
+	}
+	// Serialize `Pool` param:
+	err = encoder.Encode(obj.Pool)
+	if err != nil {
+		return err
+	}
+	// Serialize `Config` param:
+	err = encoder.Encode(obj.Config)
+	if err != nil {
+		return err
+	}
+	// Serialize `TradeDirection` param:
+	err = encoder.Encode(obj.TradeDirection)
+	if err != nil {
+		return err
+	}
+	// Serialize `HasReferral` param:
+	err = encoder.Encode(obj.HasReferral)
+	if err != nil {
+		return err
+	}
+	// Serialize `SwapParameters` param:
+	err = encoder.Encode(obj.SwapParameters)
+	if err != nil {
+		return err
+	}
+	// Serialize `SwapResult` param:
+	err = encoder.Encode(obj.SwapResult)
+	if err != nil {
+		return err
+	}
+	// Serialize `QuoteReserveAmount` param:
+	err = encoder.Encode(obj.QuoteReserveAmount)
+	if err != nil {
+		return err
+	}
+	// Serialize `MigrationThreshold` param:
+	err = encoder.Encode(obj.MigrationThreshold)
+	if err != nil {
+		return err
+	}
+	// Serialize `CurrentTimestamp` param:
+	err = encoder.Encode(obj.CurrentTimestamp)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (obj *EvtSwap2EventData) UnmarshalWithDecoder(decoder *ag_binary.Decoder) (err error) {
+	// Read and check account discriminator:
+	{
+		discriminator, err := decoder.ReadTypeID()
+		if err != nil {
+			return err
+		}
+		if !discriminator.Equal(EvtSwap2EventDataDiscriminator[:]) {
+			return fmt.Errorf(
+				"wrong discriminator: wanted %s, got %s",
+				"[189 66 51 168 38 80 117 153]",
+				fmt.Sprint(discriminator[:]))
+		}
+	}
+	// Deserialize `Pool`:
+	err = decoder.Decode(&obj.Pool)
+	if err != nil {
+		return err
+	}
+	// Deserialize `Config`:
+	err = decoder.Decode(&obj.Config)
+	if err != nil {
+		return err
+	}
+	// Deserialize `TradeDirection`:
+	err = decoder.Decode(&obj.TradeDirection)
+	if err != nil {
+		return err
+	}
+	// Deserialize `HasReferral`:
+	err = decoder.Decode(&obj.HasReferral)
+	if err != nil {
+		return err
+	}
+	// Deserialize `SwapParameters`:
+	err = decoder.Decode(&obj.SwapParameters)
+	if err != nil {
+		return err
+	}
+	// Deserialize `SwapResult`:
+	err = decoder.Decode(&obj.SwapResult)
+	if err != nil {
+		return err
+	}
+	// Deserialize `QuoteReserveAmount`:
+	err = decoder.Decode(&obj.QuoteReserveAmount)
+	if err != nil {
+		return err
+	}
+	// Deserialize `MigrationThreshold`:
+	err = decoder.Decode(&obj.MigrationThreshold)
+	if err != nil {
+		return err
+	}
+	// Deserialize `CurrentTimestamp`:
+	err = decoder.Decode(&obj.CurrentTimestamp)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (*EvtSwap2EventData) isEventData() {}
+func (obj *EvtSwap2EventData) Self() any {
+	return obj
+}
+
 type EvtUpdatePoolCreatorEventData struct {
 	Pool       ag_solanago.PublicKey
 	Creator    ag_solanago.PublicKey
@@ -1688,6 +1823,7 @@ var eventTypes = map[[8]byte]reflect.Type{
 	EvtPartnerWithdrawMigrationFeeEventDataDiscriminator:    reflect.TypeOf(EvtPartnerWithdrawMigrationFeeEventData{}),
 	EvtPartnerWithdrawSurplusEventDataDiscriminator:         reflect.TypeOf(EvtPartnerWithdrawSurplusEventData{}),
 	EvtProtocolWithdrawSurplusEventDataDiscriminator:        reflect.TypeOf(EvtProtocolWithdrawSurplusEventData{}),
+	EvtSwap2EventDataDiscriminator:                          reflect.TypeOf(EvtSwap2EventData{}),
 	EvtSwapEventDataDiscriminator:                           reflect.TypeOf(EvtSwapEventData{}),
 	EvtUpdatePoolCreatorEventDataDiscriminator:              reflect.TypeOf(EvtUpdatePoolCreatorEventData{}),
 	EvtVirtualPoolMetadataEventDataDiscriminator:            reflect.TypeOf(EvtVirtualPoolMetadataEventData{}),
@@ -1711,6 +1847,7 @@ var eventNames = map[[8]byte]string{
 	EvtPartnerWithdrawMigrationFeeEventDataDiscriminator:    "EvtPartnerWithdrawMigrationFee",
 	EvtPartnerWithdrawSurplusEventDataDiscriminator:         "EvtPartnerWithdrawSurplus",
 	EvtProtocolWithdrawSurplusEventDataDiscriminator:        "EvtProtocolWithdrawSurplus",
+	EvtSwap2EventDataDiscriminator:                          "EvtSwap2",
 	EvtSwapEventDataDiscriminator:                           "EvtSwap",
 	EvtUpdatePoolCreatorEventDataDiscriminator:              "EvtUpdatePoolCreator",
 	EvtVirtualPoolMetadataEventDataDiscriminator:            "EvtVirtualPoolMetadata",

@@ -36,7 +36,7 @@ var (
 
 	Instruction_CloseClaimFeeOperator = ag_binary.TypeID([8]byte{38, 134, 82, 216, 95, 124, 17, 99})
 
-	// ADMIN FUNCTIONS ///
+	// ADMIN FUNCTIONS_ ///
 	Instruction_CreateClaimFeeOperator = ag_binary.TypeID([8]byte{169, 62, 207, 107, 58, 187, 162, 109})
 
 	Instruction_CreateConfig = ag_binary.TypeID([8]byte{201, 207, 243, 114, 75, 111, 47, 189})
@@ -76,6 +76,8 @@ var (
 
 	// TRADING BOTS FUNCTIONS ////
 	Instruction_Swap = ag_binary.TypeID([8]byte{248, 198, 158, 145, 225, 117, 135, 200})
+
+	Instruction_Swap2 = ag_binary.TypeID([8]byte{65, 75, 63, 76, 235, 91, 91, 136})
 
 	Instruction_TransferPoolCreator = ag_binary.TypeID([8]byte{20, 7, 169, 33, 58, 147, 166, 33})
 
@@ -130,6 +132,8 @@ func InstructionIDToName(id ag_binary.TypeID) string {
 		return "ProtocolWithdrawSurplus"
 	case Instruction_Swap:
 		return "Swap"
+	case Instruction_Swap2:
+		return "Swap2"
 	case Instruction_TransferPoolCreator:
 		return "TransferPoolCreator"
 	case Instruction_WithdrawLeftover:
@@ -218,6 +222,9 @@ var InstructionImplDef = ag_binary.NewVariantDefinition(
 		},
 		{
 			Name: "swap", Type: (*SwapInstruction)(nil),
+		},
+		{
+			Name: "swap2", Type: (*Swap2Instruction)(nil),
 		},
 		{
 			Name: "transfer_pool_creator", Type: (*TransferPoolCreatorInstruction)(nil),

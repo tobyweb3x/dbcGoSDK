@@ -100,3 +100,59 @@ func TestCurve(t *testing.T) {
 		assert.Contains(t, err.Error(), "sqrt price cannot be zero")
 	})
 }
+
+func TestGetDeltaAmountXXXUnsigned(t *testing.T) {
+	p0, p1 := big.NewInt(10312044770285001), big.NewInt(41248173712355948)
+	p2, _ := new(big.Int).SetString("79226673521066979257578248091", 10)
+
+	l0, _ := new(big.Int).SetString("10999513467186856574015959876923", 10)
+	l1, _ := new(big.Int).SetString("3436021254348803974616125", 10)
+
+	t.Run("getDeltaAmountBaseUnsigned", func(t *testing.T) {
+		base1, err := maths.GetDeltaAmountBaseUnsigned(
+			p0,
+			p1,
+			l0,
+			types.RoundingUp,
+		)
+		if err != nil {
+			t.Fatalf("GetDeltaAmountBaseUnsigned errored: %s", err.Error())
+		}
+
+		base2, err := maths.GetDeltaAmountBaseUnsigned(
+			p1,
+			p2,
+			l1,
+			types.RoundingUp,
+		)
+		if err != nil {
+			t.Fatalf("GetDeltaAmountBaseUnsigned errored: %s", err.Error())
+		}
+
+		assert.True(t, big.NewInt(799999979174704).Cmp(base1.Add(base1, base2)) == 0)
+	})
+
+	t.Run("getDeltaAmountQuoteUnsigned", func(t *testing.T) {
+		quote1, err := maths.GetDeltaAmountQuoteUnsigned(
+			p0,
+			p1,
+			l0,
+			types.RoundingUp,
+		)
+		if err != nil {
+			t.Fatalf("GetDeltaAmountQuoteUnsigned errored: %s", err.Error())
+		}
+
+		quote2, err := maths.GetDeltaAmountQuoteUnsigned(
+			p1,
+			p2,
+			l1,
+			types.RoundingUp,
+		)
+		if err != nil {
+			t.Fatalf("GetDeltaAmountQuoteUnsigned errored: %s", err.Error())
+		}
+
+		assert.True(t, big.NewInt(799997005061429).Cmp(quote1.Add(quote1, quote2)) == 0)
+	})
+}

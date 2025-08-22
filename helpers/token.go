@@ -180,3 +180,18 @@ func GetTokenType(conn *rpc.Client, tokenMint solana.PublicKey) (types.TokenType
 
 	return types.TokenTypeToken2022, nil
 }
+
+func GetTokenDecimals(
+	conn *rpc.Client, mintAddress solana.PublicKey,
+) (uint8, error) {
+	var mint token.Mint
+	if err := conn.GetAccountDataBorshInto(
+		context.Background(),
+		mintAddress,
+		&mint,
+	); err != nil {
+		return 0, err
+	}
+
+	return mint.Decimals, nil
+}

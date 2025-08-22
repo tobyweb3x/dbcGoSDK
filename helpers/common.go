@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"context"
 	"dbcGoSDK/constants"
 	"dbcGoSDK/generated/dbc"
 	"dbcGoSDK/maths"
@@ -12,6 +13,7 @@ import (
 	"slices"
 
 	"github.com/gagliardetto/solana-go"
+	"github.com/gagliardetto/solana-go/rpc"
 )
 
 func GetFirstkey(key1, key2 solana.PublicKey) []byte {
@@ -172,7 +174,7 @@ func GetRateLimiterParams(
 	cliffFeeNumerator, feeIncrementNumerator :=
 		BpsToFeeNumerator(baseFeeBps), BpsToFeeNumerator(uint64(feeIncrementBps))
 
-	if feeIncrementNumerator.Cmp(big.NewInt(constants.FeeDenominator)) >= 0 {
+	if feeIncrementNumerator.Cmp(constants.FeeDenominatorBigInt) >= 0 {
 		return types.BaseFee{}, errors.New("fee increment numerator must be less than FEE_DENOMINATOR")
 	}
 
@@ -511,11 +513,16 @@ func GetMigrationBaseToken(
 		}
 
 		// calculate base threshold
-		baseAmount := GetDeltaAmountBase(
+		baseAmount, err := maths.GetDeltaAmountBaseUnsigned(
 			sqrtMigrationPrice,
 			constants.MaxSqrtPrice,
 			liquidity,
+			types.RoundingUp,
 		)
+		if err != nil {
+			return nil, err
+		}
+
 		return baseAmount, nil
 	}
 
@@ -524,7 +531,7 @@ func GetMigrationBaseToken(
 
 // GetInitialLiquidityFromDeltaQuote gets the initial liquidity from delta quote.
 //
-//	Formula: L = Δb / (√P_upper - √P_lower)
+//	Formula: Δb = L (√P_upper - √P_lower) => L = Δb / (√P_upper - √P_lower)
 func GetInitialLiquidityFromDeltaQuote(
 	quoteAmount, sqrtMinPrice, sqrtPrice *big.Int,
 ) (*big.Int, error) {
@@ -533,20 +540,23 @@ func GetInitialLiquidityFromDeltaQuote(
 		return nil, fmt.Errorf("safeMath requires value not negative: value is %s", priceDelta.String())
 	}
 
-	return priceDelta.Quo(
-		new(big.Int).Lsh(quoteAmount, constants.RESOLUTION*2),
+	return priceDelta.Quo( // rounds down
+		new(big.Int).Lsh(quoteAmount, constants.RESOLUTION*2), // quoteAmountShifted
 		priceDelta,
 	), nil
 }
 
+// GetInitialLiquidityFromDeltaBase gets the initial liquidity from delta base.
+//
+//	Formula: Δa = L * (1 / √P_lower - 1 / √P_upper) => L = Δa / (1 / √P_lower - 1 / √P_upper)
 func GetInitialLiquidityFromDeltaBase(
 	baseAmount, sqrtMaxPrice, sqrtPrice *big.Int,
 ) (*big.Int, error) {
 	priceDelta := new(big.Int).Sub(sqrtMaxPrice, sqrtPrice)
 	if priceDelta.Sign() < 0 {
-		return nil, fmt.Errorf("safeMath requires value not negative: value is %s", priceDelta.String())
+		return nil, fmt.Errorf("GetInitialLiquidityFromDeltaBase:safeMath requires value not negative: value is %s", priceDelta.String())
 	}
-	return new(big.Int).Quo(
+	return new(big.Int).Quo( // rounds down
 		new(big.Int).Mul(
 			new(big.Int).Mul(baseAmount, sqrtPrice),
 			sqrtMaxPrice,
@@ -566,54 +576,65 @@ func GetInitialLiquidityFromDeltaBase(
 // - √Pa is the lower sqrt price
 //
 // - √Pb is the upper sqrt price
-func GetDeltaAmountBase(
-	lowerSqrtPrice, upperSqrtPrice, liquidity *big.Int,
-) *big.Int {
-	numerator := new(big.Int).Mul(
-		liquidity,
-		new(big.Int).Sub(upperSqrtPrice, lowerSqrtPrice),
-	)
-	denominator := new(big.Int).Mul(lowerSqrtPrice, upperSqrtPrice)
-	return new(big.Int).Div(
-		new(big.Int).Sub(
-			new(big.Int).Add(numerator, denominator),
-			big.NewInt(1),
-		),
-		denominator,
-	)
-}
+// func GetDeltaAmountBase(
+// 	lowerSqrtPrice, upperSqrtPrice, liquidity *big.Int,
+// ) *big.Int {
+// 	numerator := new(big.Int).Mul(
+// 		liquidity,
+// 		new(big.Int).Sub(upperSqrtPrice, lowerSqrtPrice),
+// 	)
+// 	denominator := new(big.Int).Mul(lowerSqrtPrice, upperSqrtPrice)
+// 	return new(big.Int).Div(
+// 		new(big.Int).Sub(
+// 			new(big.Int).Add(numerator, denominator),
+// 			big.NewInt(1),
+// 		),
+// 		denominator,
+// 	)
+// }
 
 func GetBaseTokenForSwap(
 	sqrtStartPrice, sqrtMigrationPrice *big.Int,
 	curve []dbc.LiquidityDistributionParameters,
-) *big.Int {
+) (*big.Int, error) {
 
 	totalAmount := big.NewInt(0)
-	for i := 0; i < len(curve); i++ {
+	for i := range len(curve) {
 		lowerSqrtPrice := sqrtStartPrice
 		if i != 0 {
 			lowerSqrtPrice = curve[i-1].SqrtPrice.BigInt()
 		}
 
-		if curve[i].SqrtPrice.BigInt().Cmp(sqrtMigrationPrice) > 0 {
-			deltaAmount := GetDeltaAmountBase(
+		if hold := curve[i].SqrtPrice.BigInt(); hold != nil && hold.Cmp(sqrtMigrationPrice) > 0 {
+			deltaAmount, err := maths.GetDeltaAmountBaseUnsigned(
 				lowerSqrtPrice,
 				sqrtMigrationPrice,
 				curve[i].Liquidity.BigInt(),
+				types.RoundingUp,
 			)
+			if err != nil {
+				return nil, err
+			}
+
 			totalAmount.Add(totalAmount, deltaAmount)
-			break
+			return totalAmount, nil
 		}
 
-		deltaAmount := GetDeltaAmountBase(
+		deltaAmount, err := maths.GetDeltaAmountBaseUnsigned(
 			lowerSqrtPrice,
 			curve[i].SqrtPrice.BigInt(),
 			curve[i].Liquidity.BigInt(),
+			types.RoundingUp,
 		)
+
+		if err != nil {
+			return nil, err
+		}
+
 		totalAmount.Add(totalAmount, deltaAmount)
 	}
 
-	return totalAmount
+	return totalAmount, nil
 }
 
 func GetTotalSupplyFromCurve(
@@ -635,17 +656,23 @@ func GetTotalSupplyFromCurve(
 		return nil, err
 	}
 
-	swapBaseAmount := GetBaseTokenForSwap(
+	swapBaseAmount, err := GetBaseTokenForSwap(
 		sqrtStartPrice,
 		sqrtMigrationPrice,
 		curve,
 	)
+	if err != nil {
+		return nil, err
+	}
 
-	swapBaseAmountBuffer := GetSwapAmountWithBuffer(
+	swapBaseAmountBuffer, err := GetSwapAmountWithBuffer(
 		swapBaseAmount,
 		sqrtStartPrice,
 		curve,
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	migrationQuoteAmount := GetMigrationQuoteAmountFromMigrationQuoteThreshold(
 		new(big.Float).SetInt(migrationQuoteThreshold),
@@ -674,7 +701,7 @@ func GetTotalSupplyFromCurve(
 func GetSwapAmountWithBuffer(
 	swapBaseAmount, sqrtStartPrice *big.Int,
 	curve []dbc.LiquidityDistributionParameters,
-) *big.Int {
+) (*big.Int, error) {
 
 	swapAmountBuffer := new(big.Int).Add(
 		swapBaseAmount,
@@ -683,17 +710,21 @@ func GetSwapAmountWithBuffer(
 			big.NewInt(100),
 		),
 	)
-	maxBaseAmountOnCurve := GetBaseTokenForSwap(
+
+	maxBaseAmountOnCurve, err := GetBaseTokenForSwap(
 		sqrtStartPrice,
 		constants.MaxSqrtPrice,
 		curve,
 	)
-
-	if swapAmountBuffer.Cmp(maxBaseAmountOnCurve) < 0 {
-		return swapAmountBuffer
+	if err != nil {
+		return nil, err
 	}
 
-	return maxBaseAmountOnCurve
+	if swapAmountBuffer.Cmp(maxBaseAmountOnCurve) < 0 {
+		return swapAmountBuffer, nil
+	}
+
+	return maxBaseAmountOnCurve, nil
 }
 
 // GetMigrationThresholdPrice gets the migration threshold price.
@@ -766,6 +797,14 @@ func GetMigrationThresholdPrice(
 }
 
 // GetFirstCurve gets the first curve.
+//
+//		Swap_amount = L * (1/Pmin - 1/Pmax) = L * (Pmax - Pmin) / (Pmax * Pmin)      (1)
+//		Quote_amount = L * (Pmax - Pmin)                                             (2)
+//		(Quote_amount * (1-migrationFeePercent/100) / Migration_amount = Pmax ^ 2    (3)
+//
+//	 From (1) and (2) => Quote_amount / Swap_amount = (Pmax * Pmin)               (4)
+//	 From (3) and (4) => Swap_amount * (1-migrationFeePercent/100) / Migration_amount = Pmax / Pmin
+//	 => Pmin = Pmax * Migration_amount / (Swap_amount * (1-migrationFeePercent/100))
 func GetFirstCurve(
 	migrationSqrtPrice, migrationBaseAmount, swapAmount, migrationQuoteThreshold *big.Int,
 	migrationFeePercent float64,
@@ -955,7 +994,7 @@ func CalculateRateLimiterFee(
 	if inputAmount.Cmp(new(big.Int).SetUint64(params.ThirdFactor)) <= 0 {
 		return new(big.Int).Quo(
 			new(big.Int).Mul(inputAmount, new(big.Int).SetUint64(params.CliffFeeNumerator)),
-			big.NewInt(constants.FeeDenominator),
+			constants.FeeDenominatorBigInt,
 		)
 	}
 
@@ -994,7 +1033,7 @@ func CalculateRateLimiterFee(
 		firstFee := new(big.Int).Mul(x0, numerator1)
 		secondFee := new(big.Int).Mul(b, numerator2)
 		fee := new(big.Int).Add(firstFee, secondFee)
-		return new(big.Int).Quo(fee, big.NewInt(constants.FeeDenominator))
+		return new(big.Int).Quo(fee, constants.FeeDenominatorBigInt)
 	}
 
 	// if a >= max_index
@@ -1013,5 +1052,40 @@ func CalculateRateLimiterFee(
 	leftAmount := new(big.Int).Add(new(big.Int).Mul(d, x0), b)
 	secondFee := new(big.Int).Mul(leftAmount, numerator2)
 	fee := new(big.Int).Add(firstFee, secondFee)
-	return new(big.Int).Quo(fee, big.NewInt(constants.FeeDenominator))
+	return new(big.Int).Quo(fee, constants.FeeDenominatorBigInt)
+}
+
+// GetCurrentPoint gets the current point based on activation type.
+func GetCurrentPoint(
+	conn *rpc.Client,
+	activationType types.ActivationType,
+) (*big.Int, error) {
+	currentSlot, err := conn.GetSlot(context.Background(), rpc.CommitmentConfirmed)
+	if err != nil {
+		return nil, err
+	}
+
+	if activationType == types.ActivationTypeSlot {
+		return new(big.Int).SetUint64(currentSlot), nil
+	}
+
+	currentTime, err := conn.GetBlockTime(context.Background(), currentSlot)
+	if err != nil {
+		return nil, err
+	}
+	return big.NewInt(int64(*currentTime)), nil
+}
+
+// PrepareSwapAmountParam prepares the swap amount param.
+func PrepareSwapAmountParam(
+	amount float64,
+	mintAddress solana.PublicKey,
+	conn *rpc.Client,
+) (*big.Int, error) {
+	mintTokenDecimals, err := GetTokenDecimals(conn, mintAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	return ConvertToLamports(amount, types.TokenDecimal(mintTokenDecimals)), nil
 }

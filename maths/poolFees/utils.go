@@ -1,4 +1,4 @@
-package maths
+package poolfees
 
 import (
 	"dbcGoSDK/constants"
@@ -31,19 +31,21 @@ func MulDiv(x, y, denominator *big.Int, rounding types.Rounding) (*big.Int, erro
 	return new(big.Int).Quo(prod, denominator), nil
 }
 
-func Q64(n float64) *big.Int {
-	f := new(big.Float).Mul(
-		new(big.Float).SetFloat64(n),
-		new(big.Float).SetFloat64(1<<64),
+// toNumerators converts basis points to fee numerator.
+func toNumerators(bps, feeDenominator *big.Int) *big.Int {
+
+	r, _ := MulDiv(
+		bps,
+		feeDenominator,
+		big.NewInt(constants.BasisPointMax),
+		types.RoundingDown,
 	)
-	i := new(big.Int)
-	f.Int(i) // truncates
-	return i
+
+	return r
 }
 
 // PowQ64 is a custom power function for [big.Int] with scaling.
 func PowQ64(base, exponent *big.Int, scaling bool) *big.Int {
-	// result := new(big.Int).Set(oneQ64)
 
 	// special cases
 	if exponent.Sign() == 0 {
@@ -75,7 +77,7 @@ func PowQ64(base, exponent *big.Int, scaling bool) *big.Int {
 
 	// handle negative exponent
 	if isNegative {
-		result = new(big.Int).Div(
+		result = new(big.Int).Quo(
 			new(big.Int).Mul(constants.OneQ64, constants.OneQ64),
 			result,
 		)
@@ -86,4 +88,31 @@ func PowQ64(base, exponent *big.Int, scaling bool) *big.Int {
 	}
 
 	return result
+}
+
+// Sqrt calculates square root of a BN number using Newton's method.
+func Sqrt(value *big.Int) *big.Int {
+	if value.Sign() == 0 {
+		return big.NewInt(0)
+	}
+
+	hold := big.NewInt(1)
+	if value.Cmp(hold) == 0 {
+		return hold
+	}
+
+	hold = big.NewInt(2)
+	x, y := value, new(big.Int).Quo(
+		new(big.Int).Add(value, big.NewInt(1)),
+		hold,
+	)
+
+	for y.Cmp(x) < 0 {
+		x = y
+		y = new(big.Int).Quo(
+			new(big.Int).Add(x, new(big.Int).Quo(value, x)),
+			hold,
+		)
+	}
+	return x
 }

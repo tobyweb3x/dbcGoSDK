@@ -27,20 +27,13 @@ func CreateProgramAccountFilter(owner solana.PublicKey, offset uint64) rpc.GetPr
 
 func BpsToFeeNumerator(bps uint64) *big.Int {
 	return new(big.Int).Quo(
-		new(big.Int).Mul(new(big.Int).SetUint64(bps), big.NewInt(constants.FeeDenominator)),
+		new(big.Int).Mul(new(big.Int).SetUint64(bps), constants.FeeDenominatorBigInt),
 		big.NewInt(constants.BasisPointMax))
 }
 
 func ConvertToLamports(amount float64, tokenDecimal types.TokenDecimal) *big.Int {
-	// switch v := amount.(type) {
-	// case uint64:
-	// 	return new(big.Int).Mul(
-	// 		new(big.Int).SetUint64(v),
-	// 		new(big.Int).Exp(big.NewInt(10), new(big.Int).SetUint64(uint64(tokenDecimal)), nil),
-	// 	)
-	// case float64:
 	floatVal := new(big.Float).Mul(
-		new(big.Float).SetFloat64(amount),
+		big.NewFloat(amount),
 		new(big.Float).SetPrec(256).SetInt(
 			new(big.Int).Exp(big.NewInt(10), new(big.Int).SetUint64(uint64(tokenDecimal)), nil),
 		),
@@ -48,9 +41,6 @@ func ConvertToLamports(amount float64, tokenDecimal types.TokenDecimal) *big.Int
 	result := new(big.Int)
 	floatVal.Int(result) // truncate/floor
 	return result
-	// default:
-	// 	panic("unsupported type in ConvertToLamports")
-	// }
 }
 
 func BigIntToUint128(b *big.Int) (ag_binary.Uint128, error) {

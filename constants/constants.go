@@ -4,6 +4,7 @@ import (
 	"dbcGoSDK/generated/dammv1"
 	"dbcGoSDK/generated/dammv2"
 	"dbcGoSDK/generated/dbc"
+	"math"
 	"math/big"
 
 	"github.com/gagliardetto/solana-go"
@@ -69,17 +70,16 @@ const (
 	// DynamicFee constants
 	//
 
-	DynamicFeeFilterPeriodDefault = 10
-	DynamicFeeDecayPeriodDefault  = 120
+	DynamicFeeFilterPeriodDefault = 10  // 10 seconds
+	DynamicFeeDecayPeriodDefault  = 120 // 120 seconds
 
 	MaxDynamicPercentage = 20 // 20% of base fee
+	MaxSwallowPercentage = 20 // 20%
 
 	MinMigratedPoolFeeBps = 10   // 0.1%
 	MaxMigratedPoolFeeBps = 1000 // 10%
 
-	// DynamicFeeReductionFactorDefault
-	//  50%
-	DynamicFeeReductionFactorDefault = 5000
+	DynamicFeeReductionFactorDefault = 5000 // 50%
 
 	BinStepBpsDefault = 1
 
@@ -89,17 +89,35 @@ const (
 )
 
 var (
-	// Usefuls
+	// DynamicFeeScalingFactor
+	//  DynamicFeeScalingFactor = new(big.Int).SetUint64(100_000_000_000)
+	DynamicFeeScalingFactor = new(big.Int).SetUint64(100_000_000_000)
+
+	// DynamicFeeRoundingOffset
+	//  DynamicFeeRoundingOffset = new(big.Int).SetUint64(99_999_999_999)
+	DynamicFeeRoundingOffset = new(big.Int).SetUint64(99_999_999_999)
 
 	// HundredInBigFloat
 	//  HundredInBigFloat = big.NewFloat(100)
 	HundredInBigFloat = big.NewFloat(100)
 
+	// U64MaxBigInt
+	//  U64MaxBigInt = new(big.Int).SetUint64(math.MaxUint64)
+	U64MaxBigInt = new(big.Int).SetUint64(math.MaxUint64)
+
+	// U128MaxBigInt
+	//  U128MaxBigInt = new(big.Int).SetString("340282366920938463463374607431768211455", 10)
+	U128MaxBigInt, _ = new(big.Int).SetString("340282366920938463463374607431768211455", 10)
+
 	// HundredInBigInt
 	//  HundredInBigInt = big.NewInt(100)
 	HundredInBigInt = big.NewInt(100)
 
-	// Offset resolution
+	// FeeDenominatorBigInt
+	//  FeeDenominatorBigInt = big.NewInt(FeeDenominator)
+	FeeDenominatorBigInt = big.NewInt(FeeDenominator)
+
+	// Offset resolution //
 
 	// MinSqrtPrice
 	//  MinSqrtPrice = big.NewInt(4295048016)

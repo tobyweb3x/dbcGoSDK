@@ -10,7 +10,7 @@ import (
 	ag_treeout "github.com/gagliardetto/treeout"
 )
 
-// ADMIN FUNCTIONS ///
+// ADMIN FUNCTIONS_ ///
 type CreateClaimFeeOperatorInstruction struct {
 
 	// [0] = [WRITE] claim_fee_operator
