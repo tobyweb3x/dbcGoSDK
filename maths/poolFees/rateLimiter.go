@@ -17,7 +17,8 @@ func IsRateLimiterApplied(
 	referenceAmount,
 	feeIncrementBps *big.Int,
 ) bool {
-	if referenceAmount == nil || maxLimiterDuration == nil || feeIncrementBps == nil {
+	if referenceAmount == nil || activationPoint == nil ||
+		maxLimiterDuration == nil || feeIncrementBps == nil || currentPoint == nil {
 		return false
 	}
 
@@ -36,7 +37,7 @@ func GetMaxIndex(cliffFeeNumerator, feeIncrementBps *big.Int) (*big.Int, error) 
 		new(big.Int).SetUint64(constants.MaxFeeNumerator), cliffFeeNumerator)
 
 	if deltaNumerator.Sign() <= 0 {
-		return nil, fmt.Errorf("GetMaxIndex: cliffFeeNumerator(%s) exceeds MaxFeeNumerator(%s)", cliffFeeNumerator, constants.MaxFeeNumerator)
+		return nil, fmt.Errorf("GetMaxIndex: cliffFeeNumerator(%s) exceeds MaxFeeNumerator(%d)", cliffFeeNumerator, constants.MaxFeeNumerator)
 	}
 
 	feeIncrementNumerator := toNumerators(
@@ -430,9 +431,5 @@ func GetFeeNumeratorFromIncludedAmount(
 		types.RoundingUp,
 	)
 
-	// if feeNumerator.Cmp(maxFeeNumerator) <= 0 {
 	return feeNumerator, nil
-	// }
-
-	// return maxFeeNumerator, nil
 }

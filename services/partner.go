@@ -20,8 +20,8 @@ type PartnerService struct {
 func NewPartnerService(
 	conn *rpc.Client,
 	commitment rpc.CommitmentType,
-) *CreatorService {
-	return &CreatorService{
+) *PartnerService {
+	return &PartnerService{
 		state: NewStateService(conn, commitment),
 	}
 }

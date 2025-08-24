@@ -16,7 +16,9 @@ type FeeRateLimiter struct {
 func (fr *FeeRateLimiter) Validate(
 	collectFeeMode types.CollectFeeMode,
 	activationType types.ActivationType,
-) bool
+) bool {
+	return true
+}
 
 func (fr *FeeRateLimiter) GetBaseFeeNumeratorFromIncludedFeeAmount(
 	currentPoint,
@@ -79,7 +81,9 @@ type FeeScheduler struct {
 func (fs *FeeScheduler) Validate(
 	collectFeeMode types.CollectFeeMode,
 	activationType types.ActivationType,
-) bool
+) bool {
+	return true
+}
 
 func (fs *FeeScheduler) GetBaseFeeNumeratorFromIncludedFeeAmount(
 	currentPoint,

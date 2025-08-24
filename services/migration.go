@@ -23,8 +23,8 @@ type MigrationService struct {
 func NewMigrationService(
 	conn *rpc.Client,
 	commitment rpc.CommitmentType,
-) *CreatorService {
-	return &CreatorService{
+) *MigrationService {
+	return &MigrationService{
 		state: NewStateService(conn, commitment),
 	}
 }

@@ -174,11 +174,12 @@ func GetTokenType(conn *rpc.Client, tokenMint solana.PublicKey) (types.TokenType
 		context.Background(), tokenMint, &accInfo); err != nil {
 		return types.TokenTypeSPL, err
 	}
-	if accInfo.Owner.Equals(solana.TokenProgramID) {
-		return types.TokenTypeSPL, nil
+
+	if accInfo.Owner.Equals(solana.Token2022ProgramID) {
+		return types.TokenTypeToken2022, nil
 	}
 
-	return types.TokenTypeToken2022, nil
+	return types.TokenTypeSPL, nil
 }
 
 func GetTokenDecimals(

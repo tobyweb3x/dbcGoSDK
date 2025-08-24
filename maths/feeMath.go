@@ -9,54 +9,6 @@ import (
 	"math/big"
 )
 
-// // CheckRateLimiterApplied checks if rate limiter should be applied based on pool configuration and state.
-// func CheckRateLimiterApplied(
-// 	baseFeeMode types.BaseFeeMode,
-// 	swapBaseForQuote bool,
-// 	currentPoint, activationPoint, maxLimiterDuration uint64,
-// ) bool {
-// 	return baseFeeMode == types.BaseFeeModeFeeSchedulerRateLimiter &&
-// 		!swapBaseForQuote &&
-// 		currentPoint >= activationPoint &&
-// 		currentPoint <= activationPoint+maxLimiterDuration
-// }
-
-// // GetVariableFee gets variable fee from dynamic fee.
-// func GetVariableFee(
-// 	dynamicFee dbc.DynamicFeeConfig,
-// 	volatilityTracker dbc.VolatilityTracker,
-// ) *big.Int {
-
-// 	if dynamicFee.Initialized == 0 {
-// 		return big.NewInt(0)
-// 	}
-
-// 	if volatilityTracker.VolatilityAccumulator.BigInt().Sign() == 0 {
-// 		return big.NewInt(0)
-// 	}
-
-// 	// (volatilityAccumulator * binStep)
-// 	volatilityTimesBinStep := new(big.Int).Mul(
-// 		volatilityTracker.VolatilityAccumulator.BigInt(),
-// 		new(big.Int).SetUint64(uint64(dynamicFee.BinStep)),
-// 	)
-
-// 	// (volatilityAccumulator * binStep)^2
-// 	squared := new(big.Int).Mul(volatilityTimesBinStep, volatilityTimesBinStep)
-
-// 	// (volatilityAccumulator * binStep)^2 * variableFeeControl
-// 	vFee := new(big.Int).Mul(squared,
-// 		new(big.Int).SetUint64(uint64(dynamicFee.VariableFeeControl)))
-
-// 	scaleFactor := big.NewInt(100_000_000_000)
-// 	numerator := new(big.Int).Add(
-// 		vFee,
-// 		new(big.Int).Sub(scaleFactor, big.NewInt(1)),
-// 	)
-
-// 	return new(big.Int).Quo(numerator, scaleFactor)
-// }
-
 // GetMaxSwallowQuoteAmount gets maximum swallow quote amount.
 func GetMaxSwallowQuoteAmount(config *dbc.PoolConfigAccount) *big.Int {
 	maxSwallowAmount, _ := mathsPoolfees.MulDiv(

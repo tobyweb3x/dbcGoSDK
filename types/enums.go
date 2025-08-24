@@ -7,6 +7,14 @@ const (
 	TokenTypeToken2022
 )
 
+type SwapMode uint8
+
+const (
+	SwapModeExactIn = iota
+	SwapModePartialFill
+	SwapModeExactOut
+)
+
 type BaseFeeMode uint8
 
 const (

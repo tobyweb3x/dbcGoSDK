@@ -21,11 +21,14 @@ require (
 	github.com/aybabtme/rgbterm v0.0.0-20170906152045-cc83f3b3ce59 // indirect
 	github.com/blendle/zapdriver v1.3.1 // indirect
 	github.com/buger/goterm v0.0.0-20200322175922-2f3e71b85129 // indirect
+	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/dave/jennifer v1.7.0 // indirect
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/fragmetric-labs/solana-anchor-go v1.1.0 // indirect
 	github.com/gagliardetto/utilz v0.1.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
+	github.com/gorilla/rpc v1.2.0 // indirect
+	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/hako/durafmt v0.0.0-20200710122514-c0fb7b4da026 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect

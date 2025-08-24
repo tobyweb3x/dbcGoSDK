@@ -565,34 +565,6 @@ func GetInitialLiquidityFromDeltaBase(
 	), nil
 }
 
-// GetDeltaAmountBase calculates the amount of base token needed for a price range.
-//
-//	Formula: Δx = L * (√Pb - √Pa) / (√Pa * √Pb)
-//
-// Where:
-//
-// - L is the liquidity
-//
-// - √Pa is the lower sqrt price
-//
-// - √Pb is the upper sqrt price
-// func GetDeltaAmountBase(
-// 	lowerSqrtPrice, upperSqrtPrice, liquidity *big.Int,
-// ) *big.Int {
-// 	numerator := new(big.Int).Mul(
-// 		liquidity,
-// 		new(big.Int).Sub(upperSqrtPrice, lowerSqrtPrice),
-// 	)
-// 	denominator := new(big.Int).Mul(lowerSqrtPrice, upperSqrtPrice)
-// 	return new(big.Int).Div(
-// 		new(big.Int).Sub(
-// 			new(big.Int).Add(numerator, denominator),
-// 			big.NewInt(1),
-// 		),
-// 		denominator,
-// 	)
-// }
-
 func GetBaseTokenForSwap(
 	sqrtStartPrice, sqrtMigrationPrice *big.Int,
 	curve []dbc.LiquidityDistributionParameters,
@@ -1060,9 +1032,9 @@ func GetCurrentPoint(
 	conn *rpc.Client,
 	activationType types.ActivationType,
 ) (*big.Int, error) {
-	currentSlot, err := conn.GetSlot(context.Background(), rpc.CommitmentConfirmed)
+	currentSlot, err := conn.GetSlot(context.Background(), rpc.CommitmentFinalized)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("GetCurrentPoint:%w", err)
 	}
 
 	if activationType == types.ActivationTypeSlot {
@@ -1071,8 +1043,14 @@ func GetCurrentPoint(
 
 	currentTime, err := conn.GetBlockTime(context.Background(), currentSlot)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("GetCurrentPoint:%w", err)
 	}
+
+	if currentTime == nil {
+		return nil, fmt.Errorf("GetCurrentPoint:timestamp is not available for this block(%d)", currentSlot)
+	}
+
+	fmt.Printf("currentTime ---> %+v\n", currentTime)
 	return big.NewInt(int64(*currentTime)), nil
 }
 

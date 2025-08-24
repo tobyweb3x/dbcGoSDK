@@ -45,11 +45,12 @@ func (ac *PgAccounts[T]) fetchNullableAndContext(ctx context.Context, address so
 		return zeroValue, nil, err
 	}
 	if accoutnInfo == nil || accoutnInfo.Data == nil || len(accoutnInfo.Data.GetBinary()) == 0 {
-		return zeroValue, nil, fmt.Errorf("account does not exist: %s", address.String())
+		return zeroValue, nil, fmt.Errorf("fetchNullableAndContext: account does not exist: %s", address.String())
 	}
 	concrate := ac.account()
 	if err := concrate.UnmarshalWithDecoder(ag_binary.NewBorshDecoder(accoutnInfo.Data.GetBinary())); err != nil {
-		return zeroValue, nil, err
+		fmt.Println("error from here", err)
+		return zeroValue, nil, fmt.Errorf("fetchNullableAndContext: err decoding account data: %s", err.Error())
 	}
 
 	return concrate, rpcCtx, nil

@@ -39,7 +39,7 @@ func (s *StateService) GetPoolConfig(
 	return anchor.NewPgAccounts(
 		s.conn,
 		func() *dbc.PoolConfigAccount { return &dbc.PoolConfigAccount{} },
-	).Fetch(ctx, configAddress, &rpc.GetAccountInfoOpts{})
+	).Fetch(ctx, configAddress, &rpc.GetAccountInfoOpts{Commitment: s.commitment,})
 }
 
 // GetPoolConfigs all config keys.
@@ -83,7 +83,7 @@ func (s *StateService) GetPool(
 	return anchor.NewPgAccounts(
 		s.conn,
 		func() *dbc.VirtualPoolAccount { return &dbc.VirtualPoolAccount{} },
-	).Fetch(ctx, poolAddress, &rpc.GetAccountInfoOpts{})
+	).Fetch(ctx, poolAddress, &rpc.GetAccountInfoOpts{Commitment: s.commitment})
 }
 
 // GetPools get all dynamic bonding curve pools.

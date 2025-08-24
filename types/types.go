@@ -156,20 +156,23 @@ type PreCreatePoolParam struct {
 }
 
 type CreateConfigAndPoolParam struct {
-	PreCreatePoolParam PreCreatePoolParam
+	PreCreatePoolParam
 	CreateConfigParam
-	// ConfigParameters                                       dbc.ConfigParameters
-	// Config, FeeClaimer, LeftoverReceiver, QuoteMint, Payer solana.PublicKey
 	TokenType TokenType
 }
 type CreateConfigParam struct {
 	dbc.ConfigParameters
-	Config, FeeClaimer, LeftoverReceiver, QuoteMint, Payer solana.PublicKey
+	Config           solana.PublicKey
+	FeeClaimer       solana.PublicKey
+	LeftoverReceiver solana.PublicKey
+	QuoteMint        solana.PublicKey
+	Payer            solana.PublicKey
 }
 
 type CreateConfigAndPoolWithFirstBuyParam struct {
 	FirstBuyParam
 	CreateConfigAndPoolParam
+	PreCreatePoolParam
 	BaseFeeMode
 }
 
@@ -207,6 +210,41 @@ type SwapParam struct {
 	SwapBaseForQuote     bool
 	ReferralTokenAccount solana.PublicKey
 	Payer                solana.PublicKey
+}
+
+type Swap2Param struct {
+	Owner                solana.PublicKey
+	Pool                 solana.PublicKey
+	SwapBaseForQuote     bool
+	ReferralTokenAccount solana.PublicKey
+	Payer                solana.PublicKey
+	SwapMode             SwapMode
+
+	// ExactIn & PartialFill
+	AmountIn         *big.Int
+	MinimumAmountOut *big.Int
+
+	// ExactOut
+	AmountOut       *big.Int
+	MaximumAmountIn *big.Int
+}
+
+type SwapQuote2Param struct {
+	VirtualPool      *dbc.VirtualPoolAccount
+	Config           *dbc.PoolConfigAccount
+	SwapBaseForQuote bool
+	HasReferral      bool
+	CurrentPoint     *big.Int
+	SlippageBps      uint64
+	SwapMode         SwapMode
+
+	// ExactIn & PartialFill
+	AmountIn         *big.Int
+	MinimumAmountOut *big.Int
+
+	// ExactOut
+	AmountOut       *big.Int
+	MaximumAmountIn *big.Int
 }
 
 type SwapQuoteResult struct {
