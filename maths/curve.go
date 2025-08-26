@@ -260,13 +260,14 @@ func GetNextSqrtPriceFromBaseAmountOutRoundingUp(
 
 	// L - Δx * √P
 	denominator := new(big.Int).Sub(liquidity, product)
-	if denominator.Sign() < 0 {
-		return nil, fmt.Errorf("safeMath requires value non-zero: value is %s", denominator.String())
+	if denominator.Sign() <= 0 {
+		return nil,
+			fmt.Errorf("invalid denominator(%s): liquidity must be greater than amount * sqrt_price", denominator.String())
 	}
 
 	// √P * L / (L - Δx * √P) with rounding down
 	return MulDiv(
-		liquidity, sqrtPrice, denominator, types.RoundingDown,
+		liquidity, sqrtPrice, denominator, types.RoundingUp,
 	)
 }
 

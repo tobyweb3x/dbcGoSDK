@@ -336,7 +336,7 @@ func TestRateLimiter(t *testing.T) {
 			t.Fatalf("GetRateLimiterParams errored: %s", err.Error())
 		}
 
-		assert.Equal(t, types.BaseFeeModeFeeSchedulerRateLimiter, params.BaseFeeMode)
+		assert.Equal(t, types.BaseFeeModeRateLimiter, params.BaseFeeMode)
 		assert.True(t, new(big.Int).SetUint64(params.CliffFeeNumerator).Cmp(helpers.BpsToFeeNumerator(baseFeeBps)) == 0)
 
 		assert.Greater(t, params.FirstFactor, uint16(0)) // feeIncrementBps

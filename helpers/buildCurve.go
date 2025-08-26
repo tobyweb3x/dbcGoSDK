@@ -156,7 +156,7 @@ func BuildCurve(param types.BuildCurveParam) (dbc.ConfigParameters, error) {
 	var dynamicField *dbc.DynamicFeeParameters
 	if param.DynamicFeeEnabled {
 		baseFeeBp := param.BaseFeeParams.FeeSchedulerParam.EndingFeeBps
-		if param.BaseFeeParams.BaseFeeMode == types.BaseFeeModeFeeSchedulerRateLimiter {
+		if param.BaseFeeParams.BaseFeeMode == types.BaseFeeModeRateLimiter {
 			baseFeeBp = param.BaseFeeParams.RateLimiterParam.BaseFeeBps
 		}
 		d, err := GetDynamicFeeParams(baseFeeBp, 0)
@@ -449,7 +449,7 @@ func BuildCurveWithTwoSegments(
 	var dynamicField *dbc.DynamicFeeParameters
 	if param.DynamicFeeEnabled {
 		baseFeeBp := param.BaseFeeParams.FeeSchedulerParam.EndingFeeBps
-		if param.BaseFeeParams.BaseFeeMode == types.BaseFeeModeFeeSchedulerRateLimiter {
+		if param.BaseFeeParams.BaseFeeMode == types.BaseFeeModeRateLimiter {
 			baseFeeBp = param.BaseFeeParams.RateLimiterParam.BaseFeeBps
 		}
 
@@ -709,7 +709,7 @@ func BuildCurveWithLiquidityWeights(
 	var dynamicField *dbc.DynamicFeeParameters
 	if param.DynamicFeeEnabled {
 		baseFeeBp := param.BaseFeeParams.FeeSchedulerParam.EndingFeeBps
-		if param.BaseFeeParams.BaseFeeMode == types.BaseFeeModeFeeSchedulerRateLimiter {
+		if param.BaseFeeParams.BaseFeeMode == types.BaseFeeModeRateLimiter {
 			baseFeeBp = param.BaseFeeParams.RateLimiterParam.BaseFeeBps
 		}
 

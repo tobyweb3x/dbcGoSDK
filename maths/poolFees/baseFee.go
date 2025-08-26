@@ -138,7 +138,7 @@ func GetBaseFeeHandler(
 			FeeSchedulerMode:  baseFeeMode,
 		}, nil
 
-	case types.BaseFeeModeFeeSchedulerRateLimiter:
+	case types.BaseFeeModeRateLimiter:
 		return &FeeRateLimiter{
 			CliffFeeNumerator:  cliffFeeNumerator,
 			FeeIncrementBps:    firstFactor,

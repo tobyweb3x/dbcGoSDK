@@ -7,3 +7,8 @@ dammv1:
 	@go tool solana-anchor-go -src=./idl/dammv1/idl.json -pkg=dammv1 -dst=./generated/dammv1/
 dv:
 	@go tool solana-anchor-go -src=./idl/dynamic-vault/idl.json -pkg=dynamic_vault -dst=./generated/dynamicVault/
+
+test:
+	@go test ./helpers/
+	@go test ./maths/...
+	@go test .

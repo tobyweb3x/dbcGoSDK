@@ -172,7 +172,7 @@ func GetFeeOnAmount(
 	if hasReferral {
 		referralFee, _ = mathsPoolfees.MulDiv(
 			protocolFee,
-			new(big.Int).SetUint64(uint64(poolFees.ProtocolFeePercent)),
+			new(big.Int).SetUint64(uint64(poolFees.ReferralFeePercent)),
 			big.NewInt(100),
 			types.RoundingDown,
 		)
@@ -184,7 +184,7 @@ func GetFeeOnAmount(
 	}
 
 	return types.FeeOnAmountResult{
-		Amount:      amount,
+		Amount:      out.ExcludedFeeAmount,
 		ProtocolFee: protocolFee,
 		ReferralFee: referralFee,
 		TradingFee:  updatedTradingFee,

@@ -20,7 +20,7 @@ type BaseFeeMode uint8
 const (
 	BaseFeeModeFeeSchedulerLinear BaseFeeMode = iota
 	BaseFeeModeFeeSchedulerExponential
-	BaseFeeModeFeeSchedulerRateLimiter
+	BaseFeeModeRateLimiter
 )
 
 type ActivationType uint8

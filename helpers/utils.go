@@ -57,6 +57,7 @@ func BigIntToUint128(b *big.Int) (ag_binary.Uint128, error) {
 
 	ag_binary.ReverseBytes(buf[:])
 
+	// ag_binary.NewBinDecoder(buf[:]).ReadUint128()
 	var u ag_binary.Uint128
 	if err := u.UnmarshalWithDecoder(ag_binary.NewBinDecoder(buf[:])); err != nil {
 		return ag_binary.Uint128{}, err

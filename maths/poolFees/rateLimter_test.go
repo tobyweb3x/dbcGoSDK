@@ -37,7 +37,7 @@ func TestRateLimiter(t *testing.T) {
 		FirstFactor:       10,
 		SecondFactor:      100000,
 		ThirdFactor:       200000,
-		BaseFeeMode:       types.BaseFeeModeFeeSchedulerRateLimiter,
+		BaseFeeMode:       types.BaseFeeModeRateLimiter,
 	}, params)
 
 	tests := []struct {

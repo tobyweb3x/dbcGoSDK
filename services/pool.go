@@ -432,17 +432,17 @@ func (p *PoolService) CreatePool(
 
 // CreateConfigAndPool creates a new config and pool.
 func (p *PoolService) CreateConfigAndPool(
-	createConfigAndPoolParam types.CreateConfigAndPoolParam,
+	param types.CreateConfigAndPoolParam,
 
 ) ([]solana.Instruction, error) {
 
 	createConfigIx, err := p.createConfigIx(
-		createConfigAndPoolParam.CreateConfigParam.ConfigParameters,
-		createConfigAndPoolParam.Config,
-		createConfigAndPoolParam.FeeClaimer,
-		createConfigAndPoolParam.LeftoverReceiver,
-		createConfigAndPoolParam.QuoteMint,
-		createConfigAndPoolParam.Payer,
+		param.CreateConfigParam.ConfigParameters,
+		param.Config,
+		param.FeeClaimer,
+		param.LeftoverReceiver,
+		param.QuoteMint,
+		param.Payer,
 	)
 	if err != nil {
 		return nil, err
@@ -450,11 +450,12 @@ func (p *PoolService) CreateConfigAndPool(
 
 	createPoolIx, err := p.createPoolIx(
 		types.CreatePoolParam{
-			PreCreatePoolParam: createConfigAndPoolParam.PreCreatePoolParam,
-			Config:             createConfigAndPoolParam.Config,
+			PreCreatePoolParam: param.PreCreatePoolParam,
+			Config:             param.Config,
+			Payer:              param.Payer,
 		},
-		createConfigAndPoolParam.TokenType,
-		createConfigAndPoolParam.QuoteMint,
+		param.TokenType,
+		param.QuoteMint,
 	)
 	if err != nil {
 		return nil, err
@@ -761,12 +762,12 @@ func (p *PoolService) Swap(
 
 	poolState, err := p.state.GetPool(ctx, param.Pool)
 	if err != nil {
-		return nil, fmt.Errorf("Swap:pool (%s) not found: error: %w", param.Pool.String(), err)
+		return nil, fmt.Errorf("swap:pool (%s) not found: error: %w", param.Pool.String(), err)
 	}
 
 	poolConfigState, err := p.state.GetPoolConfig(ctx, poolState.Config)
 	if err != nil {
-		return nil, fmt.Errorf("Swap:pool config (%s) not found: error: %w", param.Pool.String(), err)
+		return nil, fmt.Errorf("swap:pool config (%s) not found: error: %w", param.Pool.String(), err)
 	}
 
 	// TODO: validation checks
@@ -775,6 +776,9 @@ func (p *PoolService) Swap(
 		p.state.conn,
 		types.ActivationType(poolConfigState.ActivationType),
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	// check if rate limiter is applied if:
 	// 1. rate limiter mode
@@ -916,29 +920,54 @@ func (p *PoolService) Swap2(
 	param types.Swap2Param,
 ) ([]solana.Instruction, error) {
 
-	if !param.AmountIn.IsUint64() || !param.AmountOut.IsUint64() {
-		return nil, fmt.Errorf(
-			"cannot fit AmountIn(%s) or AmountOut(%s) into uint64",
-			param.AmountIn, param.AmountOut,
-		)
+	// TODO: remove this, validation checks func should cover
+	switch param.SwapMode {
+	case types.SwapModeExactIn, types.SwapModePartialFill:
+		if param.AmountIn == nil || param.MinimumAmountOut == nil {
+			return nil,
+				fmt.Errorf("AmountIn(%s) or MinimumAmountOut(%s) cannot be nil for swapMode(%d)",
+					param.AmountIn, param.MinimumAmountOut, param.SwapMode,
+				)
+		}
+
+		if !param.AmountIn.IsUint64() {
+			return nil, fmt.Errorf(
+				"cannot fit AmountIn(%s) into uint64", param.AmountIn,
+			)
+		}
+	case types.SwapModeExactOut:
+		if param.AmountOut == nil || param.MaximumAmountIn == nil {
+			return nil,
+				fmt.Errorf("AmountOut(%s) or MaximumAmountIn(%s) cannot be nil for swapMode(%d)",
+					param.AmountOut, param.MaximumAmountIn, param.SwapMode,
+				)
+		}
+		if !param.AmountOut.IsUint64() {
+			return nil, fmt.Errorf(
+				"cannot fit AmountOut(%s) into uint64", param.AmountOut,
+			)
+		}
 	}
 
 	// TODO: validation checks
 
 	poolState, err := p.state.GetPool(ctx, param.Pool)
 	if err != nil {
-		return nil, fmt.Errorf("Swap2:pool (%s) not found: error: %w", param.Pool.String(), err)
+		return nil, fmt.Errorf("swap2:pool (%s) not found: error: %w", param.Pool.String(), err)
 	}
 
 	poolConfigState, err := p.state.GetPoolConfig(ctx, poolState.Config)
 	if err != nil {
-		return nil, fmt.Errorf("Swap2:pool config (%s) not found: error: %w", param.Pool.String(), err)
+		return nil, fmt.Errorf("swap2:pool config (%s) not found: error: %w", param.Pool.String(), err)
 	}
 
 	currentPoint, err := helpers.GetCurrentPoint(
 		p.state.conn,
 		types.ActivationType(poolConfigState.ActivationType),
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	// check if rate limiter is applied if:
 	// 1. rate limiter mode

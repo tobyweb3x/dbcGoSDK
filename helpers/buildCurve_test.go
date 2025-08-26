@@ -534,8 +534,6 @@ func TestBBuildCurveWithLiquidityWeights(t *testing.T) {
 			assert.True(t,
 				ApproxBigInt(config.Curve[i].Liquidity.BigInt(), liquidity, threshold))
 		}
-		// fmt.Printf("%+v\n", config.Curve)
-		// t.Fail()
 	})
 
 	t.Run("build curve with liquidity weights 0.6^n", func(t *testing.T) {

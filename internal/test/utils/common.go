@@ -22,7 +22,7 @@ type TestActors struct {
 	Partner     solana.PrivateKey
 	User        solana.PrivateKey
 	PoolCreator solana.PrivateKey
-	Config      solana.PublicKey
+	Config      solana.PrivateKey
 	Pool        solana.PublicKey
 	BaseMint    solana.PrivateKey
 }
@@ -34,9 +34,8 @@ func newTestActors() *TestActors {
 		Partner:     solana.NewWallet().PrivateKey,
 		User:        solana.NewWallet().PrivateKey,
 		PoolCreator: solana.NewWallet().PrivateKey,
+		Config:      solana.NewWallet().PrivateKey,
 		BaseMint:    solana.NewWallet().PrivateKey,
-		Config:      solana.MustPublicKeyFromBase58("CpFPkZUNjUa5bcoASGWHCCYpx6j8HKmcziWr69BY9brb"),
-		// Pool:        solana.MustPublicKeyFromBase58("JBRFeG2d1xd65gSUDWsfRT9eRu126HfXcPYj6rBYvRiM"), // SOL <> FGN27LjGn4KC8rtLvHvYNCwHoDX2Lej9ZWDp3EBinMPw
 	}
 }
 
@@ -57,7 +56,6 @@ func SetupTestContext(
 	); err != nil {
 		return nil, fmt.Errorf("error: RequestAirdrop - \n%s", err.Error())
 	}
-	t.Log("got airdrop ✅")
 
 	// fund actors
 	pubkeys := []solana.PublicKey{
@@ -78,31 +76,6 @@ func SetupTestContext(
 		ixns = append(ixns, ix)
 	}
 
-	// lamports, err := conn.GetMinimumBalanceForRentExemption(
-	// 	context.Background(),
-	// 	token.MINT_SIZE,
-	// 	rpc.CommitmentConfirmed,
-	// )
-	// if err != nil {
-	// 	return nil, fmt.Errorf("err from GetMinimumBalanceForRentExemption: %s", err.Error())
-	// }
-
-	// createIx := system.NewCreateAccountInstruction(
-	// 	lamports,
-	// 	token.MINT_SIZE,
-	// 	solana.TokenProgramID,
-	// 	actors.Admin.PublicKey(),
-	// 	actors.BaseMint.PublicKey(),
-	// ).Build()
-	// initIx := token.NewInitializeMint2Instruction(
-	// 	6,
-	// 	actors.Admin.PublicKey(),
-	// 	solana.PublicKey{},
-	// 	actors.BaseMint.PublicKey(),
-	// ).Build()
-
-	// ixns = append(ixns, createIx, initIx)
-
 	if _, err := SendAndConfirmTxn(
 		conn,
 		wsClient,
@@ -112,8 +85,8 @@ func SetupTestContext(
 	); err != nil {
 		return nil, err
 	}
-	t.Log("actors funded ✅")
 
+	t.Log("got airdrop & actors funded ✅")
 	return actors, nil
 }
 

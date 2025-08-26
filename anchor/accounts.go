@@ -49,7 +49,6 @@ func (ac *PgAccounts[T]) fetchNullableAndContext(ctx context.Context, address so
 	}
 	concrate := ac.account()
 	if err := concrate.UnmarshalWithDecoder(ag_binary.NewBorshDecoder(accoutnInfo.Data.GetBinary())); err != nil {
-		fmt.Println("error from here", err)
 		return zeroValue, nil, fmt.Errorf("fetchNullableAndContext: err decoding account data: %s", err.Error())
 	}
 

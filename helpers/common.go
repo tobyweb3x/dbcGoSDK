@@ -73,7 +73,7 @@ func GetBaseFeeParams(
 	activationType types.ActivationType,
 ) (types.BaseFee, error) {
 
-	if baseFeeParams.BaseFeeMode == types.BaseFeeModeFeeSchedulerRateLimiter {
+	if baseFeeParams.BaseFeeMode == types.BaseFeeModeRateLimiter {
 		if baseFeeParams.RateLimiterParam == nil {
 			return types.BaseFee{}, errors.New("rate limiter parameters are required for RateLimiter mode")
 		}
@@ -210,7 +210,7 @@ func GetRateLimiterParams(
 			FirstFactor:       feeIncrementBps,
 			SecondFactor:      maxLimiterDuration,
 			ThirdFactor:       referenceAmountInLamports.Uint64(),
-			BaseFeeMode:       types.BaseFeeModeFeeSchedulerRateLimiter,
+			BaseFeeMode:       types.BaseFeeModeRateLimiter,
 		},
 		nil
 }
@@ -1050,7 +1050,6 @@ func GetCurrentPoint(
 		return nil, fmt.Errorf("GetCurrentPoint:timestamp is not available for this block(%d)", currentSlot)
 	}
 
-	fmt.Printf("currentTime ---> %+v\n", currentTime)
 	return big.NewInt(int64(*currentTime)), nil
 }
 

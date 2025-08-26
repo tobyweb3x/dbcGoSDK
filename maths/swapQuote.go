@@ -198,6 +198,17 @@ func GetSwapResultFromExactInput(
 	currentPoint *big.Int,
 ) (dbc.SwapResult2, error) {
 
+	if amountIn == nil || currentPoint == nil {
+		return dbc.SwapResult2{},
+			fmt.Errorf("GetSwapResultFromExactInput:nil value: amountIn(%+v) or currentPoint(%+v) cannot be nil",
+				amountIn, currentPoint)
+	}
+
+	if !amountIn.IsUint64() {
+		return dbc.SwapResult2{},
+			fmt.Errorf("cannot fit amountIn(%s) into uint64", amountIn)
+	}
+
 	actualProtocolFee, actualTradingFee, actualReferralFee :=
 		big.NewInt(0), big.NewInt(0), big.NewInt(0)
 
@@ -272,7 +283,6 @@ func GetSwapResultFromExactInput(
 	}
 
 	if !swapAmountFromInput.AmountLeft.IsUint64() ||
-		!amountIn.IsUint64() ||
 		!actualAmountIn.IsUint64() ||
 		!actualAmountOut.IsUint64() ||
 		!actualTradingFee.IsUint64() ||
@@ -280,11 +290,10 @@ func GetSwapResultFromExactInput(
 		!actualReferralFee.IsUint64() {
 		return dbc.SwapResult2{},
 			fmt.Errorf(
-				"one of the values cannot fit into uint64: "+
-					"AmountLeft(%s), IncludedFeeInputAmount(%s), ExcludedFeeInputAmount(%s), "+
+				"one of these values cannot fit into uint64: "+
+					"AmountLeft(%s), ExcludedFeeInputAmount(%s), "+
 					"OutputAmount(%s), TradingFee(%s), ProtocolFee(%s), ReferralFee(%s)",
 				swapAmountFromInput.AmountLeft,
-				amountIn,
 				actualAmountIn,
 				actualAmountOut,
 				actualTradingFee,
@@ -417,7 +426,8 @@ func GetSwapResultFromPartialInput(
 		}
 	}
 
-	actualAmountOut := swapAmountFromInput.OutputAmount
+	actualAmountOut := new(big.Int).Set(swapAmountFromInput.OutputAmount)
+
 	if !feeMode.FeesOnInput {
 		feeResult, err := GetFeeOnAmount(
 			tradeFeeNumerator,
@@ -584,6 +594,7 @@ func CalculateBaseToQuoteFromAmountIn(
 	return types.SwapAmount{
 		OutputAmount:  totalOutputAmount,
 		NextSqrtPrice: currentSqrtPriceLocal,
+		AmountLeft:    big.NewInt(0),
 	}, nil
 }
 
@@ -655,7 +666,7 @@ func CalculateQuoteToBaseFromAmountIn(
 					return types.SwapAmount{}, err
 				}
 
-				totalOutputAmount = new(big.Int).Sub(totalOutputAmount, outputAmount)
+				totalOutputAmount = new(big.Int).Add(totalOutputAmount, outputAmount)
 				currentSqrtPriceLocal = nextSqrtPrice
 				amountLeft = big.NewInt(0)
 				break
@@ -1006,7 +1017,7 @@ func CalculateQuoteToBaseFromAmountOut(
 				}
 
 				totalAmountIn = new(big.Int).Add(totalAmountIn, inAmount)
-				currentSqrtPriceLocal = nextSqrtPrice
+				currentSqrtPriceLocal = new(big.Int).Set(nextSqrtPrice)
 				amountLeft = big.NewInt(0)
 				break
 			}
@@ -1023,7 +1034,7 @@ func CalculateQuoteToBaseFromAmountOut(
 			}
 
 			totalAmountIn = new(big.Int).Add(totalAmountIn, inAmount)
-			currentSqrtPriceLocal = nextSqrtPrice
+			currentSqrtPriceLocal = new(big.Int).Set(nextSqrtPrice)
 			amountLeft = new(big.Int).Sub(amountLeft, maxAmountOut)
 		}
 	}
@@ -1125,6 +1136,12 @@ func SwapQuotePartialFill(
 	hasReferral bool,
 	currentPoint *big.Int,
 ) (types.SwapQuote2Result, error) {
+	if virtualPool == nil || config == nil {
+		return types.SwapQuote2Result{},
+			fmt.Errorf("SwapQuotePartialFill: nil value:virtualPool(%+v) or config(%+v)",
+				virtualPool, config)
+	}
+
 	if virtualPool.QuoteReserve >= config.MigrationQuoteThreshold {
 		return types.SwapQuote2Result{}, errors.New("virtual pool is completed")
 	}
@@ -1144,7 +1161,7 @@ func SwapQuotePartialFill(
 		hasReferral,
 	)
 
-	result, err := GetSwapResultFromExactInput(
+	result, err := GetSwapResultFromPartialInput(
 		virtualPool,
 		config,
 		amountIn,
@@ -1245,7 +1262,7 @@ func SwapQuoteExactOut(
 	}
 
 	return types.SwapQuote2Result{
-		SwapResult2:      result,
-		MinimumAmountOut: maximumAmountIn,
+		SwapResult2:     result,
+		MaximumAmountIn: maximumAmountIn,
 	}, nil
 }
