@@ -592,7 +592,6 @@ func (p *PoolService) CreatePoolWithFirstBuy(
 	}
 
 	var swapBuyIxns []solana.Instruction
-	// TODO: check param.FirstBuyParam is not empty
 	if param.FirstBuyParam.BuyAmount > 0 {
 		if swapBuyIxns, err = p.swapBuyIx(
 			ctx,
@@ -920,7 +919,7 @@ func (p *PoolService) Swap2(
 	param types.Swap2Param,
 ) ([]solana.Instruction, error) {
 
-	// TODO: remove this, validation checks func should cover
+	// NOTE: remove this, validation checks func should cover
 	switch param.SwapMode {
 	case types.SwapModeExactIn, types.SwapModePartialFill:
 		if param.AmountIn == nil || param.MinimumAmountOut == nil {

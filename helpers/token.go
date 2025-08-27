@@ -42,8 +42,6 @@ func GetOrCreateATAInstruction(
 		return toAccount, nil, nil
 	}
 
-	// TODO: no way to check type of error like the js/ts sdk
-
 	ix := CreateAssociatedTokenAccountIdempotentInstruction(
 		payer,
 		toAccount,
