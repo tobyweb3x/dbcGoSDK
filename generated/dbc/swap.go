@@ -4,6 +4,8 @@ package dbc
 
 import (
 	"errors"
+	"fmt"
+
 	ag_binary "github.com/gagliardetto/binary"
 	ag_solanago "github.com/gagliardetto/solana-go"
 	ag_format "github.com/gagliardetto/solana-go/text/format"
@@ -64,6 +66,7 @@ func NewSwapInstructionBuilder() *SwapInstruction {
 		AccountMetaSlice: make(ag_solanago.AccountMetaSlice, 15),
 	}
 	nd.AccountMetaSlice[0] = ag_solanago.Meta(Addresses["FhVo3mqL8PW5pH5U2CN4XE33DokiyZnUwuGpH2hmHLuM"])
+	fmt.Println("len slice in instr---->", len(nd.AccountMetaSlice))
 	return nd
 }
 

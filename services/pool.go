@@ -897,6 +897,13 @@ func (p *PoolService) Swap(
 	eventAuthPDA, _, err := swapPtr.FindEventAuthorityAddress()
 	if err != nil {
 		return nil, fmt.Errorf("err deriving eventAuthPDA: %w", err)
+
+	}
+
+	if param.ReferralTokenAccount.IsZero() {
+		swapPtr.AccountMetaSlice[12] = nil
+		// swapPtr.AccountMetaSlice[12] = &solana.AccountMeta{}
+		// swapPtr.AccountMetaSlice = append(swapPtr.AccountMetaSlice[:12], swapPtr.AccountMetaSlice[13:]...)
 	}
 
 	swapPtr.AccountMetaSlice = append(swapPtr.AccountMetaSlice, remainingAccounts...)
@@ -905,11 +912,6 @@ func (p *PoolService) Swap(
 		SetEventAuthorityAccount(eventAuthPDA).ValidateAndBuild()
 	if err != nil {
 		return nil, err
-	}
-
-	if param.ReferralTokenAccount.IsZero() {
-		swapPtr.AccountMetaSlice[12] = nil
-		// swapPtr.AccountMetaSlice[12] = &solana.AccountMeta{}
 	}
 
 	finalIxns := make([]solana.Instruction, 0, len(preInstructions)+1+len(postInstructions))
