@@ -906,6 +906,12 @@ func (p *PoolService) Swap(
 	if err != nil {
 		return nil, err
 	}
+
+	if param.ReferralTokenAccount.IsZero() {
+		swapPtr.AccountMetaSlice[12] = nil
+		// swapPtr.AccountMetaSlice[12] = &solana.AccountMeta{}
+	}
+
 	finalIxns := make([]solana.Instruction, 0, len(preInstructions)+1+len(postInstructions))
 	finalIxns = append(finalIxns, preInstructions...)
 	finalIxns = append(finalIxns, currentIx)
